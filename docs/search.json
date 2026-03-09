@@ -2031,5 +2031,281 @@
     "title": "catmultGenes",
     "section": "",
     "text": "catGenes::catmultGenes()\n\n\nDescription\nCompares a list of “n” gene datasets (individual DNA alignments) and makes them with the same number of taxa, ready for combined, multigene phylogenetic analysis. This function is best designed for concatenating DNA alignments where species have duplicated sequences (multiple accessions) from different collections. Then, make sure the species are labeled with both the scientific name and the same identifying number throughout each DNA alignment. Identifying numbers could be collector surname and associated collection number, or an accession number for the isolated DNA from which each gene was sequenced. During the comparison across DNA alignments for concatenation, the function will consider that any species is represented by multiple sequences and so in each individual gene dataset species will fully matched if they have exact scientific name and associated identifying number.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\n…\na list of NEXUS-formatted gene datasets as read by ape’s read.nexus.data or at least two individually ape-read objects of NEXUS-formatted gene datasets.\n\n\nmaxspp\nLogical, if FALSE any species never duplicated with multiple accessions in any indvidual DNA alignment might end either duplicated or deleted, depending on the chosen missdata argument. We recomend to maxspp = TRUE so as to maximize the taxon coverage. This means that if the species is not duplicated in any individual dataset, it will always be kept in the final concatenated dataset no matter each sequence for that species across the individual dataset were generated from distinct collections or accessions.\n\n\nshortaxlabel\nLogical, if FALSE the final individual gene dataset will maintain the accession numbers associated with each species or sequence.\n\n\nmissdata\nLogical, if FALSE the comparison will exclude any species that lacks a complete sequence for one of the input gene dataset.\n\n\noutgroup\nProvide the outgroup taxa (either one taxon name or a vector of multiple taxon names that are present in all individual gene dataset) if the concatenation is intended to maintain incomplete taxa (taxa missing the sequence for a particular gene).\n\n\nverbose\nLogical, if FALSE, a message showing each step during gene matching search will not be printed in the console in full.\n\n\n\n\n\nValue\nA list of dataframes of the equally-sized gene dataset, where the first column “species” include all taxon names and the second column “sequence” include the DNA sequence for the corresponding taxon.\n\n\nExamples\ndata(Luetzelburgia)\ncatdf &lt;- catmultGenes(Luetzelburgia,\n                      maxspp = TRUE,\n                      shortaxlabel = TRUE,\n                      missdata = TRUE,\n                      verbose = TRUE)\n\noutgrouptaxa &lt;- c(\"Vataireopsis_araroba\", \"Vataireopsis_speciosa\")\ncatdf &lt;- catmultGenes(Luetzelburgia,\n                      maxspp = FALSE,\n                      shortaxlabel = TRUE,\n                      missdata = FALSE,\n                      outgroup = outgrouptaxa,\n                      verbose = TRUE)"
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#overview",
+    "href": "articles/combine_and_align_sequences.html#overview",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Overview",
+    "text": "Overview\nA common step in phylogenetic workflows is to gather multiple sequence files, organize them into locus-specific datasets, and perform multiple sequence alignment before downstream concatenation or phylogenetic analysis. In catGenes, this workflow is supported mainly by two functions:\n\ncombineFASTA() to combine multiple FASTA files into a single file\nalignSeqs() to perform automated multiple sequence alignment\n\nThese functions are especially useful when sequences have already been retrieved from GenBank with mineSeq() or mineTaxa(), or mined from plastomes or mitochondrial genomes with minePlastome() or mineMitochondrion().\nThis article explains when to combine FASTA files, how to run alignments, how to choose output formats, and how to prepare aligned files for later use in catGenes.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#typical-workflow",
+    "href": "articles/combine_and_align_sequences.html#typical-workflow",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Typical workflow",
+    "text": "Typical workflow\nA common sequence-processing workflow is:\n\nretrieve or mine sequences\nsave them as FASTA files\ncombine FASTA files when needed\nalign the sequences\nsave aligned output in NEXUS, FASTA, or PHYLIP\nload the alignments into R for downstream concatenation\n\nNot every project requires the combineFASTA() step, but it is often useful when sequences are spread across multiple files and need to be merged before alignment.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#when-to-use-combinefasta",
+    "href": "articles/combine_and_align_sequences.html#when-to-use-combinefasta",
+    "title": "Combine FASTA files and align sequences",
+    "section": "When to use combineFASTA()",
+    "text": "When to use combineFASTA()\nUse combineFASTA() when:\n\nthe sequences for a locus are split across multiple FASTA files\nyou want to merge separate downloads into one file before alignment\nyou want a single combined FASTA file for inspection or downstream processing\nyou want to organize several sequence batches into a unified locus dataset\n\nIf your sequences are already in one FASTA file per locus, you may go directly to alignSeqs().",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#basic-usage-of-combinefasta",
+    "href": "articles/combine_and_align_sequences.html#basic-usage-of-combinefasta",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Basic usage of combineFASTA()",
+    "text": "Basic usage of combineFASTA()\nA simple workflow looks like this:\n\nlibrary(catGenes)\n\nresult &lt;- combineFASTA(\n  input_files = c(\"gene1.fasta\", \"gene2.fasta\", \"gene3.fasta\")\n)\n\nThis reads the listed files, combines all sequences into a single object, and by default saves the result to disk.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#choosing-the-output-file-name",
+    "href": "articles/combine_and_align_sequences.html#choosing-the-output-file-name",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Choosing the output file name",
+    "text": "Choosing the output file name\nYou can specify a custom file name for the combined output.\n\nresult &lt;- combineFASTA(\n  input_files = c(\"data/part1.fasta\", \"data/part2.fasta\"),\n  output_file = \"combined_sequences.fasta\"\n)\n\nThis is especially useful when the combined file should reflect a locus name or project name.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#returning-the-combined-sequences-without-saving",
+    "href": "articles/combine_and_align_sequences.html#returning-the-combined-sequences-without-saving",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Returning the combined sequences without saving",
+    "text": "Returning the combined sequences without saving\nIf you want to inspect the combined sequences in R without immediately writing them to disk, set save = FALSE.\n\nresult &lt;- combineFASTA(\n  input_files = c(\"temp1.fasta\", \"temp2.fasta\"),\n  save = FALSE,\n  verbose = TRUE\n)\n\nIn this case, the function returns the combined sequence object and summary information without creating an output file.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#inspecting-the-result-of-combinefasta",
+    "href": "articles/combine_and_align_sequences.html#inspecting-the-result-of-combinefasta",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Inspecting the result of combineFASTA()",
+    "text": "Inspecting the result of combineFASTA()\nThe result returned by combineFASTA() includes: - sequences: a DNAbin object containing all combined sequences - summary: a data frame with summary information - output_path: the output file path when saving is enabled",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#notes-on-duplicate-sequences",
+    "href": "articles/combine_and_align_sequences.html#notes-on-duplicate-sequences",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Notes on duplicate sequences",
+    "text": "Notes on duplicate sequences\ncombineFASTA() does not remove duplicate sequences. It simply combines all sequences from the files you specify.\nThis means that: - repeated accessions remain in the combined file - duplicate taxa are not filtered automatically - downstream alignment and inspection may still be needed before concatenation\nThis behavior is useful because it preserves the original contents of the input files.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#when-to-use-alignseqs",
+    "href": "articles/combine_and_align_sequences.html#when-to-use-alignseqs",
+    "title": "Combine FASTA files and align sequences",
+    "section": "When to use alignSeqs()",
+    "text": "When to use alignSeqs()\nUse alignSeqs() when you have one or more FASTA files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.\nThe function uses the msa package and supports: - ClustalW - Muscle\nIt can write aligned results in: - NEXUS - FASTA - PHYLIP",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#basic-alignment-workflow",
+    "href": "articles/combine_and_align_sequences.html#basic-alignment-workflow",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Basic alignment workflow",
+    "text": "Basic alignment workflow\nA minimal alignment workflow looks like this:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nThis reads one or more FASTA files from the specified directory, aligns them, and writes the aligned output in NEXUS format.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#choosing-an-alignment-method",
+    "href": "articles/combine_and_align_sequences.html#choosing-an-alignment-method",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Choosing an alignment method",
+    "text": "Choosing an alignment method\nCurrently, alignSeqs() supports two main alignment algorithms: - ClustalW - Muscle\nFor example, using ClustalW:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nOr using Muscle:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"NEXUS\"\n)\n\nBoth methods are widely used, and the best choice may depend on the characteristics of the dataset.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#choosing-the-output-format",
+    "href": "articles/combine_and_align_sequences.html#choosing-the-output-format",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Choosing the output format",
+    "text": "Choosing the output format\nThe argument format determines how the aligned files are written. Supported output formats are: - NEXUS - FASTA - PHYLIP\nFor example, to write aligned files in FASTA format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"FASTA\"\n)\n\nOr in PHYLIP format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"PHYLIP\"\n)\n\nIn most catGenes concatenation workflows, NEXUS is the most convenient format.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#adjusting-the-gap-opening-penalty",
+    "href": "articles/combine_and_align_sequences.html#adjusting-the-gap-opening-penalty",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Adjusting the gap opening penalty",
+    "text": "Adjusting the gap opening penalty\nThe argument gapOpening controls the gap opening penalty used by the alignment algorithm.\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  gapOpening = \"default\",\n  format = \"NEXUS\"\n)\n\nIn many cases, the default setting is adequate. However, if your dataset requires specific tuning, you can adjust the value depending on the selected alignment method and the behavior you want.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#a-complete-sequence-processing-example",
+    "href": "articles/combine_and_align_sequences.html#a-complete-sequence-processing-example",
+    "title": "Combine FASTA files and align sequences",
+    "section": "A complete sequence-processing example",
+    "text": "A complete sequence-processing example\nA typical workflow might look like this:\nStep 1. Retrieve sequences\n\nseqs &lt;- mineSeq(\n  inputdf = my_accession_table,\n  gb.colnames = c(\"ITS\", \"matK\", \"rbcL\"),\n  save = TRUE,\n  filename = \"GenBank_seqs\",\n  dir = \"RESULTS_mineSeq\"\n)\n\nStep 2. Combine FASTA files if needed\n\ncombined &lt;- combineFASTA(\n  input_files = c(\n    \"RESULTS_mineSeq/09Mar2026/locus_part1.fasta\",\n    \"RESULTS_mineSeq/09Mar2026/locus_part2.fasta\"\n  ),\n  output_file = \"ITS_combined.fasta\",\n  dir = \"RESULTS_combineFASTA\"\n)\n\nStep 3. Align the combined sequences\n\nalignSeqs(\n  filepath = \"RESULTS_combineFASTA/09Mar2026\",\n  method = \"ClustalW\",\n  format = \"NEXUS\",\n  dir = \"RESULTS_alignSeqs\"\n)\n\nThis produces aligned files ready for loading into R and later concatenation.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#aligning-multiple-fasta-files-from-one-folder",
+    "href": "articles/combine_and_align_sequences.html#aligning-multiple-fasta-files-from-one-folder",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Aligning multiple FASTA files from one folder",
+    "text": "Aligning multiple FASTA files from one folder\nIf a directory contains several FASTA files, alignSeqs() can process them together.\n\nalignSeqs(\n  filepath = \"RESULTS_mineSeq/09Mar2026\",\n  method = \"Muscle\",\n  format = \"NEXUS\",\n  dir = \"RESULTS_alignSeqs\"\n)\n\nThis is useful when each file represents a different locus and all need to be aligned before loading into R.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#output-directories",
+    "href": "articles/combine_and_align_sequences.html#output-directories",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Output directories",
+    "text": "Output directories\nBy default, aligned files are written to a directory such as:\n\nRESULTS_alignSeqs/09Mar2026/\n\nSimilarly, combined FASTA outputs may be written to:\n\nRESULTS_combineFASTA/09Mar2026/\n\nThis date-based structure helps keep results organized across independent runs.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#file-naming-after-alignment",
+    "href": "articles/combine_and_align_sequences.html#file-naming-after-alignment",
+    "title": "Combine FASTA files and align sequences",
+    "section": "File naming after alignment",
+    "text": "File naming after alignment\nIf filename is not specified in alignSeqs(), output files are usually named based on the original input file names, with an added identifier such as aligned. This makes it easier to trace each aligned output back to the original input locus.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#inspecting-aligned-outputs",
+    "href": "articles/combine_and_align_sequences.html#inspecting-aligned-outputs",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Inspecting aligned outputs",
+    "text": "Inspecting aligned outputs\nAfter running alignSeqs(), it is good practice to inspect the resulting alignment files before using them in downstream workflows.\nQuestions to check include: - are all expected sequences present? - do sequence labels look correct and consistent? - are the alignments the expected length? - were the files written in the intended format?\nOnce the outputs are confirmed, they can be loaded into R for concatenation.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#loading-aligned-files-into-r",
+    "href": "articles/combine_and_align_sequences.html#loading-aligned-files-into-r",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Loading aligned files into R",
+    "text": "Loading aligned files into R\nIf aligned outputs were written in NEXUS format, they can be loaded directly with ape::read.nexus.data().\n\ngenes &lt;- list.files(\"RESULTS_alignSeqs/09Mar2026\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"RESULTS_alignSeqs/09Mar2026/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))\n\nThis creates the named list structure expected by catGenes concatenation functions.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#typical-workflow-after-alignment",
+    "href": "articles/combine_and_align_sequences.html#typical-workflow-after-alignment",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Typical workflow after alignment",
+    "text": "Typical workflow after alignment\nOnce the alignments are loaded into R, the next step is usually: - catfullGenes() for datasets with one sequence per species per locus - catmultGenes() for datasets containing duplicated taxa or multiple accessions\nFor example:\n\ncatdf &lt;- catfullGenes(\n  my_alignments,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nor\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#common-issues",
+    "href": "articles/combine_and_align_sequences.html#common-issues",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Common issues",
+    "text": "Common issues\n\nInput files are not in FASTA format\nalignSeqs() expects FASTA inputs. If your files are currently in another format, convert them first or ensure the correct file type is used before alignment.\n\n\nAlignment method is not specified correctly\nThe method argument must match one of the supported algorithms, such as ClustalW or Muscle.\n\n\nSequence labels are inconsistent\nAlignment can still run when labels are inconsistent, but later concatenation may fail or produce unexpected results. Standardize labels before or immediately after retrieval.\n\n\nDuplicate sequences are unintentionally combined\nBecause combineFASTA() keeps all sequences, duplicated entries may persist into the alignment stage. Inspect combined files when this matters for downstream analysis.\n\n\nOutput format is not appropriate for downstream use\nIf your next step is concatenation with catGenes, NEXUS is often the most convenient output format.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#recommended-practice",
+    "href": "articles/combine_and_align_sequences.html#recommended-practice",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor a smooth workflow: - combine FASTA files only when merging sequence batches is necessary - align each locus as a separate dataset - use clear and stable file names - inspect combined and aligned outputs before concatenation - write alignments in NEXUS format if you plan to load them directly into catGenes",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
+  },
+  {
+    "objectID": "articles/combine_and_align_sequences.html#next-step",
+    "href": "articles/combine_and_align_sequences.html#next-step",
+    "title": "Combine FASTA files and align sequences",
+    "section": "Next step",
+    "text": "Next step\nOnce your sequences have been combined and aligned, the next step is usually to: - load the alignments into R - choose catfullGenes() or catmultGenes() - concatenate loci for downstream phylogenetic analysis\nSee the next tutorials for loading alignments and concatenating multilocus datasets with catGenes.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Combine FASTA files and align sequences"
+    ]
   }
 ]

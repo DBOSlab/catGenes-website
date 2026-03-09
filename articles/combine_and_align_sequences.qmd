@@ -1,122 +1,341 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Combine FASTA files and align sequences"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+A common step in phylogenetic workflows is to gather multiple sequence files, organize them into locus-specific datasets, and perform multiple sequence alignment before downstream concatenation or phylogenetic analysis. In `catGenes`, this workflow is supported mainly by two functions:
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+- `combineFASTA()` to combine multiple `FASTA` files into a single file
+- `alignSeqs()` to perform automated multiple sequence alignment
 
-## General principles
+These functions are especially useful when sequences have already been retrieved from GenBank with `mineSeq()` or `mineTaxa()`, or mined from plastomes or mitochondrial genomes with `minePlastome()` or `mineMitochondrion()`.
 
-When preparing alignments for `catGenes`:
+This article explains when to combine `FASTA` files, how to run alignments, how to choose output formats, and how to prepare aligned files for later use in `catGenes`.
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+## Typical workflow
 
-## 1. Datasets with a single sequence per species
+A common sequence-processing workflow is:
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+1. retrieve or mine sequences
+2. save them as `FASTA` files
+3. combine `FASTA` files when needed
+4. align the sequences
+5. save aligned output in `NEXUS`, `FASTA`, or `PHYLIP`
+6. load the alignments into R for downstream concatenation
 
-- `Genus_species`
-- `G_species`
+Not every project requires the `combineFASTA()` step, but it is often useful when sequences are spread across multiple files and need to be merged before alignment.
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+## When to use `combineFASTA()`
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+Use `combineFASTA()` when:
 
-Examples:
+- the sequences for a locus are split across multiple `FASTA` files
+- you want to merge separate downloads into one file before alignment
+- you want a single combined `FASTA` file for inspection or downstream processing
+- you want to organize several sequence batches into a unified locus dataset
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+If your sequences are already in one `FASTA` file per locus, you may go directly to `alignSeqs()`.
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+## Basic usage of `combineFASTA()`
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+A simple workflow looks like this:
 
-## 2. Datasets with duplicated species or multiple accessions
-
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
-
-- the scientific name
-- a stable accession identifier
-
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
-
-Recommended format:
-
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
-
-Examples:
-
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
-
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
-
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
-
-## 3. Genus-level identifications and infraspecific taxa
-
-Accessions identified only to genus level can be formatted as:
-
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
-
-Abbreviated generic names can also be used if done consistently:
-
-- `G_sp`
-- `G_sp1`
-- `G_spA`
-
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
-
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
-
-![Example with other label formatting](figures/other_label_fformatting.png)
-
-## 4. Naming alignment files
-
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
-
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
-
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
-
-## 5. Loading multiple alignments into R
-
-The example below uses the Vataireoid example alignments included in `catGenes`.
-
-```{r}
-#| echo: false
+```{r, eval=FALSE}
 library(catGenes)
 
-genes <- list.files(system.file("DNAlignments/Vataireoids",
-                                package = "catGenes"))
+result <- combineFASTA(
+  input_files = c("gene1.fasta", "gene2.fasta", "gene3.fasta")
+)
+```
 
-Vataireoids <- list()
+This reads the listed files, combines all sequences into a single object, and by default saves the result to disk.
+
+## Choosing the output file name
+You can specify a custom file name for the combined output.
+```{r, eval=FALSE}
+result <- combineFASTA(
+  input_files = c("data/part1.fasta", "data/part2.fasta"),
+  output_file = "combined_sequences.fasta"
+)
+```
+This is especially useful when the combined file should reflect a locus name or project name.
+
+## Returning the combined sequences without saving
+If you want to inspect the combined sequences in R without immediately writing them to disk, set `save = FALSE`.
+```{r, eval=FALSE}
+result <- combineFASTA(
+  input_files = c("temp1.fasta", "temp2.fasta"),
+  save = FALSE,
+  verbose = TRUE
+)
+```
+
+In this case, the function returns the combined sequence object and summary information without creating an output file.
+
+## Inspecting the result of combineFASTA()
+The result returned by `combineFASTA()` includes:
+- sequences: a DNAbin object containing all combined sequences
+- summary: a data frame with summary information
+- output_path: the output file path when saving is enabled
+
+## Notes on duplicate sequences
+`combineFASTA()` does not remove duplicate sequences. It simply combines all sequences from the files you specify.
+
+This means that:
+- repeated accessions remain in the combined file
+- duplicate taxa are not filtered automatically
+- downstream alignment and inspection may still be needed before concatenation
+
+This behavior is useful because it preserves the original contents of the input files.
+
+## When to use `alignSeqs()`
+Use `alignSeqs()` when you have one or more FASTA files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.
+
+The function uses the msa package and supports:
+- ClustalW
+- Muscle
+
+It can write aligned results in:
+- NEXUS
+- FASTA
+- PHYLIP
+
+## Basic alignment workflow
+A minimal alignment workflow looks like this:
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "ClustalW",
+  format = "NEXUS"
+)
+```
+
+This reads one or more FASTA files from the specified directory, aligns them, and writes the aligned output in NEXUS format.
+
+## Choosing an alignment method
+Currently, `alignSeqs()` supports two main alignment algorithms:
+- ClustalW
+- Muscle
+
+For example, using `ClustalW`:
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "ClustalW",
+  format = "NEXUS"
+)
+```
+
+Or using `Muscle`:
+
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "Muscle",
+  format = "NEXUS"
+)
+```
+
+
+Both methods are widely used, and the best choice may depend on the characteristics of the dataset.
+
+## Choosing the output format
+The argument format determines how the aligned files are written. Supported output formats are:
+- NEXUS
+- FASTA
+- PHYLIP
+
+For example, to write aligned files in `FASTA` format:
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "ClustalW",
+  format = "FASTA"
+)
+```
+
+Or in `PHYLIP` format:
+
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "Muscle",
+  format = "PHYLIP"
+)
+```
+
+In most `catGenes` concatenation workflows, `NEXUS` is the most convenient format.
+
+## Adjusting the gap opening penalty
+The argument `gapOpening` controls the gap opening penalty used by the alignment algorithm.
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "path_to_fasta_files",
+  method = "ClustalW",
+  gapOpening = "default",
+  format = "NEXUS"
+)
+```
+
+In many cases, the default setting is adequate. However, if your dataset requires specific tuning, you can adjust the value depending on the selected alignment method and the behavior you want.
+
+## A complete sequence-processing example
+A typical workflow might look like this:
+
+Step 1. Retrieve sequences
+```{r, eval=FALSE}
+seqs <- mineSeq(
+  inputdf = my_accession_table,
+  gb.colnames = c("ITS", "matK", "rbcL"),
+  save = TRUE,
+  filename = "GenBank_seqs",
+  dir = "RESULTS_mineSeq"
+)
+```
+
+Step 2. Combine `FASTA` files if needed
+
+```{r, eval=FALSE}
+combined <- combineFASTA(
+  input_files = c(
+    "RESULTS_mineSeq/09Mar2026/locus_part1.fasta",
+    "RESULTS_mineSeq/09Mar2026/locus_part2.fasta"
+  ),
+  output_file = "ITS_combined.fasta",
+  dir = "RESULTS_combineFASTA"
+)
+```
+
+Step 3. Align the combined sequences
+
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "RESULTS_combineFASTA/09Mar2026",
+  method = "ClustalW",
+  format = "NEXUS",
+  dir = "RESULTS_alignSeqs"
+)
+```
+
+This produces aligned files ready for loading into R and later concatenation.
+
+## Aligning multiple FASTA files from one folder
+If a directory contains several `FASTA` files, `alignSeqs()` can process them together.
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "RESULTS_mineSeq/09Mar2026",
+  method = "Muscle",
+  format = "NEXUS",
+  dir = "RESULTS_alignSeqs"
+)
+```
+
+This is useful when each file represents a different locus and all need to be aligned before loading into R.
+
+## Output directories
+By default, aligned files are written to a directory such as:
+```{r, eval=FALSE}
+RESULTS_alignSeqs/09Mar2026/
+```
+Similarly, combined FASTA outputs may be written to:
+```{r, eval=FALSE}
+RESULTS_combineFASTA/09Mar2026/
+```
+
+This date-based structure helps keep results organized across independent runs.
+
+## File naming after alignment
+If filename is not specified in `alignSeqs()`, output files are usually named based on the original input file names, with an added identifier such as aligned.
+This makes it easier to trace each aligned output back to the original input locus.
+
+## Inspecting aligned outputs
+After running `alignSeqs()`, it is good practice to inspect the resulting alignment files before using them in downstream workflows.
+
+Questions to check include:
+- are all expected sequences present?
+- do sequence labels look correct and consistent?
+- are the alignments the expected length?
+- were the files written in the intended format?
+
+Once the outputs are confirmed, they can be loaded into R for concatenation.
+
+## Loading aligned files into R
+If aligned outputs were written in `NEXUS` format, they can be loaded directly with `ape::read.nexus.data()`.
+
+```{r, eval=FALSE}
+genes <- list.files("RESULTS_alignSeqs/09Mar2026")
+my_alignments <- list()
+
 for (i in genes) {
-  Vataireoids[[i]] <- ape::read.nexus.data(
-    system.file("DNAlignments/Vataireoids", i, package = "catGenes")
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("RESULTS_alignSeqs/09Mar2026/", i)
   )
 }
-names(Vataireoids) <- gsub("[.].*", "", names(Vataireoids))
+
+names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
 ```
+
+This creates the named list structure expected by catGenes concatenation functions.
+
+## Typical workflow after alignment
+Once the alignments are loaded into R, the next step is usually:
+- `catfullGenes()` for datasets with one sequence per species per locus
+- `catmultGenes()` for datasets containing duplicated taxa or multiple accessions
+
+For example:
+```{r, eval=FALSE}
+catdf <- catfullGenes(
+  my_alignments,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+or
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+## Common issues
+
+### Input files are not in FASTA format
+alignSeqs() expects FASTA inputs. If your files are currently in another format, convert them first or ensure the correct file type is used before alignment.
+
+### Alignment method is not specified correctly
+The method argument must match one of the supported algorithms, such as `ClustalW` or `Muscle`.
+
+### Sequence labels are inconsistent
+Alignment can still run when labels are inconsistent, but later concatenation may fail or produce unexpected results. Standardize labels before or immediately after retrieval.
+
+### Duplicate sequences are unintentionally combined
+Because `combineFASTA()` keeps all sequences, duplicated entries may persist into the alignment stage. Inspect combined files when this matters for downstream analysis.
+
+### Output format is not appropriate for downstream use
+If your next step is concatenation with `catGenes`, `NEXUS` is often the most convenient output format.
+
+## Recommended practice
+For a smooth workflow:
+- combine `FASTA` files only when merging sequence batches is necessary
+- align each locus as a separate dataset
+- use clear and stable file names
+- inspect combined and aligned outputs before concatenation
+- write alignments in `NEXUS` format if you plan to load them directly into catGenes
+
+## Next step
+Once your sequences have been combined and aligned, the next step is usually to:
+- load the alignments into R
+- choose `catfullGenes()` or `catmultGenes()`
+- concatenate loci for downstream phylogenetic analysis
+
+See the next tutorials for loading alignments and concatenating multilocus datasets with `catGenes`.
+
