@@ -162,7 +162,7 @@ This:
 - downloads the plastome GenBank files
 - extracts the target coding genes
 - labels sequences with taxon and voucher information
-- retains the original downloaded .gb files
+- retains the original downloaded `.gb` files
 - writes results into the specified output directory
 
 ## A more complete mitochondrial example
@@ -200,7 +200,7 @@ These FASTA outputs can then be aligned and incorporated into later concatenatio
 
 ## Keeping or removing downloaded GenBank files
 
-By default, downloaded .gb files can be kept or removed depending on the setting of rm_gb_files.
+By default, downloaded `.gb` files can be kept or removed depending on the setting of `rm_gb_files`.
 
 To remove them after locus extraction:
 
