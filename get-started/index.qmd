@@ -31,9 +31,7 @@ format:
 You can install the latest development version of `catGenes` package from [GitHub](https://github.com/DBOSlab/catGenes) as follows:
 
 
-```{r}
-#| eval: false
-
+```{r, eval=FALSE}
 #install.packages("devtools")
 devtools::install_github("DBOSlab/catGenes")
 ```
