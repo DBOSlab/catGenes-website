@@ -69,22 +69,46 @@ website:
       contents:
         - text: Overview
           href: articles/index.qmd
-        - section: Summarize REFLORA collections
+        - section: Input preparation
           contents:
-          - text: Summarize herbarium collections 
-            href: articles/summarize_reflora_collections.qmd  
-        - section: Download and parse REFLORA records
+            - text: Standardizing DNA alignments for `catGenes`
+              href: articles/standardizing_alignments.qmd
+            - text: Loading multiple alignments into R
+              href: articles/loading_alignments.qmd
+            - text: Working with duplicated taxa and multiple accessions
+              href: articles/duplicated_taxa_and_accessions.qmd
+        - section: Sequence retrieval and preprocessing
           contents:
-          - text: Download specimen records 
-            href: articles/download_reflora_collections.qmd
-          - text: Parse REFLORA Darwin Core Archives 
-            href: articles/parse_reflora_dwca.qmd
-        - section: Filter REFLORA records
+            - text: Retrieve sequences from GenBank with accession numbers
+              href: articles/retrieve_sequences_by_accession.qmd
+            - text: Retrieve sequences from GenBank with taxonomic queries
+              href: articles/retrieve_sequences_by_taxon.qmd
+            - text: Mine loci from plastomes and mitochondrial genomes
+              href: articles/mine_organellar_loci.qmd
+        - section: Alignment and concatenation workflows
           contents:
-          - text: Retrieve taxon-specific specimens 
-            href: articles/filter_reflora_records.qmd
-          - text: Filter indeterminate specimens 
-            href: articles/filter_indeterminate_reflora_specimens.qmd
+            - text: Combine FASTA files and align sequences
+              href: articles/combine_and_align_sequences.qmd
+            - text: Convert among FASTA, NEXUS, and PHYLIP
+              href: articles/convert_alignment_formats.qmd
+            - text: Concatenate multilocus datasets with `catfullGenes()`
+              href: articles/concatenate_with_catfullGenes.qmd
+            - text: Concatenate datasets with duplicated accessions using `catmultGenes()`
+              href: articles/concatenate_with_catmultGenes.qmd
+            - text: Remove redundant accessions with `dropSeq()`
+              href: articles/remove_redundant_accessions.qmd
+        - section: Export, analysis, and visualization
+          contents:
+            - text: Export concatenated datasets with `writeNexus()`
+              href: articles/write_nexus_datasets.qmd
+            - text: Export concatenated datasets with `writePhylip()`
+              href: articles/write_phylip_datasets.qmd
+            - text: Model selection and MrBayes preparation with `evomodelTest()`
+              href: articles/model_selection_and_mrbayes.qmd
+            - text: Run MrBayes from R
+              href: articles/run_mrbayes.qmd
+            - text: Plot and edit phylogenetic trees with `plotPhylo()`
+              href: articles/plot_phylogenetic_trees.qmd
 
 format:
   html:

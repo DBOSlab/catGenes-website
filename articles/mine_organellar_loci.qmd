@@ -50,5 +50,245 @@ The essential input is a vector of GenBank accession numbers corresponding to co
 accessions <- c("NC_000932", "NC_026462")
 ```
 
+## Mining loci from plastomes
+A basic `minePlastome()` workflow looks like this:
+
+```{r, eval=FALSE}
+library(catGenes)
+
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  genes = c("matK", "rbcL", "ndhF")
+)
+```
+
+This downloads the specified plastomes, extracts the requested genes when present in the annotation, and writes the resulting sequences to disk.
+
+## Mining loci from mitochondrial genomes
+The corresponding mitochondrial workflow is:
+
+```{r, eval=FALSE}
+library(catGenes)
+
+mineMitochondrion(
+  genbank = c("NC_001284", "NC_027147"),
+  genes = c("cox1", "nad1")
+)
+```
+
+This performs the same general process, but for mitochondrial genomes.
+
+## Providing taxon names
+If you want the output labels to use your preferred taxon naming rather than relying only on GenBank metadata, you can supply a vector of taxon names.
+For example:
+
+```{r, eval=FALSE}
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  taxon = c("Arabidopsis_thaliana", "Some_species"),
+  genes = c("matK", "rbcL")
+)
+```
+
+This is especially useful when you want consistent naming across multiple downstream datasets.
+
+## Providing voucher information
+You can also append voucher information to the mined sequences.
+```{r, eval=FALSE}
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  taxon = c("Arabidopsis_thaliana", "Some_species"),
+  voucher = c("Voucher1", "Voucher2"),
+  genes = c("matK", "rbcL")
+)
+```
+
+When provided, voucher information is appended to the taxon label, which can be helpful when multiple accessions of the same species must remain distinguishable in later workflows.
+
+## Choosing target loci
+The argument genes accepts one or more locus names exactly as annotated in GenBank.
+For example, in plastomes:
+```{r, eval=FALSE}
+genes = c("matK", "rbcL", "ndhF")
+```
+
+or in mitochondrial genomes:
+```{r, eval=FALSE}
+genes = c("cox1", "nad1", "atp1")
+```
+
+The success of extraction depends on how those loci are annotated in the downloaded GenBank records. It is therefore important to use names that match the original annotations as closely as possible.
+
+## Protein-coding genes versus non-coding regions
+Both `minePlastome()` and `mineMitochondrion()` include the argument `CDS`, which controls whether the requested loci are treated as protein-coding genes.
+For example, when targeting coding regions:
+```{r, eval=FALSE}
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  CDS = TRUE,
+  genes = c("matK", "rbcL")
+)
+```
+
+When targeting non-coding regions such as introns or intergenic spacers:
+```{r, eval=FALSE}
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  CDS = FALSE,
+  genes = c("trnL-trnF", "psbA-trnH")
+)
+```
+
+The same logic applies to mitochondrial workflows.
+
+Using the correct setting is important because coding and non-coding regions may be parsed differently from the GenBank annotations.
+
+## A more complete plastome example
+A fuller plastome workflow might look like this:
+```{r, eval=FALSE}
+minePlastome(
+  genbank = c("NC_000932", "NC_026462"),
+  taxon = c("Arabidopsis_thaliana", "Example_species"),
+  voucher = c("Voucher1", "Voucher2"),
+  CDS = TRUE,
+  genes = c("matK", "rbcL", "ndhF"),
+  rm_gb_files = FALSE,
+  verbose = TRUE,
+  dir = "RESULTS_minePlastome"
+)
+```
+
+This:
+- downloads the plastome GenBank files
+- extracts the target coding genes
+- labels sequences with taxon and voucher information
+- retains the original downloaded .gb files
+- writes results into the specified output directory
+
+## A more complete mitochondrial example
+The mitochondrial version is analogous:
+```{r, eval=FALSE}
+mineMitochondrion(
+  genbank = c("NC_001284", "NC_027147"),
+  taxon = c("Species_A", "Species_B"),
+  voucher = c("VoucherA", "VoucherB"),
+  CDS = TRUE,
+  genes = c("cox1", "nad1"),
+  rm_gb_files = FALSE,
+  verbose = TRUE,
+  dir = "RESULTS_mineMitochondrion"
+)
+```
+
+## Understanding the output
+Both functions write the mined loci as FASTA files in the specified output directory.
+Typical outputs include:
+- one or more `FASTA` files containing the extracted target loci
+- optionally the original downloaded GenBank files, if `rm_gb_files = FALSE`
+
+For example, plastome results may be saved under a directory such as:
+```{r, eval=FALSE}
+RESULTS_minePlastome/09Mar2026/
+```
+
+and mitochondrial results under:
+```{r, eval=FALSE}
+RESULTS_mineMitochondrion/09Mar2026/
+```
+
+These FASTA outputs can then be aligned and incorporated into later concatenation workflows.
+
+## Keeping or removing downloaded GenBank files
+
+By default, downloaded .gb files can be kept or removed depending on the setting of rm_gb_files.
+
+To remove them after locus extraction:
+
+```{r, eval=FALSE}
+minePlastome(
+  genbank = plastome_accessions,
+  genes = c("matK", "rbcL"),
+  rm_gb_files = TRUE
+)
+```
+
+To retain them for inspection or reuse:
+
+```{r, eval=FALSE}
+minePlastome(
+  genbank = plastome_accessions,
+  genes = c("matK", "rbcL"),
+  rm_gb_files = FALSE
+)
+```
+
+Retaining them can be useful for troubleshooting annotations or verifying how loci were parsed.
+
+## Inspecting the output before alignment
+After mining loci, it is good practice to inspect the output labels and files before moving to alignment.
+
+Typical questions to check include:
+
+- were all requested loci successfully extracted?
+- are taxon and voucher labels formatted as expected?
+- do the extracted sequences correspond to the intended gene names?
+- were any accessions skipped because the requested annotation was absent?
+
+This step helps catch problems before alignment and concatenation.
+
+## Typical workflow after locus mining
+A common organellar-locus workflow is:
+- compile accession numbers for complete plastomes or mitochondrial genomes
+- mine target loci with `minePlastome()` or `mineMitochondrion()`
+- save the extracted loci as `FASTA`
+- align the resulting sequences with `alignSeqs()`
+- convert formats if needed
+- load alignments into R
+- concatenate loci with `catfullGenes()` or `catmultGenes()`
+
+For example, once mined loci have been written to disk, you may proceed with alignment:
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "RESULTS_minePlastome/09Mar2026",
+  method = "ClustalW",
+  format = "NEXUS"
+)
+```
+
+The same logic applies to mitochondrial loci.
+
+## Common issues
+### Gene names do not match GenBank annotations
+The most common reason a locus is not extracted is that the requested gene name does not match the annotation in the downloaded GenBank record. Always check annotation conventions for the genomes you are using.
+
+### Some loci are missing in some genomes
+Not all plastomes or mitochondrial genomes have exactly the same annotation completeness. Some requested genes or spacers may be absent, unannotated, or named differently.
+
+### Taxon or voucher vectors have the wrong length
+If you provide taxon or voucher, make sure those vectors have the same length and order as the genbank accession vector.
+
+###Internet connection is unavailable
+Both functions connect to GenBank and require internet access.
+
+### Non-coding regions are not extracted as expected
+If you are targeting introns or intergenic spacers, make sure `CDS = FALSE`. Otherwise, the function may interpret the request as a coding-gene workflow.
+
+## Recommended practice
+For smooth organellar mining workflows:
+- start from curated accession lists of complete genomes
+- verify the exact gene names used in GenBank annotations
+- provide taxon and voucher information when you want standardized downstream labels
+- choose `CDS = TRUE` for protein-coding genes and `CDS = FALSE` for non-coding regions
+- inspect the mined output before alignment
+- keep downloaded GenBank files when testing new extraction workflows
+
+## Next step
+Once loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:
+- align the extracted sequences with `alignSeqs()`
+- convert alignment formats if necessary
+- load the alignments into R
+- concatenate loci for downstream phylogenetic analysis
+
+See the next tutorials for combining `FASTA` files, aligning sequences, converting formats, and concatenating multilocus datasets with catGenes.
 
 

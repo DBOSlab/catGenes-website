@@ -4180,7 +4180,6 @@ height: 400px;
    
   <ul>
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
-  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
@@ -4226,50 +4225,6 @@ height: 400px;
 <p>Runs a Bayesian phylogenetic analysis in <a href="https://nbisweden.github.io/MrBayes/">MrBayes</a> directly from R/RStudio using a pre-configured NEXUS file that already contains a complete <code>begin mrbayes;</code> command block. The function copies (or moves) the NEXUS file to a dedicated run directory, launches MrBayes, and captures the program output.</p>
 <p>When processx is installed and <code>use_processx = TRUE</code>, output can be streamed live to the R console and the returned object includes a <code>stop()</code> handle that can terminate the run programmatically. Programmatic stopping is only useful when <code>background = TRUE</code>, because in foreground mode the call blocks until MrBayes finishes.</p>
 <p>Without processx, the analysis can still be run and live output can be printed, but stopping is interactive (e.g., Esc in RStudio).</p>
-</section>
-<section id="details" class="level3">
-<h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>Output capture:</p>
-<ul>
-<li></li>
-<li></li>
-<li></li>
-<li><p><code>stdout</code></p></li>
-<li><p>: file path where standard output is recorded.</p></li>
-<li></li>
-<li></li>
-<li><p><code>stderr</code></p></li>
-<li><p>: file path where errors/warnings are recorded.</p></li>
-</ul>
-<p>The function runs MrBayes in <code>run_dir</code>, so all MrBayes output files (e.g., <code>.p</code>, <code>.t</code>, <code>.con.tre</code>) will be written there.</p>
-<p>Stopping the run:</p>
-<ul>
-<li></li>
-<li></li>
-<li><p>With</p></li>
-<li><p>processx</p></li>
-<li><ul>
-<li></li>
-</ul></li>
-<li><p><code>background = TRUE</code></p></li>
-<li><p>: call</p></li>
-<li><p><code>mrbayesStop(res)</code></p></li>
-<li><p>or</p></li>
-<li><p><code>res$stop()</code></p></li>
-<li><p>.</p></li>
-<li></li>
-<li><p>With</p></li>
-<li><p>processx</p></li>
-<li><ul>
-<li></li>
-</ul></li>
-<li><p><code>background = FALSE</code></p></li>
-<li><p>: stop interactively (Esc) because the call blocks.</p></li>
-<li></li>
-<li><p>Without</p></li>
-<li><p>processx</p></li>
-<li><p>: stop interactively (Esc in RStudio).</p></li>
-</ul>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4837,89 +4792,43 @@ height: 400px;
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>Without processx, the analysis can still be run and live output can be</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>printed, but stopping is interactive (e.g., Esc in RStudio).</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>Output capture:</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`stdout`</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>: file path where standard output is recorded.</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`stderr`</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>: file path where errors/warnings are recorded.</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>The function runs MrBayes in <span class="in">`run_dir`</span>, so all MrBayes output files</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>(e.g., <span class="in">`.p`</span>, <span class="in">`.t`</span>, <span class="in">`.con.tre`</span>) will be written there.</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Stopping the run:</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> nexus_file <span class="pp">|</span> Path to a NEXUS file (<span class="in">`.nex`</span> or <span class="in">`.nexus`</span>) that already contains a valid MrBayes block (i.e., <span class="in">`begin mrbayes;`</span> ... <span class="in">`end;`</span>). <span class="pp">|</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> mrbayes_dir <span class="pp">|</span> Path to the folder containing the MrBayes executable. On macOS/Linux this is typically a folder containing <span class="in">`mb`</span>; on Windows, <span class="in">`mb.exe`</span>. If the executable is not found directly in <span class="in">`mrbayes_dir`</span>, the function also checks <span class="in">`file.path(mrbayes_dir, &quot;bin&quot;)`</span>. Typical values for <span class="in">`mrbayes_dir`</span>: - - - macOS (Intel, Homebrew): - <span class="in">`&quot;/usr/local/bin&quot;`</span> - - - macOS (Apple Silicon, Homebrew): - <span class="in">`&quot;/opt/homebrew/bin&quot;`</span> - - - macOS/Linux (local install): - <span class="in">`&quot;~/.local/bin&quot;`</span> - (use - <span class="in">`path.expand(&quot;~/.local/bin&quot;)`</span> - ) - - Windows (typical): - <span class="in">`&quot;C:/Program Files/MrBayes&quot;`</span> - or a folder containing - <span class="in">`mb.exe`</span> - <span class="pp">|</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> run_dir <span class="pp">|</span> Directory where the analysis will run. If <span class="in">`NULL`</span>, a new folder named <span class="in">`mrbayes_run_YYYYmmdd_HHMMSS`</span> is created in <span class="in">`getwd()`</span>. <span class="pp">|</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> copy_mode <span class="pp">|</span> Either <span class="in">`&quot;copy&quot;`</span> (default) or <span class="in">`&quot;move&quot;`</span>. Determines whether <span class="in">`nexus_file`</span> is copied to <span class="in">`run_dir`</span> or moved there before running MrBayes. <span class="pp">|</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> quiet <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, suppresses most informational messages (default: <span class="in">`FALSE`</span>). <span class="pp">|</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> live <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, prints MrBayes output to the R console (default: <span class="in">`TRUE`</span>). Live streaming is most reliable with processx. <span class="pp">|</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> use_processx <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), uses processx when installed to provide robust output streaming and a programmatic stop handle. <span class="pp">|</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> background <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, starts MrBayes and returns immediately (non-blocking). The returned object includes <span class="in">`poll()`</span> to print new output on demand and <span class="in">`stop()`</span> to terminate the run. Requires processx. Default: <span class="in">`FALSE`</span>. <span class="pp">|</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>A list with (at minimum) <span class="in">`exe_path`</span>, <span class="in">`run_dir`</span>, <span class="in">`nexus_path`</span>,</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="in">`stdout`</span>, <span class="in">`stderr`</span>, <span class="in">`exit_status`</span>, and <span class="in">`error`</span>. When</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>processx is used, the list additionally includes <span class="in">`proc`</span> (a</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>processx process object) and <span class="in">`stop`</span>. When <span class="in">`background = TRUE`</span>,</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>the list also includes <span class="in">`poll`</span>.</span>
 <span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>With </span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>processx</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>+ </span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`background = TRUE`</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>: call </span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mrbayesStop(res)`</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>or </span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`res$stop()`</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>.</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>With </span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>processx</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>+ </span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`background = FALSE`</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>: stop interactively (Esc) because the call blocks.</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Without </span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>processx</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>: stop interactively (Esc in RStudio).</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> nexus_file <span class="pp">|</span> Path to a NEXUS file (<span class="in">`.nex`</span> or <span class="in">`.nexus`</span>) that already contains a valid MrBayes block (i.e., <span class="in">`begin mrbayes;`</span> ... <span class="in">`end;`</span>). <span class="pp">|</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> mrbayes_dir <span class="pp">|</span> Path to the folder containing the MrBayes executable. On macOS/Linux this is typically a folder containing <span class="in">`mb`</span>; on Windows, <span class="in">`mb.exe`</span>. If the executable is not found directly in <span class="in">`mrbayes_dir`</span>, the function also checks <span class="in">`file.path(mrbayes_dir, &quot;bin&quot;)`</span>. Typical values for <span class="in">`mrbayes_dir`</span>: - - - macOS (Intel, Homebrew): - <span class="in">`&quot;/usr/local/bin&quot;`</span> - - - macOS (Apple Silicon, Homebrew): - <span class="in">`&quot;/opt/homebrew/bin&quot;`</span> - - - macOS/Linux (local install): - <span class="in">`&quot;~/.local/bin&quot;`</span> - (use - <span class="in">`path.expand(&quot;~/.local/bin&quot;)`</span> - ) - - Windows (typical): - <span class="in">`&quot;C:/Program Files/MrBayes&quot;`</span> - or a folder containing - <span class="in">`mb.exe`</span> - <span class="pp">|</span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> run_dir <span class="pp">|</span> Directory where the analysis will run. If <span class="in">`NULL`</span>, a new folder named <span class="in">`mrbayes_run_YYYYmmdd_HHMMSS`</span> is created in <span class="in">`getwd()`</span>. <span class="pp">|</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> copy_mode <span class="pp">|</span> Either <span class="in">`&quot;copy&quot;`</span> (default) or <span class="in">`&quot;move&quot;`</span>. Determines whether <span class="in">`nexus_file`</span> is copied to <span class="in">`run_dir`</span> or moved there before running MrBayes. <span class="pp">|</span></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> quiet <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, suppresses most informational messages (default: <span class="in">`FALSE`</span>). <span class="pp">|</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> live <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, prints MrBayes output to the R console (default: <span class="in">`TRUE`</span>). Live streaming is most reliable with processx. <span class="pp">|</span></span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> use_processx <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), uses processx when installed to provide robust output streaming and a programmatic stop handle. <span class="pp">|</span></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> background <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, starts MrBayes and returns immediately (non-blocking). The returned object includes <span class="in">`poll()`</span> to print new output on demand and <span class="in">`stop()`</span> to terminate the run. Requires processx. Default: <span class="in">`FALSE`</span>. <span class="pp">|</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>A list with (at minimum) <span class="in">`exe_path`</span>, <span class="in">`run_dir`</span>, <span class="in">`nexus_path`</span>,</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="in">`stdout`</span>, <span class="in">`stderr`</span>, <span class="in">`exit_status`</span>, and <span class="in">`error`</span>. When</span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>processx is used, the list additionally includes <span class="in">`proc`</span> (a</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>processx process object) and <span class="in">`stop`</span>. When <span class="in">`background = TRUE`</span>,</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>the list also includes <span class="in">`poll`</span>.</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Background mode (recommended for stop-anytime control)</span></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(<span class="st">&quot;analysis.nex&quot;</span>,</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/usr/local/bin&quot;</span>,</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>                  <span class="at">background =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">poll</span>()          <span class="co"># print new output</span></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesStop</span>(res)    <span class="co"># graceful stop</span></span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesStop</span>(res, <span class="cn">TRUE</span>) <span class="co"># force kill</span></span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="co"># Foreground mode (blocking): stop with Esc in RStudio</span></span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesRun</span>(<span class="st">&quot;analysis.nex&quot;</span>,</span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>           <span class="at">mrbayes_dir =</span> <span class="st">&quot;/usr/local/bin&quot;</span>)</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Background mode (recommended for stop-anytime control)</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(<span class="st">&quot;analysis.nex&quot;</span>,</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/usr/local/bin&quot;</span>,</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>                  <span class="at">background =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">poll</span>()          <span class="co"># print new output</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesStop</span>(res)    <span class="co"># graceful stop</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesStop</span>(res, <span class="cn">TRUE</span>) <span class="co"># force kill</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Foreground mode (blocking): stop with Esc in RStudio</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">mrbayesRun</span>(<span class="st">&quot;analysis.nex&quot;</span>,</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>           <span class="at">mrbayes_dir =</span> <span class="st">&quot;/usr/local/bin&quot;</span>)</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

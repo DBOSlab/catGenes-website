@@ -9,10 +9,12 @@ suppressPackageStartupMessages({
   library(purrr)
 })
 
+
+getwd()
 # --- Configuration ----------------------------------------------------------
 pkg_name <- "catGenes"                                   # package name
 pkg_dir  <- "/Users/domingoscardoso/Library/Mobile Documents/com~apple~CloudDocs/Publications_Bioinformatics/catGenes_package_and_website/catGenes"
-ref_dir  <- path("reference")                             # output dir (relative to wd)
+ref_dir  <- fs::path("reference")                             # output dir (relative to wd)
 
 # --- Helpers ----------------------------------------------------------------
 safe_filename <- function(x) gsub("[^A-Za-z0-9._-]", "-", x)
@@ -134,7 +136,7 @@ extract_description_txt <- function(rd) {
 dir_create(ref_dir)
 
 # Refresh Rd files if none exist
-man_dir <- path(pkg_dir, "man")
+man_dir <- fs::path(pkg_dir, "man")
 if (!dir_exists(man_dir) || length(dir_ls(man_dir, glob = "*.Rd", type = "file")) == 0) {
   roxygen2::roxygenize(pkg_dir, roclets = c("rd"))
 }
@@ -165,7 +167,7 @@ for (f in names(rd_objs)) {
 
 resolve_rd <- function(symbol) {
   if (!is.null(alias_map[[symbol]])) return(alias_map[[symbol]])
-  candidate <- path(man_dir, paste0(symbol, ".Rd"))
+  candidate <- fs::path(man_dir, paste0(symbol, ".Rd"))
   if (file_exists(candidate)) return(candidate)
   NA_character_
 }
@@ -173,7 +175,7 @@ resolve_rd <- function(symbol) {
 # --- Generate per-function .qmd --------------------------------------------
 for (fun in sort(unique(exports))) {
   rdfile <- resolve_rd(fun)
-  outfile <- path(ref_dir, paste0(safe_filename(fun), ".qmd"))
+  outfile <- fs::path(ref_dir, paste0(safe_filename(fun), ".qmd"))
 
   if (is.na(rdfile)) {
     cat(
@@ -245,6 +247,7 @@ index_lines <- c(
   "",
   "<style>",
   "  body {",
+  "    background-image: url('/figures/reflora_bg.png');",
   "    background-repeat: repeat-y;",
   "    background-size: cover;",
   "    background-attachment: fixed;",
@@ -277,6 +280,6 @@ for (grp in sort(names(by_group))) {
   index_lines <- c(index_lines, "")
 }
 
-writeLines(index_lines, path(ref_dir, "index.qmd"))
+writeLines(index_lines, fs::path(ref_dir, "index.qmd"))
 
 message("✔ Reference pages written to ", ref_dir)

@@ -122,5 +122,3 @@ Explore the full function reference for all exported `catGenes` tools.
 :::
 :::
 :::
-
-:::
