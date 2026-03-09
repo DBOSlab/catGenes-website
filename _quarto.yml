@@ -6,10 +6,10 @@ project:
 
 website:
   title: "refloraR"
-  site-url: https://dboslab.github.io/refloraR-website/
+  site-url: https://dboslab.github.io/catGenes-website/
   page-navigation: true
   reader-mode: true  
-  favicon: "figures/refloraR_hex_sticker.png"
+  favicon: "figures/catGenes_hex_sticker.png"
   
   page-footer:
     center:
@@ -21,7 +21,7 @@ website:
         href: LICENSE.md
     right:
       - icon: github
-        href: https://github.com/DBOSlab/refloraR
+        href: https://github.com/DBOSlab/catGenes
         aria-label: refloraR GitHub
   
   navbar:
@@ -29,7 +29,7 @@ website:
     background: light
     collapse-below: lg
     type: light
-    logo: "figures/refloraR_hex_sticker.png"
+    logo: "figures/catGenes_hex_sticker.png"
     href: index.qmd
     left:
       - text: "Overview"
@@ -48,18 +48,18 @@ website:
         menu:
           - text: "Report a Bug"
             icon: "bug"
-            href: "https://github.com/DBOSlab/refloraR/issues"
+            href: "https://github.com/DBOSlab/catGenes/issues"
           - text: "Ask a Question"
             icon: "chat-right-text"
-            href: "https://github.com/DBOSlab/refloraR/discussions"
+            href: "https://github.com/DBOSlab/catGenes/discussions"
           - text: "FAQ"
             icon: "question-circle"
             href: faq/index.qmd
         
     tools:
       - icon: github
-        href: https://github.com/DBOSlab/refloraR
-        text: refloraR GitHub
+        href: https://github.com/DBOSlab/catGenes
+        text: catGenes GitHub
         
   sidebar:                
     - id: articles

@@ -10,8 +10,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Configuration ----------------------------------------------------------
-pkg_name <- "refloraR"                                   # package name
-pkg_dir  <- "/Users/domingoscardoso/Library/Mobile Documents/com~apple~CloudDocs/Publications_Bioinformatics/refloraR_package_and_website/refloraR"
+pkg_name <- "catGenes"                                   # package name
+pkg_dir  <- "/Users/domingoscardoso/Library/Mobile Documents/com~apple~CloudDocs/Publications_Bioinformatics/catGenes_package_and_website/catGenes"
 ref_dir  <- path("reference")                             # output dir (relative to wd)
 
 # --- Helpers ----------------------------------------------------------------
@@ -245,7 +245,6 @@ index_lines <- c(
   "",
   "<style>",
   "  body {",
-  "    background-image: url('/figures/reflora_bg.png');",
   "    background-repeat: repeat-y;",
   "    background-size: cover;",
   "    background-attachment: fixed;",
