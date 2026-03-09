@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Standardizing DNA alignments for catGenes – catGenes</title>
+<title>Concatenate multilocus datasets with catfullGenes() – catGenes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -4343,13 +4343,9 @@ height: 400px;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-standardization-matters" id="toc-why-standardization-matters" class="nav-link active" data-scroll-target="#why-standardization-matters">Why standardization matters</a></li>
-  <li><a href="#general-principles" id="toc-general-principles" class="nav-link" data-scroll-target="#general-principles">General principles</a></li>
-  <li><a href="#datasets-with-a-single-sequence-per-species" id="toc-datasets-with-a-single-sequence-per-species" class="nav-link" data-scroll-target="#datasets-with-a-single-sequence-per-species">1. Datasets with a single sequence per species</a></li>
-  <li><a href="#datasets-with-duplicated-species-or-multiple-accessions" id="toc-datasets-with-duplicated-species-or-multiple-accessions" class="nav-link" data-scroll-target="#datasets-with-duplicated-species-or-multiple-accessions">2. Datasets with duplicated species or multiple accessions</a></li>
-  <li><a href="#genus-level-identifications-and-infraspecific-taxa" id="toc-genus-level-identifications-and-infraspecific-taxa" class="nav-link" data-scroll-target="#genus-level-identifications-and-infraspecific-taxa">3. Genus-level identifications and infraspecific taxa</a></li>
-  <li><a href="#naming-alignment-files" id="toc-naming-alignment-files" class="nav-link" data-scroll-target="#naming-alignment-files">4. Naming alignment files</a></li>
-  <li><a href="#loading-multiple-alignments-into-r" id="toc-loading-multiple-alignments-into-r" class="nav-link" data-scroll-target="#loading-multiple-alignments-into-r">5. Loading multiple alignments into R</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#when-to-use-catfullgenes" id="toc-when-to-use-catfullgenes" class="nav-link" data-scroll-target="#when-to-use-catfullgenes">When to use <code>catfullGenes()</code></a></li>
+  <li><a href="#input-structure" id="toc-input-structure" class="nav-link" data-scroll-target="#input-structure">Input structure</a></li>
   </ul>
 </nav>
     </div>
@@ -4362,7 +4358,7 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../articles/combine_and_align_sequences.html">Alignment and concatenation workflows</a></li><li class="breadcrumb-item"><a href="../articles/concatenate_with_catfullGenes.html">Concatenate multilocus datasets with <code>catfullGenes()</code></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Standardizing DNA alignments for catGenes</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Concatenate multilocus datasets with catfullGenes()</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -4379,121 +4375,27 @@ height: 400px;
 </header>
 
 
-<section id="why-standardization-matters" class="level2">
-<h2 class="anchored" data-anchor-id="why-standardization-matters">Why standardization matters</h2>
-<p>Before using the concatenation functions in <code>catGenes</code>, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.</p>
-<p>For datasets without duplicated accessions, <code>catGenes</code> matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>The function <code>catfullGenes()</code> is the main <code>catGenes</code> workflow for concatenating multilocus DNA datasets when each species is represented by a single sequence per locus. It compares taxa across individual alignments, standardizes the set of taxa across loci, and returns a list of equalized alignments ready for export with <code>writeNexus()</code> or <code>writePhylip()</code>.</p>
+<p>This article explains when to use <code>catfullGenes()</code>, how the input data should be organized, how the main arguments affect the output, and how to proceed from concatenation to downstream phylogenetic analysis.</p>
 </section>
-<section id="general-principles" class="level2">
-<h2 class="anchored" data-anchor-id="general-principles">General principles</h2>
-<p>When preparing alignments for <code>catGenes</code>:</p>
+<section id="when-to-use-catfullgenes" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-catfullgenes">When to use <code>catfullGenes()</code></h2>
+<p>Use <code>catfullGenes()</code> when:</p>
 <ul>
-<li>use consistent taxon naming across all loci</li>
-<li>separate all components of sequence labels with underscores</li>
-<li>avoid spaces and hyphens in sequence names</li>
-<li>keep identifiers stable across all alignments when the same accession is represented in multiple loci</li>
-<li>use simple and consistent file names for each alignment</li>
+<li>each species is represented by only one sequence per locus</li>
+<li>taxa can be matched across loci using the scientific name alone</li>
+<li>alignments have already been standardized and loaded into R as a named list</li>
+<li>you want to generate a concatenated multilocus dataset for phylogenetic analysis</li>
 </ul>
+<p>If one or more species are represented by multiple accessions across one or more loci, use <code>catmultGenes()</code> instead.</p>
 </section>
-<section id="datasets-with-a-single-sequence-per-species" class="level2">
-<h2 class="anchored" data-anchor-id="datasets-with-a-single-sequence-per-species">1. Datasets with a single sequence per species</h2>
-<p>When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:</p>
-<ul>
-<li><code>Genus_species</code></li>
-<li><code>G_species</code></li>
-</ul>
-<p>Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:</p>
-<ul>
-<li><code>Genus_species_identifier</code></li>
-<li><code>Genus_species_identifier_accession</code></li>
-</ul>
-<p>Examples:</p>
-<ul>
-<li><code>Vatairea_fusca</code></li>
-<li><code>Vatairea_fusca_Cardoso2939</code></li>
-<li><code>Vatairea_fusca_Cardoso2939_JX152598</code></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_no_identifiers.png" class="img-fluid figure-img"></p>
-<figcaption>Example with no identifiers in the sequences</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_with_identifiers_no_duplicated_species.png" class="img-fluid figure-img"></p>
-<figcaption>Example with identifiers in the sequences</figcaption>
-</figure>
-</div>
-</section>
-<section id="datasets-with-duplicated-species-or-multiple-accessions" class="level2">
-<h2 class="anchored" data-anchor-id="datasets-with-duplicated-species-or-multiple-accessions">2. Datasets with duplicated species or multiple accessions</h2>
-<p>When one or more species are represented by multiple accessions, <code>catGenes</code> requires labels that include both:</p>
-<ul>
-<li>the scientific name</li>
-<li>a stable accession identifier</li>
-</ul>
-<p>This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.</p>
-<p>Recommended format:</p>
-<ul>
-<li><code>Genus_species_identifier</code></li>
-<li><code>Genus_species_identifier_everythingelse</code></li>
-</ul>
-<p>Examples:</p>
-<ul>
-<li><code>Vatairea_fusca_Cardoso2939</code></li>
-<li><code>Vatairea_fusca_Cardoso2939_JX152598</code></li>
-</ul>
-<p>In these cases, use <code>catmultGenes()</code> rather than <code>catfullGenes()</code>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_with_identifiers_and_duplicated_species.png" class="img-fluid figure-img"></p>
-<figcaption>Example when species are duplicated with multiple accessions</figcaption>
-</figure>
-</div>
-</section>
-<section id="genus-level-identifications-and-infraspecific-taxa" class="level2">
-<h2 class="anchored" data-anchor-id="genus-level-identifications-and-infraspecific-taxa">3. Genus-level identifications and infraspecific taxa</h2>
-<p>Accessions identified only to genus level can be formatted as:</p>
-<ul>
-<li><code>Genus_sp</code></li>
-<li><code>Genus_sp1</code></li>
-<li><code>Genus_sp2</code></li>
-<li><code>Genus_spA</code></li>
-<li><code>Genus_spB</code></li>
-</ul>
-<p>Abbreviated generic names can also be used if done consistently:</p>
-<ul>
-<li><code>G_sp</code></li>
-<li><code>G_sp1</code></li>
-<li><code>G_spA</code></li>
-</ul>
-<p>For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as <code>var.</code> or <code>subsp.</code> in the label. For example:</p>
-<ul>
-<li><code>Genus_species_variety_identifier</code></li>
-<li><code>Genus_species_subspecies_identifier</code></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/other_label_fformatting.png" class="img-fluid figure-img"></p>
-<figcaption>Example with other label formatting</figcaption>
-</figure>
-</div>
-</section>
-<section id="naming-alignment-files" class="level2">
-<h2 class="anchored" data-anchor-id="naming-alignment-files">4. Naming alignment files</h2>
-<p>We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:</p>
-<ul>
-<li><code>ITS.nex</code></li>
-<li><code>rbcL.nex</code></li>
-<li><code>psbAtrnH.nex</code></li>
-<li><code>COX1.nex</code></li>
-</ul>
-<p>This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.</p>
-</section>
-<section id="loading-multiple-alignments-into-r" class="level2">
-<h2 class="anchored" data-anchor-id="loading-multiple-alignments-into-r">5. Loading multiple alignments into R</h2>
-<p>The example below uses the Vataireoid example alignments included in <code>catGenes</code>.</p>
+<section id="input-structure" class="level2">
+<h2 class="anchored" data-anchor-id="input-structure">Input structure</h2>
+<p><code>catfullGenes()</code> expects a named list of individual DNA alignments, usually read from <code>NEXUS</code> files with <code>ape::read.nexus.data()</code>.</p>
+<p>Each element of the list should correspond to one locus, and the list names should correspond to gene names or alignment names.</p>
+<p>For example:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -4501,13 +4403,29 @@ height: 400px;
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>))</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Vataireoids <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> genes) {</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  Vataireoids[[i]] <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.nexus.data</span>(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>, i, <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Vataireoids) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;[.].*&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">names</span>(Vataireoids))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> genes[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  Vataireoids[[i]] <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.nexus.data</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>, i, <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Vataireoids) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;[.].*&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">names</span>(Vataireoids))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>You can inspect the loaded loci: names(Vataireoids) This creates the standard input structure expected by catfullGenes(). Basic usage A basic concatenation workflow looks like this: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This compares taxa across the input alignments and returns a list of equalized data frames that can be exported later as a concatenated dataset. What catfullGenes() returns The output of catfullGenes() is a list of data frames of equal size. Each data frame corresponds to one locus and contains: a species column with the matched taxon names a sequence column with the corresponding aligned DNA sequence Because the taxa have been standardized across loci, these data frames can be combined directly by the export functions. You can inspect the output structure with:</p>
+<p>str(catdf, max.level = 1) And inspect the first locus: head(catdf[[1]]) Understanding shortaxlabel The argument shortaxlabel controls how sequence labels are represented in the concatenated output. When shortaxlabel = TRUE, labels are simplified and standardized:</p>
+<p>catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This is usually the most convenient setting for downstream phylogenetic analysis. When shortaxlabel = FALSE, more of the original identifying information present in the sequence labels is retained:</p>
+<p>catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = FALSE, missdata = TRUE ) This can be useful when accession identifiers or other annotations need to be preserved throughout the workflow. Understanding missdata The argument missdata controls whether taxa that lack one or more loci are retained in the concatenated dataset. When missdata = TRUE, incomplete taxa are retained and missing loci are filled with missing data:</p>
+<p>catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This is often useful when maximizing taxon coverage is more important than complete locus coverage. When missdata = FALSE, taxa lacking any locus are excluded:</p>
+<p>catdf_complete &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = FALSE ) This produces a more conservative dataset with complete data only. Understanding outgroup The outgroup argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output. For example:</p>
+<p>catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, outgroup = “Outgroup_species” ) You can also provide multiple outgroups: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, outgroup = c(“Outgroup_species1”, “Outgroup_species2”) ) This is especially relevant in concatenated datasets where some loci are missing for some taxa and outgroup retention matters for downstream tree rooting. Understanding verbose The argument verbose controls whether the function prints progress messages during the matching and concatenation process. catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, verbose = TRUE ) To suppress detailed progress output: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, verbose = FALSE ) This can be useful when running large datasets or preparing rendered tutorials. A complete example A typical small-scale workflow looks like this: Step 1. Load the alignments library(catGenes)</p>
+<p>genes &lt;- list.files(system.file(“DNAlignments/Vataireoids”, package = “catGenes”))</p>
+<p>Vataireoids &lt;- list()</p>
+<p>for (i in genes[1:3]) { Vataireoids[[i]] &lt;- ape::read.nexus.data( system.file(“DNAlignments/Vataireoids”, i, package = “catGenes”) ) }</p>
+<p>names(Vataireoids) &lt;- gsub(“[.].*“,”“, names(Vataireoids)) Step 2. Run the concatenation catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) Step 3. Inspect the output names(catdf) head(catdf[[1]]) At this point, the dataset is ready for export with writeNexus() or writePhylip(). Exporting the concatenated output After running catfullGenes(), the most common next step is to write the concatenated dataset to disk. Export as NEXUS writeNexus( catdf, file =”Vataireoids.nex”, genomics = FALSE, interleave = TRUE, bayesblock = TRUE ) Export as PHYLIP writePhylip( catdf, file = “Vataireoids_dataset.phy”, genomics = FALSE, catalignments = TRUE, partitionfile = TRUE ) This moves the workflow from equalized alignments to a final concatenated dataset suitable for phylogenetic analysis. Preserving original identifiers In some datasets, even when each species is represented by only one sequence per locus, the original labels may contain voucher numbers or GenBank accessions that you want to preserve. In that case, use:</p>
+<p>catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = FALSE, missdata = TRUE ) Then export with an appropriate setting in writeNexus() or writePhylip() to preserve those identifiers in the output. Typical workflow after catfullGenes() A common multilocus workflow is: standardize sequence labels align loci separately load alignments into R run catfullGenes() export the result with writeNexus() or writePhylip() perform downstream phylogenetic analyses visualize resulting trees with plotPhylo() Common issues Taxa do not match across loci If catfullGenes() produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments. Before concatenation, confirm that:</p>
+<p>taxon names follow the same formatting scheme genus abbreviations are used consistently labels do not differ in unexpected ways across loci Species are duplicated in one or more alignments If one or more loci contain multiple accessions for the same species, catfullGenes() is not the correct function. In that case, use catmultGenes(). File names are unclear The list names of the input alignments usually become the locus names carried forward into downstream workflows. Using clear file names from the beginning helps avoid confusion. Too many taxa are removed If you expected more taxa in the final dataset, check whether missdata = FALSE is excluding incomplete taxa. Recommended practice For the smoothest use of catfullGenes(): make sure each species is represented by only one sequence per locus standardize taxon labels across all alignments use simple and consistent locus names decide in advance whether incomplete taxa should be retained inspect the resulting list before export Example of a larger genomic workflow The catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption. For large projects, it is especially important to:</p>
+<p>keep naming conventions fully standardized inspect locus coverage before concatenation use clear file and list names document the export settings used for downstream analysis Next step Once a dataset has been concatenated with catfullGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), select evolutionary models if needed, and proceed to downstream phylogenetic analyses.</p>
 
 
 <!-- -->
@@ -4991,126 +4909,250 @@ height: 400px;
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Standardizing DNA alignments for catGenes&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Concatenate multilocus datasets with catfullGenes()&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why standardization matters</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Before using the concatenation functions in <span class="in">`catGenes`</span>, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`catfullGenes()`</span> is the main <span class="in">`catGenes`</span> workflow for concatenating multilocus DNA datasets when each species is represented by a single sequence per locus. It compares taxa across individual alignments, standardizes the set of taxa across loci, and returns a list of equalized alignments ready for export with <span class="in">`writeNexus()`</span> or <span class="in">`writePhylip()`</span>.</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>For datasets without duplicated accessions, <span class="in">`catGenes`</span> matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>This article explains when to use <span class="in">`catfullGenes()`</span>, how the input data should be organized, how the main arguments affect the output, and how to proceed from concatenation to downstream phylogenetic analysis.</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## General principles</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## When to use `catfullGenes()`</span></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>When preparing alignments for <span class="in">`catGenes`</span>:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`catfullGenes()`</span> when:</span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use consistent taxon naming across all loci</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>separate all components of sequence labels with underscores</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>avoid spaces and hyphens in sequence names</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>keep identifiers stable across all alignments when the same accession is represented in multiple loci</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use simple and consistent file names for each alignment</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Datasets with a single sequence per species</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species`</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_species`</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>each species is represented by only one sequence per locus</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>taxa can be matched across loci using the scientific name alone</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>alignments have already been standardized and loaded into R as a named list</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you want to generate a concatenated multilocus dataset for phylogenetic analysis</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>If one or more species are represented by multiple accessions across one or more loci, use <span class="in">`catmultGenes()`</span> instead.</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Input structure</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="in">`catfullGenes()`</span> expects a named list of individual DNA alignments, usually read from <span class="in">`NEXUS`</span> files with <span class="in">`ape::read.nexus.data()`</span>.</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>Each element of the list should correspond to one locus, and the list names should correspond to gene names or alignment names.</span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>For example:</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier`</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier_accession`</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>Examples:</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca`</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939`</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939_JX152598`</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Datasets with duplicated species or multiple accessions</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>When one or more species are represented by multiple accessions, <span class="in">`catGenes`</span> requires labels that include both:</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the scientific name</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a stable accession identifier</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>Recommended format:</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier`</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier_everythingelse`</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>Examples:</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939`</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939_JX152598`</span></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>In these cases, use <span class="in">`catmultGenes()`</span> rather than <span class="in">`catfullGenes()`</span>.</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="al">![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)</span></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Genus-level identifications and infraspecific taxa</span></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>Accessions identified only to genus level can be formatted as:</span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp`</span></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp1`</span></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp2`</span></span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_spA`</span></span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_spB`</span></span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>Abbreviated generic names can also be used if done consistently:</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_sp`</span></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_sp1`</span></span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_spA`</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>                                <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>))</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>Vataireoids <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> genes[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) {</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  Vataireoids[[i]] <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.nexus.data</span>(</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>, i, <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Vataireoids) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;[.].*&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">names</span>(Vataireoids))</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>You can inspect the loaded loci:</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>names(Vataireoids)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>This creates the standard input structure expected by catfullGenes().</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>Basic usage</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>A basic concatenation workflow looks like this:</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>This compares taxa across the input alignments and returns a list of equalized data frames that can be exported later as a concatenated dataset.</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>What catfullGenes() returns</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>The output of catfullGenes() is a list of data frames of equal size. Each data frame corresponds to one locus and contains:</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>a species column with the matched taxon names</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>a sequence column with the corresponding aligned DNA sequence</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>Because the taxa have been standardized across loci, these data frames can be combined directly by the export functions.</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>You can inspect the output structure with:</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>str(catdf, max.level = 1)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>And inspect the first locus:</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>head(catdf[<span class="co">[</span><span class="ot">1</span><span class="co">]</span>])</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>Understanding shortaxlabel</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>The argument shortaxlabel controls how sequence labels are represented in the concatenated output.</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>When shortaxlabel = TRUE, labels are simplified and standardized:</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>This is usually the most convenient setting for downstream phylogenetic analysis.</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>When shortaxlabel = FALSE, more of the original identifying information present in the sequence labels is retained:</span>
 <span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as <span class="in">`var.`</span> or <span class="in">`subsp.`</span> in the label. For example:</span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_variety_identifier`</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_subspecies_identifier`</span></span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with other label formatting](figures/other_label_fformatting.png)</span></span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Naming alignment files</span></span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:</span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`ITS.nex`</span></span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`rbcL.nex`</span></span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`psbAtrnH.nex`</span></span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`COX1.nex`</span></span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = FALSE,</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>This can be useful when accession identifiers or other annotations need to be preserved throughout the workflow.</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>Understanding missdata</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>The argument missdata controls whether taxa that lack one or more loci are retained in the concatenated dataset.</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>When missdata = TRUE, incomplete taxa are retained and missing loci are filled with missing data:</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>This is often useful when maximizing taxon coverage is more important than complete locus coverage.</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>When missdata = FALSE, taxa lacking any locus are excluded:</span>
 <span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Loading multiple alignments into R</span></span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>The example below uses the Vataireoid example alignments included in <span class="in">`catGenes`</span>.</span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>,</span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>                                <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>))</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>catdf_complete &lt;- catfullGenes(</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>  missdata = FALSE</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>This produces a more conservative dataset with complete data only.</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>Understanding outgroup</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>The outgroup argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output.</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>For example:</span>
 <span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>Vataireoids <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> genes) {</span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  Vataireoids[[i]] <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.nexus.data</span>(</span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>    <span class="fu">system.file</span>(<span class="st">&quot;DNAlignments/Vataireoids&quot;</span>, i, <span class="at">package =</span> <span class="st">&quot;catGenes&quot;</span>)</span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Vataireoids) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;[.].*&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">names</span>(Vataireoids))</span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE,</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  outgroup = &quot;Outgroup_species&quot;</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>You can also provide multiple outgroups:</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE,</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>  outgroup = c(&quot;Outgroup_species1&quot;, &quot;Outgroup_species2&quot;)</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>This is especially relevant in concatenated datasets where some loci are missing for some taxa and outgroup retention matters for downstream tree rooting.</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>Understanding verbose</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>The argument verbose controls whether the function prints progress messages during the matching and concatenation process.</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE,</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  verbose = TRUE</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>To suppress detailed progress output:</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE,</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>  verbose = FALSE</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>This can be useful when running large datasets or preparing rendered tutorials.</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>A complete example</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>A typical small-scale workflow looks like this:</span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>Step 1. Load the alignments</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>library(catGenes)</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>genes &lt;- list.files(system.file(&quot;DNAlignments/Vataireoids&quot;,</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>                                package = &quot;catGenes&quot;))</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>Vataireoids &lt;- list()</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>for (i in genes<span class="co">[</span><span class="ot">1:3</span><span class="co">]</span>) {</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>  Vataireoids[<span class="co">[</span><span class="ot">i</span><span class="co">]</span>] &lt;- ape::read.nexus.data(</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>    system.file(&quot;DNAlignments/Vataireoids&quot;, i, package = &quot;catGenes&quot;)</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>names(Vataireoids) &lt;- gsub(&quot;<span class="co">[</span><span class="ot">.</span><span class="co">]</span>.*&quot;, &quot;&quot;, names(Vataireoids))</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>Step 2. Run the concatenation</span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = TRUE,</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>Step 3. Inspect the output</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>names(catdf)</span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>head(catdf[<span class="co">[</span><span class="ot">1</span><span class="co">]</span>])</span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>At this point, the dataset is ready for export with writeNexus() or writePhylip().</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a>Exporting the concatenated output</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>After running catfullGenes(), the most common next step is to write the concatenated dataset to disk.</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>Export as NEXUS</span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>writeNexus(</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>  file = &quot;Vataireoids.nex&quot;,</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>  genomics = FALSE,</span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>  interleave = TRUE,</span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>  bayesblock = TRUE</span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a>Export as PHYLIP</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>writePhylip(</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>  file = &quot;Vataireoids_dataset.phy&quot;,</span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>  genomics = FALSE,</span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>  catalignments = TRUE,</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>  partitionfile = TRUE</span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>This moves the workflow from equalized alignments to a final concatenated dataset suitable for phylogenetic analysis.</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>Preserving original identifiers</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>In some datasets, even when each species is represented by only one sequence per locus, the original labels may contain voucher numbers or GenBank accessions that you want to preserve.</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>In that case, use:</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>catdf &lt;- catfullGenes(</span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>  Vataireoids,</span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>  shortaxlabel = FALSE,</span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>  missdata = TRUE</span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a>Then export with an appropriate setting in writeNexus() or writePhylip() to preserve those identifiers in the output.</span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a>Typical workflow after catfullGenes()</span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a>A common multilocus workflow is:</span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a>standardize sequence labels</span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>align loci separately</span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>load alignments into R</span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>run catfullGenes()</span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a>export the result with writeNexus() or writePhylip()</span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a>perform downstream phylogenetic analyses</span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a>visualize resulting trees with plotPhylo()</span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a>Common issues</span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a>Taxa do not match across loci</span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a>If catfullGenes() produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments.</span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>Before concatenation, confirm that:</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>taxon names follow the same formatting scheme</span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>genus abbreviations are used consistently</span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a>labels do not differ in unexpected ways across loci</span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a>Species are duplicated in one or more alignments</span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a>If one or more loci contain multiple accessions for the same species, catfullGenes() is not the correct function. In that case, use catmultGenes().</span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a>File names are unclear</span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a>The list names of the input alignments usually become the locus names carried forward into downstream workflows. Using clear file names from the beginning helps avoid confusion.</span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a>Too many taxa are removed</span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>If you expected more taxa in the final dataset, check whether missdata = FALSE is excluding incomplete taxa.</span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>Recommended practice</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>For the smoothest use of catfullGenes():</span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>make sure each species is represented by only one sequence per locus</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>standardize taxon labels across all alignments</span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>use simple and consistent locus names</span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>decide in advance whether incomplete taxa should be retained</span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>inspect the resulting list before export</span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a>Example of a larger genomic workflow</span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>The catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption.</span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>For large projects, it is especially important to:</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a>keep naming conventions fully standardized</span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>inspect locus coverage before concatenation</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a>use clear file and list names</span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a>document the export settings used for downstream analysis</span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a>Next step</span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>Once a dataset has been concatenated with catfullGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), select evolutionary models if needed, and proceed to downstream phylogenetic analyses.</span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

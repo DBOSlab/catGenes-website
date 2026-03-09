@@ -1,102 +1,197 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Convert among FASTA, NEXUS, and PHYLIP"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+Phylogenetic workflows often involve moving among different alignment formats depending on the downstream software being used. In `catGenes`, the function `convertAlign()` provides a simple way to convert one or more DNA alignments among the most commonly used formats:
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+- `FASTA`
+- `NEXUS`
+- `PHYLIP`
 
-## General principles
+This is useful when you need to standardize file formats before alignment, concatenation, or phylogenetic analysis.
 
-When preparing alignments for `catGenes`:
+## When to use `convertAlign()`
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+Use `convertAlign()` when:
 
-## 1. Datasets with a single sequence per species
+- your alignments are stored in a format that is not convenient for the next analysis step
+- you need to convert `FASTA` files to `NEXUS` before loading them into `catGenes`
+- you need to generate `PHYLIP` files for external phylogenetic programs
+- you want to standardize a folder of mixed or differently formatted alignments
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+In many `catGenes` workflows, `NEXUS` is the most convenient format for downstream concatenation because it can be read directly with `ape::read.nexus.data()`.
 
-- `Genus_species`
-- `G_species`
+## Basic usage
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+A typical conversion workflow looks like this:
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+```{r, eval=FALSE}
+library(catGenes)
 
-Examples:
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "NEXUS"
+)
+```
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+This reads one or more alignment files from the specified directory and writes the converted files in NEXUS format.
+Choosing the output format
+The argument format defines the output format to be written. Supported values are:
+"NEXUS"
+"FASTA"
+"PHYLIP"
+For example, to convert a set of files to FASTA:
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "FASTA"
+)
+To convert to PHYLIP:
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "PHYLIP"
+)
+Converting alignments to NEXUS
+This is a particularly common step when preparing alignments for concatenation with catGenes.
+convertAlign(
+  filepath = "RESULTS_alignSeqs/09Mar2026",
+  format = "NEXUS"
+)
+After conversion, the resulting files can be imported into R with ape::read.nexus.data() and organized into a named list for concatenation.
+Converting alignments to FASTA
+You may also want to export alignments to FASTA, for example when preparing files for manual inspection or downstream tools that accept FASTA more readily.
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "FASTA"
+)
+Converting alignments to PHYLIP
+Some phylogenetic programs and external workflows require PHYLIP format.
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "PHYLIP"
+)
+This can be useful when preparing alignment files for software outside the immediate catGenes workflow.
+Working with a folder of alignments
+convertAlign() is designed to work on a directory of input files. This is especially useful when several loci need to be converted in one step.
+For example:
+convertAlign(
+  filepath = "RESULTS_alignSeqs/09Mar2026",
+  format = "NEXUS"
+)
+or
+convertAlign(
+  filepath = "RESULTS_mineSeq/09Mar2026",
+  format = "FASTA"
+)
+This batch-conversion approach helps standardize a workflow quickly.
+Saving converted files in a custom directory
+By default, convertAlign() creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument.
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "NEXUS",
+  dir = "RESULTS_convertAlign"
+)
+This is useful when you want all converted outputs written to a specific project folder.
+Removing original files
+If you want the converted files to replace the original inputs, you can use rmfiles = TRUE.
+convertAlign(
+  filepath = "path_to_alignments",
+  format = "NEXUS",
+  rmfiles = TRUE
+)
+This removes the original input files after conversion.
+Because deleting original files can be risky, it is usually safer to keep rmfiles = FALSE unless you are sure the converted outputs are correct.
+Example workflow after sequence alignment
+A common use case is to convert aligned files into NEXUS format after a previous alignment step.
+For example:
+Step 1. Align sequences
+alignSeqs(
+  filepath = "RESULTS_mineSeq/09Mar2026",
+  method = "ClustalW",
+  format = "FASTA",
+  dir = "RESULTS_alignSeqs"
+)
+Step 2. Convert the aligned outputs to NEXUS
+convertAlign(
+  filepath = "RESULTS_alignSeqs/09Mar2026",
+  format = "NEXUS",
+  dir = "RESULTS_convertAlign"
+)
+Step 3. Load the NEXUS files into R
+genes <- list.files("RESULTS_convertAlign/09Mar2026")
+my_alignments <- list()
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+for (i in genes) {
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("RESULTS_convertAlign/09Mar2026/", i)
+  )
+}
 
-## 2. Datasets with duplicated species or multiple accessions
+names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
+This produces a named list ready for concatenation with catGenes.
+Understanding the output directory
+When converted files are written to disk, they are typically saved in a directory such as:
+RESULTS_convertAlign/09Mar2026/
+This date-based structure helps keep conversion results organized across runs.
+Recommended file naming
+Before conversion, it is helpful if files are already named clearly by locus, for example:
+ITS.fasta
+matK.fasta
+rbcL.fasta
+After conversion, these names usually remain easy to interpret and help keep downstream list names and partition labels clear.
+Loading converted files into R
+If you convert files to NEXUS, they can then be loaded into R with ape::read.nexus.data().
+genes <- list.files("RESULTS_convertAlign/09Mar2026")
+my_alignments <- list()
 
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+for (i in genes) {
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("RESULTS_convertAlign/09Mar2026/", i)
+  )
+}
 
-- the scientific name
-- a stable accession identifier
-
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
-
-Recommended format:
-
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
-
-Examples:
-
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
-
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
-
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
-
-## 3. Genus-level identifications and infraspecific taxa
-
-Accessions identified only to genus level can be formatted as:
-
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
-
-Abbreviated generic names can also be used if done consistently:
-
-- `G_sp`
-- `G_sp1`
-- `G_spA`
-
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
-
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
-
-![Example with other label formatting](figures/other_label_fformatting.png)
-
-## 4. Naming alignment files
-
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
-
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
-
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
+This creates the standard input structure for catGenes concatenation functions.
+Typical workflow after conversion
+Once files are converted and loaded into R, the next step is usually to concatenate the loci.
+For datasets with one sequence per species per locus:
+catdf <- catfullGenes(
+  my_alignments,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+For datasets containing duplicated taxa or multiple accessions:
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+Common issues
+Input files are not in a recognizable alignment format
+convertAlign() expects standard alignment files in formats that can be interpreted correctly. If the input files are malformed, conversion may fail.
+The wrong output format is chosen
+Different downstream tools expect different formats. If your next step is concatenation with catGenes, NEXUS is usually the best choice.
+Original files are deleted unintentionally
+If rmfiles = TRUE, the input files are removed after conversion. Use this option carefully and only when you are confident the converted files are correct.
+File names remain difficult to interpret
+Conversion changes file format, not naming conventions. If file names are unclear before conversion, they may still be unclear afterward. Rename files when needed so that each locus remains easy to identify.
+Recommended practice
+For the smoothest workflow:
+keep one file per locus
+use simple and consistent file names
+convert alignments to NEXUS before loading them into catGenes
+keep the original files unless you are sure the conversion results are correct
+inspect converted outputs before moving to concatenation
+Next step
+Once your alignments have been converted into the desired format, the next step is usually to:
+load them into R
+organize them as a named list
+concatenate loci with catfullGenes() or catmultGenes()
+See the next tutorials for concatenating multilocus datasets with catGenes.
