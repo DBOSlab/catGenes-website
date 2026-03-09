@@ -99,10 +99,8 @@ website:
               href: articles/remove_redundant_accessions.qmd
         - section: Export, analysis, and visualization
           contents:
-            - text: Export concatenated datasets with `writeNexus()`
-              href: articles/write_nexus_datasets.qmd
-            - text: Export concatenated datasets with `writePhylip()`
-              href: articles/write_phylip_datasets.qmd
+            - text: Export concatenated datasets
+              href: articles/write_concatenated_datasets.qmd
             - text: Model selection and MrBayes preparation with `evomodelTest()`
               href: articles/model_selection_and_mrbayes.qmd
             - text: Run MrBayes from R
