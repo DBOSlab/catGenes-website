@@ -1,0 +1,103 @@
+---
+title: "Standardizing DNA alignments for catGenes"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Why standardization matters
+
+Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+
+For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+
+## General principles
+
+When preparing alignments for `catGenes`:
+
+- use consistent taxon naming across all loci
+- separate all components of sequence labels with underscores
+- avoid spaces and hyphens in sequence names
+- keep identifiers stable across all alignments when the same accession is represented in multiple loci
+- use simple and consistent file names for each alignment
+
+## 1. Datasets with a single sequence per species
+
+When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+
+- `Genus_species`
+- `G_species`
+
+Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+
+- `Genus_species_identifier`
+- `Genus_species_identifier_accession`
+
+Examples:
+
+- `Vatairea_fusca`
+- `Vatairea_fusca_Cardoso2939`
+- `Vatairea_fusca_Cardoso2939_JX152598`
+
+![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+
+![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+
+## 2. Datasets with duplicated species or multiple accessions
+
+When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+
+- the scientific name
+- a stable accession identifier
+
+This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
+
+Recommended format:
+
+- `Genus_species_identifier`
+- `Genus_species_identifier_everythingelse`
+
+Examples:
+
+- `Vatairea_fusca_Cardoso2939`
+- `Vatairea_fusca_Cardoso2939_JX152598`
+
+In these cases, use `catmultGenes()` rather than `catfullGenes()`.
+
+![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+
+## 3. Genus-level identifications and infraspecific taxa
+
+Accessions identified only to genus level can be formatted as:
+
+- `Genus_sp`
+- `Genus_sp1`
+- `Genus_sp2`
+- `Genus_spA`
+- `Genus_spB`
+
+Abbreviated generic names can also be used if done consistently:
+
+- `G_sp`
+- `G_sp1`
+- `G_spA`
+
+For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
+
+- `Genus_species_variety_identifier`
+- `Genus_species_subspecies_identifier`
+
+![Example with other label formatting](figures/other_label_fformatting.png)
+
+## 4. Naming alignment files
+
+We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
+
+- `ITS.nex`
+- `rbcL.nex`
+- `psbAtrnH.nex`
+- `COX1.nex`
+
+This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+

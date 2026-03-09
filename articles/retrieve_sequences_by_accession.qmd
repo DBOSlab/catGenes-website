@@ -1,0 +1,208 @@
+---
+title: "Retrieve sequences from GenBank with accession numbers"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+The function `mineSeq()` retrieves DNA sequences from GenBank using accession numbers and returns them in a format ready for downstream use in `catGenes`. This workflow is useful when you already have a table of GenBank accessions for one or more loci and want to download the corresponding sequences in a standardized way.
+
+Depending on the input and options used, `mineSeq()` can:
+
+- retrieve sequences directly from GenBank
+- preserve the original GenBank taxonomy
+- rename sequences using your own taxon and voucher information
+- return sequences as `DNAbin` objects or character strings
+- save the results to disk as `FASTA` files
+
+This article shows how to organize the input table, run `mineSeq()`, inspect the results, and prepare the output for later alignment and concatenation steps.
+
+## When to use `mineSeq()`
+
+Use `mineSeq()` when:
+
+- you already know the GenBank accession numbers you want to download
+- you have a spreadsheet or data frame listing accessions for one or more genes
+- you want to standardize sequence names before alignment
+- you want to build locus-specific or multilocus datasets from an accession table
+
+If you do not already have accession numbers and instead want to search GenBank by taxonomic query terms, see the tutorial on retrieving sequences with `mineTaxa()`.
+
+## Input table structure
+
+The main input to `mineSeq()` is a data frame containing GenBank accession numbers. Ideally, this data frame includes:
+
+- a `Species` column with taxon names
+- a `Voucher` column with voucher or accession identifiers
+- one column for each locus or gene containing the relevant GenBank accessions
+
+For example:
+
+```{r, eval=FALSE}
+example_accessions <- data.frame(
+  Species = c("Vatairea_fusca", "Vatairea_guianensis"),
+  Voucher = c("Cardoso2939", "Silva1820"),
+  ITS = c("JX152598", "JX152599"),
+  matK = c("JX152610", "JX152611"),
+  rbcL = c("JX152620", "JX152621"),
+  stringsAsFactors = FALSE
+)
+```
+
+In this structure:
+- each row corresponds to a taxon or accession
+- each gene column contains a GenBank accession number
+- missing accessions can be represented as `NA`
+
+## Selecting the accession columns
+The argument `gb.colnames` tells `mineSeq()` which columns contain GenBank accession numbers.
+For the example above:
+```{r, eval=FALSE}
+gb.colnames = c("ITS", "matK", "rbcL")
+```
+
+This allows the function to retrieve sequences only from the relevant columns.
+
+## Basic usage
+A typical `mineSeq()` call looks like this:
+
+```{r, eval=FALSE}
+library(catGenes)
+
+seqs <- mineSeq(
+  inputdf = example_accessions,
+  gb.colnames = c("ITS", "matK", "rbcL")
+)
+```
+
+This retrieves the sequences associated with the listed accessions and returns them as an R object.
+
+## A real example with package data
+If your package includes a dataset such as GenBank_accessions, you can use it directly.
+
+```{r, eval=FALSE}
+library(catGenes)
+
+data(GenBank_accessions)
+
+seqs <- mineSeq(
+  inputdf = GenBank_accessions,
+  gb.colnames = c("ETS", "ITS", "matK", "petBpetD", "trnTF", "Xdh")
+)
+```
+
+This is a convenient way to test the workflow with a larger example dataset.
+
+## How `mineSeq()` names retrieved sequences
+When `Species` and `Voucher` columns are present in the input data frame, `mineSeq()` uses them to build standardized labels for the downloaded sequences.
+This is especially useful for downstream workflows, because the resulting sequence names can already match the naming logic expected by alignment and concatenation functions.
+For example, a sequence may be labeled as something like:
+
+```{r, eval=FALSE}
+Vatairea_fusca_Cardoso2939
+```
+
+If the `Species` and `Voucher` columns are not present, `mineSeq()` falls back to the taxonomy and description provided by GenBank.
+
+## Saving sequences to disk
+By default, mineSeq() can save the retrieved sequences to disk as a `FASTA` file.
+
+```{r, eval=FALSE}
+mineSeq(
+  inputdf = example_accessions,
+  gb.colnames = c("ITS", "matK", "rbcL"),
+  save = TRUE,
+  filename = "GenBank_seqs",
+  dir = "RESULTS_mineSeq"
+)
+```
+
+This creates an output directory and writes the downloaded sequences there.
+
+## Understanding the output directory
+When `save = TRUE`, `mineSeq()` creates a directory structure under the folder specified by dir, usually including a date-based subfolder. This helps keep sequence downloads organized across runs.
+For example, the output may be saved in a location such as:
+
+```{r, eval=FALSE}
+RESULTS_mineSeq/09Mar2026/
+```
+
+with a file like:
+
+```{r, eval=FALSE}
+GenBank_seqs.fasta
+```
+
+This output can then be used directly in later steps such as combining `FASTA` files or running multiple sequence alignment.
+
+## Working with missing accessions
+In many real datasets, some taxa will lack accessions for one or more loci. In those cases, it is fine to keep `NA` values in the input table.
+For example:
+
+```{r, eval=FALSE}
+example_accessions_missing <- data.frame(
+  Species = c("Vatairea_fusca", "Vatairea_guianensis"),
+  Voucher = c("Cardoso2939", "Silva1820"),
+  ITS = c("JX152598", NA),
+  matK = c("JX152610", "JX152611"),
+  rbcL = c(NA, "JX152621"),
+  stringsAsFactors = FALSE
+)
+```
+
+`mineSeq()` will attempt to retrieve only the accession numbers that are actually present.
+
+## Preparing sequences for alignment
+Once sequences have been retrieved, a common next step is to align them with `alignSeqs()`.
+For example, after saving the downloaded sequences:
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "RESULTS_mineSeq/09Mar2026",
+  method = "ClustalW",
+  format = "NEXUS"
+)
+```
+
+This makes `mineSeq()` a natural entry point for a broader workflow that moves from GenBank accessions to aligned and concatenated datasets.
+
+## Typical workflow after `mineSeq()`
+A common sequence-processing workflow is:
+
+- prepare a data frame of accession numbers
+- retrieve sequences with `mineSeq()`
+- save them as `FASTA`
+- align sequences with `alignSeqs()`
+- convert or standardize alignment formats if needed
+- load alignments into R
+- concatenate loci with `catfullGenes()` or `catmultGenes()`
+
+## Common issues
+### Accession numbers are invalid
+If an accession number is incorrect, obsolete, or misspelled, GenBank retrieval may fail for that entry. Always check accession formatting in the input table.
+
+### Gene columns are not specified correctly
+If gb.colnames does not match the actual column names of the input data frame, the function will not retrieve the intended sequences.
+
+### Species or voucher information is missing
+If the Species and Voucher columns are absent, `mineSeq()` can still retrieve the sequences, but the resulting labels will depend on GenBank metadata rather than your own standardized naming scheme.
+
+### Internet connection is unavailable
+Because `mineSeq()` connects to GenBank, it requires an active internet connection.
+
+## Recommended practice
+For the smoothest downstream workflow:
+- keep accession numbers in clearly named columns
+- include Species and Voucher columns whenever possible
+- use stable and consistent voucher identifiers
+- save retrieved sequences to disk so they can be aligned later
+- inspect output labels before moving to alignment or concatenation
+
+## Next step
+Once sequences have been retrieved with mineSeq(), the next step is usually to:
+combine and align the sequences
+convert the resulting alignments if needed
+load them into R for concatenation with `catGenes`
+See the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.

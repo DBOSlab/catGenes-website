@@ -7,7 +7,6 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -27,51 +26,81 @@ format:
   }
 </style>
 
-### What can I use refloraR for?
+### What can I use `catGenes` for?
 
-The `refloraR` package allows researchers and taxonomists to download, filter, and analyze plant specimen data from the [REFLORA Virtual Herbarium](https://ipt.jbrj.gov.br/reflora). With dedicated functions, users can access large datasets in Darwin Core Format, explore taxonomic and geographic distributions, and summarize collections efficiently.
+`catGenes` is designed to support phylogenetic and phylogenomic workflows in R. It can be used to retrieve DNA sequences from GenBank, mine targeted loci from plastid and mitochondrial genomes, combine and align sequence files, convert among alignment formats, compare and concatenate multilocus datasets, prepare partitioned datasets for downstream analyses, run `MrBayes` from R, and visualize phylogenetic trees.
 
-### How do I install refloraR?
+### How do I install `catGenes`?
 
 Visit the [Get Started guide](/get-started/index.qmd) for installation instructions from GitHub.
 
-### Is refloraR free to use?
+### Is `catGenes` free to use?
 
-Yes. `refloraR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
+Yes. `catGenes` is open source and distributed under the [MIT License](https://opensource.org/license/mit/).
 
-### What output can refloraR generate?
+### What kinds of data can `catGenes` handle?
 
-While `refloraR` itself does not generate formatted documents, it is designed for data retrieval and analysis. However, it integrates well with tools like Quarto and RMarkdown to produce documents, HTML pages, and interactive apps using filtered specimen data.
+`catGenes` works with DNA sequence data and alignments commonly used in phylogenetics and phylogenomics. Depending on the function, inputs may include GenBank accession tables, taxonomic search terms, `FASTA` files, and alignments in `FASTA`, `NEXUS`, or `PHYLIP` format.
 
-### Who are the developers of refloraR?
+### Can `catGenes` handle duplicated taxa or multiple accessions?
 
-Development is sponsored by [JBRJ](https://www.gov.br/jbrj/pt-br), [FINEP](http://www.finep.gov.br), and [CNPq](https://www.gov.br/cnpq/pt-br). Main developers:
+Yes. One of the main strengths of `catGenes` is its support for concatenating multilocus datasets in which taxa may be represented by multiple accessions. The function `catmultGenes()` was developed specifically for this scenario, while `catfullGenes()` is intended for datasets with a single sequence per taxon per locus.
+
+### Can `catGenes` align sequences?
+
+Yes. The function `alignSeqs()` performs automated multiple sequence alignment using supported algorithms available through the `msa` package.
+
+### Can `catGenes` retrieve sequences from GenBank?
+
+Yes. `catGenes` includes functions to retrieve sequences from GenBank either by accession numbers (`mineSeq()`) or by taxonomic query terms (`mineTaxa()`). It also includes dedicated functions to mine loci from complete plastid and mitochondrial genomes.
+
+### Can `catGenes` combine multiple FASTA files before alignment?
+
+Yes. The function `combineFASTA()` allows you to merge multiple `FASTA` files into a single file, which can be useful before running automated alignment or downstream sequence processing.
+
+### Can `catGenes` export concatenated datasets for phylogenetic analyses?
+
+Yes. `catGenes` can export concatenated datasets in both `NEXUS` and `PHYLIP` formats. It can also generate partition information and preliminary `MrBayes` command blocks for downstream analyses.
+
+### Does `catGenes` run phylogenetic analyses directly?
+
+Partially. `catGenes` does not implement phylogenetic inference itself, but it helps prepare data for analysis and includes `mrbayesRun()` to run a local installation of `MrBayes` directly from R.
+
+### Do I need `MrBayes` installed to use `catGenes`?
+
+No. Most functions in `catGenes` do not require `MrBayes`. You only need a local `MrBayes` installation if you want to run Bayesian phylogenetic analyses directly from R using `mrbayesRun()`.
+
+### Do I need an internet connection to use `catGenes`?
+
+Only for functions that query online resources. For example, `mineSeq()`, `mineTaxa()`, `minePlastome()`, and `mineMitochondrion()` require internet access because they connect to GenBank. Functions that work with local files, such as `combineFASTA()`, `alignSeqs()`, `convertAlign()`, `catfullGenes()`, `catmultGenes()`, `writeNexus()`, and `writePhylip()`, can be used offline once the relevant packages are installed.
+
+### Can `catGenes` plot phylogenetic trees?
+
+Yes. The function `plotPhylo()` provides tools for plotting and editing phylogenetic trees using `ggtree`, including options for adjusting labels, highlighting clades, and producing publication-ready figures.
+
+### Is `catGenes` intended only for plant data?
+
+No. Although many examples and use cases may involve plant datasets, `catGenes` is designed more broadly for DNA-based phylogenetic and phylogenomic workflows and can be applied to other organismal groups as well.
+
+### Who develops `catGenes`?
+
+`catGenes` is developed by:
 
 - Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
-- Carlos Calderón ([\@caldecid](https://github.com/caldecid))
+- Quezia Cavalcante
 
-View the code and contribute on GitHub: [https://github.com/DBOSlab/refloraR](https://github.com/DBOSlab/refloraR)
+The package is maintained within the broader research environment of the [Rio de Janeiro Botanical Garden (JBRJ)](https://www.gov.br/jbrj).
 
-### Why the name refloraR?
+### Why the name `catGenes`?
 
-The name pays tribute to Brazil's Reflora programme, with a clever nod to the R programming language. It symbolizes the repatriation and rediscovery of Brazil's botanical heritage, now enhanced by reproducible data workflows.
+The name `catGenes` originally referred to the package’s core purpose of concatenating multiple gene alignments for combined phylogenetic analyses. As the package evolved, it expanded beyond concatenation to include additional tools for sequence retrieval, alignment processing, model selection, Bayesian analysis support, and tree visualization, while retaining its original name.
 
 ### Where can I report bugs or request features?
 
-Submit issues on GitHub: [refloraR Issues](https://github.com/DBOSlab/refloraR/issues).
+Please submit issues on GitHub: [catGenes Issues](https://github.com/DBOSlab/catGenes/issues)
 
-### Where can I ask questions and discuss refloraR?
+### Where can I find the source code and documentation?
 
-Join our community via [GitHub Discussions](https://github.com/DBOSlab/refloraR/discussions) to ask questions, suggest ideas, or help others.
+The source code is available on GitHub: [https://github.com/DBOSlab/catGenes](https://github.com/DBOSlab/catGenes)
 
-### What is the REFLORA Virtual Herbarium?
-
-The REFLORA Virtual Herbarium is a digital repository for Brazilian plant specimens, particularly those collected in Brazil but historically stored in foreign herbaria. Through high-resolution imaging and curation tools, it enables researchers to view, determine, and typify specimens remotely.
-
-### How does refloraR relate to REFLORA?
-
-The `refloraR` package acts as a programmatic interface to query, retrieve, and explore data from REFLORA Virtual Herbarium and its partner collections. It enhances access, encourages reproducibility, and supports large-scale taxonomic and biogeographic studies.
-
-### Can my herbarium join the REFLORA Virtual Herbarium?
-
-Yes. Herbarium curators can contact **reflora@jbrj.gov.br** to initiate data and image contributions. Participating herbaria receive support to digitize and publish their collections.
+The package website and documentation are available at: [https://dboslab.github.io/catGenes-website/](https://dboslab.github.io/catGenes-website/)

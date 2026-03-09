@@ -1,0 +1,43 @@
+---
+title: 'abbrevGen'
+description: 'Abbreviate genus name'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::abbrevGen()
+```
+
+### Description
+
+This function abbreviates genus names. In cases where multiple
+genera share similarities in their first, second, and third letters, the
+function will generate an abbreviation, extending up to the fourth letter for
+disambiguation.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| tiplabels | A vector of genus names or tip labels to be abbreviated. |
+| abbrevfull | A logical value indicating whether to fully abbreviate genus names, if set to `TRUE`. If all genera have different initial letters, abbreviations will be until the first letter. If at least two different genera are similar in the first letter, then all genera will be abbreviated until the second letter. If at least two different genera are similar in the first two letters, then all genera will be abbreviated until the third letter. |
+| abbrevmult | A logical value indicating whether to fully abbreviate genus names in different ways depending on how they differ to each other based on the initial letters. If set to `TRUE`, in cases where multiple genera share similarities in their first, second, and third letters, the function will generate an abbreviation, extending up to the fourth letter for disambiguation. |
+
+### Value
+
+A dataframe.
+
+### Examples
+
+```r
+library(catGenes)
+
+data(Harpalyce_bayes_tree)
+
+df <- abbrevGen(tiplabels = Harpalyce_bayes_tree@phylo$tip.label)
+```
+
+

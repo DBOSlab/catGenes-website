@@ -1,0 +1,55 @@
+---
+title: 'mineSeq'
+description: 'Read and download DNA sequences from GenBank'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::mineSeq()
+```
+
+### Description
+
+An [ape](https://cran.r-project.org/web/packages/ape/index.html)-based
+function to connect with the [GenBank](https://www.ncbi.nlm.nih.gov/genbank)
+database, read nucleotide sequences using accession numbers, and write them
+in a fasta format file.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| inputdf | A dataframe object containing the taxon names in a 'Species' column, the voucher information in 'Voucher' column, and the GenBank accessions for each genes in separate columns named by the corresponding gene. If the columns 'Species' and 'Voucher' are not provided in the dataframe, then the function will consider the taxonomy of the retrieved sequences as originally available in GenBank. |
+| gb.colnames | A vector with column names within the `inputdf` dataframe corresponding to each gene, where the GenBank accession numbers are listed. |
+| as.character | A logical controlling whether to return the sequences as an object of class "DNAbin" (the default). |
+| verbose | Logical, if `FALSE`, a message showing each step during the GenBank search will not be printed in the console in full. |
+| save | Logical, if `TRUE`, the mined sequences will be saved on disk. |
+| filename | Name of the output file to be saved. The default is to create a file entitled **GenBanK_seqs**. |
+| dir | The path to the directory where the mined DNA sequences in a fasta format file will be saved provided that the argument `save` is set up in `TRUE`. The default is to create a directory named **RESULTS_mineSeq** and the sequences will be saved within a subfolder named after the current date. |
+
+### Value
+
+A list of DNA sequences made of vectors of class 'DNAbin', or of
+single characters (if as.character = TRUE) with two attributes (species and
+description).
+
+### Examples
+
+```r
+library(catGenes)
+
+data(GenBank_accessions)
+
+mineSeq(inputdf = GenBank_accessions,
+        gb.colnames = c("ETS", "ITS", "matK", "petBpetD", "trnTF", "Xdh"),
+        as.character = FALSE,
+        verbose = TRUE,
+        save = TRUE,
+        filename = "GenBanK_seqs",
+        dir = "RESULTS_mineSeq")
+```
+
+

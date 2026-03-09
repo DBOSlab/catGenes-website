@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# catGenes <img src="inst/figures/catGenes_hex_sticker.png" align="right" alt="" width="120" />
+# catGenes <img src="figures/catGenes_hex_sticker.png" align="right" alt="" width="120" />
 
 **Tools for DNA sequence retrieval, alignment, concatenation, and phylogenetic analysis in R**
 
@@ -215,7 +215,7 @@ p <- ggraph(g, layout = "manual", x = layout_tbl$x, y = layout_tbl$y) +
   )
 
 ggsave(
-  filename = "inst/figures/catGenes_workflow_ggraph.png",
+  filename = "figures/catGenes_workflow_ggraph.png",
   plot = p,
   width = 8.5,
   height = 10,
@@ -226,7 +226,7 @@ ggsave(
 #p
 ```
 
-![](inst/figures/catGenes_workflow_ggraph.png)
+![](figures/catGenes_workflow_ggraph.png)
 
 *Overview of the main `catGenes` workflow, highlighting sequence retrieval, FASTA combination, sequence alignment, alignment conversion, concatenation, export of partitioned datasets, model selection, phylogenetic inference, and tree visualization.*
 

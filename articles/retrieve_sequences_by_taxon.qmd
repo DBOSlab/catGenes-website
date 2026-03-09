@@ -1,0 +1,314 @@
+---
+title: "Retrieve sequences from GenBank with taxonomic queries"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+The function `mineTaxa()` retrieves DNA sequences from GenBank using taxonomic query terms rather than precompiled accession tables. This workflow is useful when you want to search GenBank directly for sequences belonging to a taxonomic group, gene, or combination of search terms, and then download and standardize the resulting sequences for downstream use in `catGenes`.
+
+Depending on the options used, `mineTaxa()` can:
+
+- search GenBank using taxonomic query syntax
+- retrieve large sets of sequences from the NCBI nucleotide database
+- clean and standardize taxon names
+- append voucher information when available
+- separate complete plastomes from other sequences
+- remove duplicated sequences while retaining the longest accession per species
+- save the results as `FASTA` files for later alignment and concatenation
+
+This article shows how to construct search queries, run `mineTaxa()`, understand the main arguments, and prepare the output for downstream workflows.
+
+## When to use `mineTaxa()`
+
+Use `mineTaxa()` when:
+
+- you do not already have accession numbers compiled in a table
+- you want to query GenBank directly by taxon name, gene, or other search terms
+- you want to retrieve a large set of sequences for exploratory or comparative analyses
+- you want `catGenes` to help clean taxon names and standardize output labels
+- you want to separate complete plastomes from standard gene sequences
+
+If you already have a curated table of accession numbers, the more direct function is `mineSeq()`.
+
+## Query syntax
+
+The main input to `mineTaxa()` is the argument `term`, which should follow NCBI Entrez search syntax. For example:
+
+- `Leguminosae[Organism] AND matK[Gene]`
+- `Arabidopsis[Organism] AND rbcL[Gene]`
+- `Vatairea[Organism] AND ITS`
+- `Detarioideae[Organism] AND trnL-F`
+
+A simple example:
+
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]"
+)
+```
+
+This searches the GenBank nucleotide database for sequences annotated as belonging to Leguminosae and associated with the gene `matK`.
+
+## Basic usage
+A basic call to `mineTaxa()` looks like this:
+
+```{r, eval=FALSE}
+library(catGenes)
+
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]"
+)
+```
+
+This searches GenBank, retrieves the matching sequences, cleans the names by default, and returns the result as an R object. If `save = TRUE`, it also writes the result to disk.
+
+## A slightly larger query
+You can also request a larger number of records using retmax.
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  retmax = 2000
+)
+```
+
+This is useful for broad taxonomic groups or heavily represented loci.
+
+## Choosing the database
+The default database is "nucleotide", which is appropriate for most DNA sequence retrieval workflows.
+
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  db = "nucleotide"
+)
+```
+
+In principle, other NCBI databases can be specified, but the standard catGenes use case is DNA sequence retrieval from the nucleotide database.
+
+## Cleaning taxon names
+By default, `mineTaxa()` cleans and standardizes sequence labels.
+
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  clean_taxa = TRUE
+)
+```
+
+This cleaning step helps create sequence names that are easier to use in downstream alignment and concatenation workflows.
+
+Taxon name cleaning may include:
+
+- removing periods and hyphens
+- removing or simplifying var., subsp., and similar rank indicators
+- converting spaces to underscores
+- trimming sp. designations
+- removing trailing underscores
+- simplifying hybrid cultivar formatting
+
+This is especially useful when retrieving large numbers of GenBank records with heterogeneous metadata.
+
+## Preserving original GenBank names
+If you prefer to keep GenBank names unchanged, set `clean_taxa = FALSE`.
+
+```{r, eval=FALSE}
+seqs_raw <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  clean_taxa = FALSE
+)
+```
+
+This preserves the original taxon labels as returned by GenBank, which can be useful for inspection or troubleshooting, but it is often less convenient for downstream concatenation.
+
+## Adding voucher information
+By default, `mineTaxa()` attempts to extract voucher information from GenBank metadata and append it to the sequence label.
+
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  add_voucher = TRUE
+)
+```
+
+When voucher information is available, this helps create more informative and stable sequence labels, for example in a format such as:
+```{r, eval=FALSE}
+Genus_species_voucher_accession
+```
+
+This is particularly useful when the same species is represented by multiple accessions.
+
+# Saving the original unprocessed query
+
+If you want to preserve a copy of the original unprocessed FASTA output alongside the cleaned version, use `original_query = TRUE`.
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  clean_taxa = TRUE,
+  original_query = TRUE
+)
+```
+This writes an additional file with the suffix _ORIGINAL_QUERY, allowing you to compare the cleaned output against the raw GenBank results.
+
+## Separating plastomes from standard sequences
+
+One important feature of `mineTaxa()` is the ability to separate complete plastome sequences into a separate output file.
+
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  plastome_apart = TRUE
+)
+```
+When this option is enabled, complete plastomes are separated into a dedicated file with a prefix such as:
+
+```{r, eval=FALSE}
+PLASTOMES_mined_seqs_by_taxon.fasta
+```
+
+This helps distinguish whole plastome accessions from ordinary gene sequences, which is often important when building clean locus-based datasets.
+
+## Removing duplicated sequences
+By default, mineTaxa() removes duplicate sequences from the same species, keeping only the longest one.
+
+```{r, eval=FALSE}
+seqs <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  rm_duplicated = TRUE
+)
+```
+
+This duplicate-removal step is applied separately to plastomes and other sequences when plastome separation is active.
+This behavior is useful for reducing redundancy in large GenBank downloads, especially for broad taxonomic queries.
+
+## Keeping all retrieved sequences
+
+If you want to retain all retrieved sequences, including duplicates, disable duplicate removal.
+
+```{r, eval=FALSE}
+seqs_all <- mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  rm_duplicated = FALSE
+)
+```
+
+This can be useful when you want to inspect raw diversity in the retrieved dataset before deciding how to filter it.
+
+## Saving results to disk
+
+By default, `mineTaxa()` can save results to disk.
+
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  filename = "legume_matK.fasta",
+  save = TRUE,
+  dir = "RESULTS_mineTaxa"
+)
+```
+
+This creates an output directory, usually including a date-based subfolder, and writes the retrieved sequences there.
+Understanding the output directory
+
+When `save = TRUE`, results are written to the folder specified by dir, typically under a date-stamped subdirectory. For example:
+```{r, eval=FALSE}
+RESULTS_mineTaxa/09Mar2026/
+```
+
+Depending on the options used, this directory may contain:
+
+- a cleaned `FASTA` file
+- an optional original-query `FASTA` file
+- a separate plastome `FASTA` file
+- files with duplicates removed or retained according to the settings
+
+## Example queries
+Here are some example search strategies.
+
+### Retrieve a commonly used plastid locus for a family
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Leguminosae[Organism] AND matK[Gene]",
+  retmax = 2000
+)
+```
+
+### Retrieve a nuclear ribosomal marker for a genus
+
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Vatairea[Organism] AND ITS"
+)
+```
+
+### Retrieve a broad chloroplast marker for a subfamily
+
+```{r, eval=FALSE}
+mineTaxa(
+  term = "Detarioideae[Organism] AND rbcL[Gene]"
+)
+```
+
+These examples can be adapted to different taxonomic groups and loci.
+Typical workflow after `mineTaxa()`
+
+A common workflow is:
+
+- retrieve sequences from GenBank using a taxonomic query
+- clean and standardize the sequence labels
+- save the retrieved sequences to disk as `FASTA`
+- combine or align the sequences
+- convert alignment formats if needed
+- load the alignments into R
+- concatenate loci with `catfullGenes()` or `catmultGenes()`
+
+For example, once the sequences have been saved:
+
+```{r, eval=FALSE}
+alignSeqs(
+  filepath = "RESULTS_mineTaxa/09Mar2026",
+  method = "ClustalW",
+  format = "NEXUS"
+)
+```
+
+This makes `mineTaxa()` a natural entry point for a broader exploratory or taxon-based workflow.
+
+## Common issues
+### Query returns too many sequences
+Broad taxonomic queries may produce very large results. Refine the query by adding gene names, markers, or narrower taxonomic terms.
+
+### Query returns unexpected records
+GenBank annotations are heterogeneous. Some records may be mislabeled, incompletely annotated, or unexpectedly broad. Always inspect the output before alignment and concatenation.
+
+### Voucher information is not available
+Voucher extraction depends on GenBank metadata. Some records do not include usable voucher annotations, so labels may still rely mainly on taxon name and accession.
+
+### Large downloads are slow
+Broad queries can take time due to GenBank response limits and network latency. For very large datasets, consider splitting the retrieval into several more targeted queries.
+
+### Cleaned taxon names require inspection
+Although name cleaning is useful, it may not always behave ideally for every taxonomic group. It is good practice to inspect the cleaned output before using it in downstream workflows.
+
+## Recommended practice
+For the smoothest use of `mineTaxa()`:
+
+- write search terms as specifically as possible
+- include a gene name whenever relevant
+- inspect the downloaded sequence labels before alignment
+- retain voucher information when available
+- save outputs to disk for reproducibility
+- consider separating plastomes and removing duplicates when building standard gene datasets
+
+## Next step
+Once sequences have been retrieved with `mineTaxa()`, the next step is usually to:
+
+- align the sequences with `alignSeqs()`
+- convert the resulting alignments if needed
+- load them into R
+- concatenate loci for downstream phylogenetic analysis
+
+See the next tutorials for sequence alignment, alignment conversion, and multilocus concatenation with `catGenes`.

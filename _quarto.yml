@@ -5,7 +5,7 @@ project:
     - figures/**
 
 website:
-  title: "refloraR"
+  title: "catGenes"
   site-url: https://dboslab.github.io/catGenes-website/
   page-navigation: true
   reader-mode: true  

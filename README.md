@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# catGenes <img src="inst/figures/catGenes_hex_sticker.png" align="right" alt="" width="120" />
+# catGenes <img src="figures/catGenes_hex_sticker.png" align="right" alt="" width="120" />
 
 **Tools for DNA sequence retrieval, alignment, concatenation, and
 phylogenetic analysis in R**
@@ -105,7 +105,7 @@ The diagram below summarizes a typical `catGenes` workflow, from
 sequence retrieval and alignment preparation to concatenation, model
 selection, phylogenetic inference, and tree visualization.
 
-![](inst/figures/catGenes_workflow_ggraph.png)
+![](figures/catGenes_workflow_ggraph.png)
 
 *Overview of the main `catGenes` workflow, highlighting sequence
 retrieval, FASTA combination, sequence alignment, alignment conversion,

@@ -1,36 +1,96 @@
 /*-- scss:defaults --*/
 
-// Base document colors
-$body-bg: #181818;
-$body-color: white;
-$link-color: #75AADB;
+// catGenes palette
+$catgenes-pink:      #F2A3A8;
+$catgenes-rose:      #C96B73;
+$catgenes-deep:      #F5EDEE;
+$catgenes-darkbg:    #1E1B1C;
+$catgenes-darkpanel: #2A2526;
+$catgenes-darkpanel2:#342D2F;
+$catgenes-link:      #F0A8AE;
 
-$light: #525252;
+// Base document colors
+$body-bg: $catgenes-darkbg;
+$body-color: $catgenes-deep;
+$link-color: $catgenes-link;
+
+$light: $catgenes-darkpanel2;
 
 // Navigation element colors
-$footer-bg: #181818;
-$navbar-bg: #303030;
-$sidebar-bg: #303030;
+$footer-bg: $catgenes-darkbg;
+$navbar-bg: $catgenes-darkpanel;
+$sidebar-bg: $catgenes-darkpanel;
 
 // Code blocks
 $code-block-bg-alpha: -.8;
 
 // Bootstrap popovers
-$popover-bg: #242424;
+$popover-bg: #242021;
 
 // Bootstrap inputs
-$input-bg: #242424;
+$input-bg: #242021;
+
+
+/*-- scss:rules --*/
 
 .mainbox {
-  background: #303030;
+  background: $catgenes-darkpanel;
+  color: $catgenes-deep;
+  border: 1px solid rgba(242, 163, 168, 0.15);
+  border-radius: 10px;
+  padding: 1rem;
 }
 
 .mainbox a {
+  color: $catgenes-link;
   text-decoration: none;
+}
+
+.mainbox a:hover {
+  color: lighten($catgenes-link, 6%);
+  text-decoration: underline;
 }
 
 .mainbox h2 {
   border-bottom-width: 0px;
-  font-weight: lighter;
+  font-weight: 300;
+  color: $catgenes-pink;
 }
 
+.mainbox p {
+  color: #E6D8DA;
+}
+
+.whitebox {
+  background: $catgenes-darkpanel2;
+  color: $catgenes-deep;
+  border: 1px solid rgba(242, 163, 168, 0.10);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.whitebox h1,
+.whitebox h2 {
+  color: $catgenes-pink;
+  font-weight: 300;
+  border-bottom-width: 0px;
+}
+
+.whitebox p {
+  color: #E6D8DA;
+}
+
+.whitebox a {
+  color: $catgenes-link;
+  text-decoration: none;
+}
+
+.whitebox a:hover {
+  text-decoration: underline;
+}
+
+.co {
+  font-size: .830em;
+  font-weight: 100;
+  color: $catgenes-pink;
+}

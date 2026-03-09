@@ -1,0 +1,275 @@
+---
+title: "Working with duplicated taxa and multiple accessions"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+A common challenge in multilocus phylogenetic datasets is that one or more species may be represented by multiple accessions across individual alignments. These duplicated taxa may correspond to different vouchers, collections, DNA extractions, or sequencing accessions. `catGenes` was designed to handle this situation explicitly, but doing so requires consistent label formatting across loci.
+
+This article explains how duplicated taxa and multiple accessions should be represented in input alignments, how `catGenes` distinguishes them from simple single-accession datasets, and when to use `catmultGenes()` instead of `catfullGenes()`.
+
+## Why duplicated accessions matter
+
+In a simple multilocus dataset, each species is represented by a single sequence per locus. In that case, taxa can be matched across loci using only the scientific name.
+
+However, many real datasets include cases where the same species is represented by more than one accession, for example:
+
+- multiple specimens collected from different populations
+- different vouchers from the same species
+- independent DNA extractions
+- different sequencing accessions for the same taxon
+
+In these cases, matching taxa across loci by scientific name alone is not sufficient, because `catGenes` must determine which sequence in one alignment corresponds to which sequence in another alignment.
+
+For this reason, duplicated-accession datasets require both:
+
+- a consistently formatted scientific name
+- a stable identifier that distinguishes one accession from another
+
+## Choosing the correct concatenation function
+
+`catGenes` provides two main concatenation workflows:
+
+- `catfullGenes()` for datasets in which each species has a single sequence per locus
+- `catmultGenes()` for datasets in which one or more species are represented by multiple accessions
+
+As a rule:
+
+- use `catfullGenes()` when labels can be matched by taxon name alone
+- use `catmultGenes()` when the same taxon may occur multiple times in one or more alignments
+
+Using the wrong function may lead to mismatched sequences, duplicated taxa in the output, or unexpected exclusion of accessions.
+
+## General labeling rule for duplicated taxa
+
+When species are represented by multiple accessions, sequence labels must include both:
+
+- the taxon name
+- an identifier that remains stable across loci
+
+Recommended format:
+
+- `Genus_species_identifier`
+- `Genus_species_identifier_everythingelse`
+
+Examples:
+
+- `Vatairea_fusca_Cardoso3060`
+- `Vatairea_fusca_Cardoso2939_JX152598`
+- `Vatairea_fusca_Silva1820`
+- `Vatairea_fusca_Lima7344`
+
+In this format, `catGenes` uses the scientific name plus the identifier to recognize which accessions should be matched across loci.
+
+## Example of duplicated-accession labels
+
+The figure below illustrates how labels should be formatted when one or more species are represented by multiple accessions.
+
+![Example when species are duplicated with multiple accessions](vignettes/labelling_with_identifiers_and_duplicated_species.png)
+
+The key principle is that the identifying component must be consistent wherever the same accession appears.
+
+## What counts as a stable identifier?
+
+A stable identifier is any label that uniquely identifies the accession and is used consistently across loci. Examples include:
+
+- collector surname and collection number
+- voucher number
+- DNA extraction code
+- laboratory accession code
+- specimen barcode
+
+Good examples:
+
+- `Cardoso2939`
+- `Silva1820`
+- `RB123456`
+- `DNA45`
+
+Poor choices include identifiers that change from locus to locus or identifiers that are missing from some alignments for the same accession.
+
+## When not to use accession identifiers
+
+If each species is represented by only one sequence per locus, accession identifiers are optional. In those cases, labels such as:
+
+- `Genus_species`
+- `G_species`
+- `Genus_species_moretext`
+
+may still be suitable for `catfullGenes()`, as long as the taxon name is consistently formatted.
+
+The accession-aware workflow is only necessary when a species is actually duplicated in one or more alignments.
+
+## Detecting duplicated taxa in your dataset
+
+A simple way to recognize whether you need `catmultGenes()` is to inspect sequence labels in your alignments and ask:
+
+- does the same species appear more than once within an alignment?
+- do different loci include multiple sequences for the same taxon?
+- do I need to preserve accession identity across loci?
+
+If the answer to any of these is yes, `catmultGenes()` is usually the correct choice.
+
+## Example workflow with duplicated accessions
+
+The example below assumes that the alignments have already been loaded into R as a named list and that labels include stable identifiers.
+
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+This compares alignments while taking duplicated accessions into account.
+
+## Understanding the maxspp argument
+The `catmultGenes()` function includes the argument maxspp, which controls how taxa without duplicated accessions are treated.
+
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+When `maxspp = TRUE`, species that are not duplicated in any individual alignment are retained in the final concatenated dataset, helping maximize taxon coverage.
+This is usually the recommended option, because it avoids unnecessarily dropping taxa that only have one accession but still belong in the final matrix.
+
+## Understanding the shortaxlabel argument
+In datasets with duplicated accessions, shortaxlabel determines how much of the original label is retained in the output.
+
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = FALSE,
+  missdata = TRUE
+)
+```
+
+- `shortaxlabel = TRUE` keeps labels shorter and more standardized
+- `shortaxlabel = FALSE` retains more of the original identifying information
+
+Keeping full labels can be useful in phylogenomic or voucher-rich datasets, especially when accessions must remain clearly traceable throughout downstream analyses.
+
+## Understanding the missdata argument
+As in other concatenation workflows, the missdata argument controls whether taxa lacking sequences in one or more loci are retained.
+
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+- `missdata = TRUE` retains incomplete taxa and fills missing partitions with missing data
+- `missdata = FALSE` excludes taxa lacking a complete sequence for one or more loci
+
+This is especially important in duplicated-accession datasets, where different accessions may have different locus coverage.
+
+## What happens after concatenation?
+
+Once `catmultGenes()` has been run successfully, the resulting list of equalized alignments can be exported with:
+
+- `writeNexus()`
+- `writePhylip()`
+
+For example:
+
+```{r, eval=FALSE}
+writeNexus(
+  catdf,
+  file = "duplicated_accessions_dataset.nex",
+  genomics = FALSE,
+  interleave = TRUE,
+  bayesblock = TRUE
+)
+```
+
+or
+
+```{r, eval=FALSE}
+writePhylip(
+  catdf,
+  file = "duplicated_accessions_dataset.phy",
+  genomics = FALSE,
+  catalignments = TRUE,
+  partitionfile = TRUE
+)
+```
+
+
+## Keeping original identifiers in exported datasets
+In some workflows, you may want to preserve all original identifiers in the concatenated output. This is especially useful for genomic or accession-rich datasets.
+
+When you run `catfullGenes()` or `catmultGenes()` with `shortaxlabel = FALSE`, the export functions can preserve accession detail in the final output.
+
+For example:
+
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = FALSE,
+  missdata = TRUE
+)
+
+writeNexus(
+  catdf,
+  file = "full_labels_dataset.nex",
+  genomics = TRUE,
+  interleave = TRUE,
+  bayesblock = TRUE
+)
+```
+
+This helps maintain traceability between the concatenated matrix and the original sequence labels.
+
+## Removing redundant duplicated accessions after concatenation
+After concatenation, you may decide that some duplicated accessions should be removed, particularly when they represent the same species but differ in completeness.
+
+The function `dropSeq()` was developed for this purpose. It removes smaller or less informative duplicated sequences, typically favoring the accession with better data coverage.
+
+```{r, eval=FALSE}
+clean_catdf <- dropSeq(catdf)
+```
+
+This can be useful before exporting the final matrix.
+
+## Common mistakes
+### Using catfullGenes() when taxa are duplicated
+If one or more species are represented by multiple accessions, `catfullGenes()` may not match them correctly because it is intended for one-sequence-per-species datasets.
+
+### Inconsistent identifiers across loci
+If the same accession is labeled differently in different alignments, `catGenes` will treat them as different accessions.
+For example, these may fail to match as intended:
+- Vatairea_fusca_Cardoso2939
+- Vatairea_fusca_DCardoso2939
+- Vatairea_fusca_RB2939
+
+## Missing identifiers in only some loci
+If duplicated taxa are identified with accession codes in one alignment but not in another, `catGenes` may not be able to resolve them correctly.
+
+## Mixing multiple identification schemes
+Using collector numbers in one alignment and GenBank accessions in another for the same accession can create mismatches unless the same identifier is carried consistently across loci.
+
+## Recommended practice
+For duplicated-accession datasets, the safest workflow is:
+
+- choose a single stable identifier for each accession
+- use that identifier consistently across all loci
+- separate label components with underscores
+- load alignments into R as a named list
+- use c`atmultGenes()` for concatenation
+- inspect the output and optionally use `dropSeq()` if cleanup is needed

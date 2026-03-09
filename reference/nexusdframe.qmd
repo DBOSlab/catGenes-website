@@ -1,0 +1,54 @@
+---
+title: 'nexusdframe'
+description: 'Writes a NEXUS-formatted DNA alignment from a dataframe-formatted DNA alignment'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::nexusdframe()
+```
+
+### Description
+
+Writes `data.frame` formatted DNA alignment or `list`
+formatted NEXUS file as originally imported with `ape`'s function
+`read.nexus.data` into a NEXUS-formatted file. It is useful for
+writing each gene dataset from within the resulting list of compared gene datasets,
+after running the concatenating functions `catfullGenes` and
+`catmultGenes`. The function is also useful for saving the original
+list-formatted NEXUS object as read by `read.nexus.data`, after
+making specific changes in such original individual alignment (e.g. corrections
+of species names).
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| x | The object to be written, any two-column-sized `data.frame` where the first column contains the taxon names and the second column the DNA sequence. Otherwise, the object may be a list-formatted NEXUS file as originally imported with `ape`'s function `read.nexus.data`. |
+| file | Either a character string naming a file or a `connection` open for writing. |
+| dropmisseq | Logical, if `FALSE` the function will not drop species with empty DNA sequence. After running the concatenating function `catmultGenes` using missdata = `TRUE`, and then using `dropSeq` to remove duplicated accessions of the same species, you might find useful to keep dropmisseq = `TRUE` so as to save each individual DNA alignment by also removing species that fully miss the sequence data. |
+| endgaps.to.miss | Logical, if `FALSE` the function will not replace terminal GAPs into missing character (?). |
+
+### Examples
+
+```r
+data(Gaya)
+catdf <- catfullGenes(Gaya,
+                      multiaccessions = FALSE,
+                      shortaxlabel = TRUE,
+                      missdata = FALSE,
+                      outgroup = "Abutilon_costicalyx")
+
+ITS <- catdf[[1]]
+petLpsbE <- catdf[[2]]
+rpl16 <- catdf[[3]]
+
+nexusdframe(ITS, file = "filename.nex")
+nexusdframe(petLpsbE, file = "filename.nex")
+nexusdframe(rpl16, file = "filename.nex")
+```
+
+

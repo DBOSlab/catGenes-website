@@ -1,0 +1,55 @@
+---
+title: 'evomodelTest'
+description: 'Automated Evolutionary Model Selection and MrBayes Command Generation'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::evomodelTest()
+```
+
+### Description
+
+This function performs DNA substitution model selection using
+the modelTest function from [phangorn](https://klausvigo.github.io/phangorn/index.html)
+package, identifies the best model according to AIC and BIC criteria, and generates
+corresponding MrBayes commands for phylogenetic analysis.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| nexus_file_path | Path to the NEXUS alignment file(s). |
+| model_criteria | Selection criterion: "AIC" or "BIC" (default: "BIC"). |
+| models_to_test | Which models to test: "all" for all models, "standard" for JC/F81/K80/HKY/SYM/GTR only, or a character vector of specific models. |
+| include_G | Should Gamma rate heterogeneity be tested? (default: TRUE). |
+| include_I | Should invariant sites be tested? (default: TRUE). |
+| mc.cores | Number of cores for parallel computation (default: 4). |
+| append_mrbayes_to_nexus | Logical. If TRUE, appends the generated MrBayes block to each input NEXUS matrix. |
+| overwrite_original_nexus | Logical. If TRUE and `append_mrbayes_to_nexus = TRUE`, the original NEXUS file is overwritten. If FALSE, a copy with the same basename is written to the results folder. |
+| combined_nexus_file_path | Optional path to a concatenated/combined NEXUS matrix. If provided, the function appends the complete combined MrBayes block for partitioned analysis to that file. |
+| verbose | Print progress messages? (default: TRUE). |
+| dir | The path to the directory where the model selection results will be saved. The default is to create a directory named **RESULTS_evomodelTest** and the resulting analysis will be saved within a subfolder named after the current date (format: "ddMonYYYY", e.g., "02Dec2025"). |
+
+### Value
+
+Invisibly returns a list containing all results. Saves a detailed
+report to a text file in the results directory.
+
+### Examples
+
+```r
+# Basic usage
+evomodelTest("alignment.nex")
+
+# Specify AIC criterion and partition 1
+evomodelTest("alignment.nex", model_criteria = "AIC", partition = "1")
+
+# Test only standard models
+evomodelTest("alignment.nex", models_to_test = "standard")
+```
+
+

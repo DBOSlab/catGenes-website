@@ -1,0 +1,60 @@
+---
+title: 'alignSeqs'
+description: 'Automated multiple sequence alignment'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::alignSeqs()
+```
+
+### Description
+
+Perform automated multiple sequence alignment with
+[msa](https://bioconductor.org/packages/release/bioc/html/msa.html) package
+based either on [ClustalW](https://doi.org/10.1093/bioinformatics/btm404)
+or [Muscle](https://doi.org/10.1186/1471-2105-5-113) algorithms. The function
+uses one or multiple FASTA-formatted files to perform alignments and may save
+the aligned sequences in FASTA, NEXUS or PHYLIP format.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| filepath | Path to the directory where the FASTA-formatted DNA alignments are stored. |
+| method | Specifies the multiple sequence alignment to be used. Currently, "ClustalW" and "Muscle" are supported. |
+| gapOpening | Gap opening penalty; the defaults are specific to the algorithm (see `msaClustalW` and `msaMuscle)`. Note that the sign of this parameter is ignored. The sign is automatically adjusted such that the called algorithm penalizes gaps instead of rewarding them. |
+| format | Define either "NEXUS", "FASTA" or "PHYLIP" for writing the resulting aligned DNA sequences in such formats. The default is to save the aligned sequences in a NEXUS-formatted file. |
+| verbose | Logical, if `FALSE`, a message showing each step during the multiple sequence alignment will not be printed in the console in full. |
+| dir | The path to the directory where the mined DNA sequences in a fasta format file will be saved provided that the argument `save` is set up in `TRUE`. The default is to create a directory named **RESULTS_alignSeqs** and the sequences will be saved within a subfolder named after the current date. |
+| filename | A name or a vector of names of the output file(s) to be saved. The default is to create output file(s) named based on the original name of the input file(s) but also including an identifier suffix "aligned". |
+
+### Examples
+
+```r
+library(catGenes)
+
+data(GenBank_accessions)
+
+folder_name_mined_seqs <- paste0("RESULTS_mineSeq/", todaydate)
+
+mineSeq(inputdf = GenBank_accessions,
+        gb.colnames = c("ETS", "ITS", "matK", "petBpetD", "trnTF", "Xdh"),
+        as.character = FALSE,
+        verbose = TRUE,
+        save = TRUE,
+        dir = "RESULTS_mineSeq",
+        filename = "GenBanK_seqs")
+
+alignSeqs(filepath = folder_name_mined_seqs,
+          method = "ClustalW",
+          gapOpening = "default",
+          format = "NEXUS",
+          verbose = TRUE,
+          dir = "RESULTS_alignSeqs")
+```
+
+

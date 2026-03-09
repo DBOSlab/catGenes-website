@@ -1,0 +1,54 @@
+---
+title: "Mine loci from plastomes and mitochondrial genomes"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+`catGenes` includes dedicated functions to retrieve targeted loci directly from complete organellar genomes available in GenBank:
+
+- `minePlastome()` for plastid genomes
+- `mineMitochondrion()` for mitochondrial genomes
+
+These functions are useful when you already know which complete organellar accessions you want to use and need to extract one or more specific genes or regions for downstream alignment, concatenation, or phylogenetic analysis.
+
+Compared with broader GenBank search workflows, these functions are designed for a more targeted task: starting from complete genome accessions and mining particular loci in a consistent way.
+
+## When to use these functions
+
+Use `minePlastome()` or `mineMitochondrion()` when:
+
+- you already have accession numbers for complete plastomes or mitochondrial genomes
+- you want to extract one or more loci from those genomes
+- you want to generate standardized `FASTA` outputs for downstream alignment
+- you want to keep taxon and voucher information associated with the mined loci
+- you want to separate targeted organellar mining from broader accession-based or taxon-based GenBank retrieval
+
+If you want to retrieve ordinary GenBank sequences by accession number, see `mineSeq()`. If you want to query GenBank by taxonomic search terms, see `mineTaxa()`.
+
+## Main differences between the two functions
+
+The two workflows are parallel in structure:
+
+- `minePlastome()` extracts loci from complete plastid genomes
+- `mineMitochondrion()` extracts loci from complete mitochondrial genomes
+
+Both functions:
+
+- use GenBank accession numbers as input
+- download and parse annotated genome files
+- extract user-specified loci
+- write the results as `FASTA` files
+- optionally preserve taxon and voucher information in the resulting labels
+
+The essential input is a vector of GenBank accession numbers corresponding to complete organellar genomes.
+
+```{r, eval=FALSE}
+accessions <- c("NC_000932", "NC_026462")
+```
+
+
+

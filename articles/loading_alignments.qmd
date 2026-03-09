@@ -1,0 +1,159 @@
+---
+title: "Loading multiple alignments into R"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+Most `catGenes` workflows begin with a set of individual DNA alignments imported into R as a named list. This article explains how to load multiple alignments, organize them consistently, and prepare them for downstream functions such as `catfullGenes()` and `catmultGenes()`.
+
+The examples below use alignments in **NEXUS format** read with `ape::read.nexus.data()`, which is the format most commonly used in `catGenes` concatenation workflows.
+
+---
+
+## Before you start
+
+Before loading alignments into R, make sure that:
+
+- taxon labels are consistently formatted across loci  
+- file names are informative and stable  
+- each alignment corresponds to a single gene or locus  
+- all input files are stored in the same folder if you want to import them together  
+
+For guidance on sequence label formatting, see the article on **standardizing DNA alignments for `catGenes`**.
+
+---
+
+# Loading example alignments included in `catGenes`
+
+The package includes example alignments for **Vataireoid legumes**. These files can be loaded directly from the installed package and are useful for learning the basic workflow.
+
+```{r eval=FALSE}
+
+library(catGenes)
+
+genes <- list.files(system.file("DNAlignments/Vataireoids",
+                                package = "catGenes"))
+
+Vataireoids <- list()
+
+for (i in genes) {
+  Vataireoids[[i]] <- ape::read.nexus.data(
+    system.file("DNAlignments/Vataireoids", i, package = "catGenes")
+  )
+}
+
+names(Vataireoids) <- gsub("[.].*", "", names(Vataireoids))
+```
+
+The resulting object is a named list of DNA alignments.
+
+```{r eval=FALSE}
+
+names(Vataireoids)
+```
+
+Each element of the list corresponds to a single alignment, and the list names indicate the gene or locus.
+
+# Loading alignments from your own directory
+
+If your DNA alignments are stored in a folder on your computer, you can import them using `list.files()` and a loop.
+```{r}
+#| echo: false
+
+library(catGenes)
+
+genes <- list.files("path_to_DNA_alignments_folder")
+my_alignments <- list()
+
+for (i in genes) {
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("path_to_DNA_alignments_folder/", i)
+  )
+}
+```
+
+
+# Recommended file naming
+
+For simplicity, alignment files should ideally be named only by locus, for example:
+
+```{r eval=FALSE}
+ITS.nex
+matK.nex
+rbcL.nex
+trnDT.nex
+```
+
+This keeps the resulting list names easy to interpret and helps preserve clear partition names in downstream concatenation workflows.
+
+# Loading files with shared prefixes
+In some datasets, alignment files may include a dataset prefix before the gene name, such as:
+
+```{r eval=FALSE}
+Vataireoids_ITS.nex
+Vataireoids_matK.nex
+Vataireoids_trnDT.nex
+```
+These files can still be loaded normally, and the list names can then be cleaned to retain only the locus name.
+
+```{r eval=FALSE}
+library(catGenes)
+
+genes <- list.files("path_to_DNA_alignments_folder")
+my_alignments <- list()
+
+for (i in genes[grepl("Vataireoids", genes)]) {
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("path_to_DNA_alignments_folder/", i)
+  )
+}
+
+names(my_alignments) <- gsub(".*_(.+)[.].*", "\\1", names(my_alignments))
+```
+
+This approach is useful when several projects or clades are stored in the same directory.
+
+
+# Loading alignments one by one
+If you prefer, you can import each alignment separately and then combine them into a list.
+
+```{r eval=FALSE}
+library(catGenes)
+
+ITS   <- ape::read.nexus.data("ITS.nex")
+matK  <- ape::read.nexus.data("matK.nex")
+trnDT <- ape::read.nexus.data("trnDT.nex")
+
+my_alignments <- list(
+  ITS = ITS,
+  matK = matK,
+  trnDT = trnDT
+)
+```
+This approach is practical for small datasets or when you want more explicit control over the list structure.
+
+## Common issues
+
+# File paths are incorrect
+If R cannot find your files, check that the path provided to `list.files()` or `ape::read.nexus.data()` is correct.
+
+# Files are not in NEXUS format
+The examples in this article assume NEXUS input. If your files are in another format, you may need to convert them first using `convertAlign()`.
+
+# List names are not informative
+If you do not remove file extensions or prefixes, the resulting list names may be difficult to interpret in downstream analyses. Clean list names as early as possible.
+
+# Taxa do not match across loci
+If concatenation behaves unexpectedly, the problem is often due to inconsistent taxon labels rather than the import step itself. In that case, revisit the alignment standardization tutorial.
+
+## Next step
+Once your alignments are loaded into R as a named list, the next step is to choose the appropriate concatenation workflow:
+
+- use `catfullGenes()` when each species has a single sequence per locus
+- use `catmultGenes()` when one or more species have multiple accessions
+
+These workflows are described in the dedicated tutorials on concatenating multilocus datasets with `catGenes`.

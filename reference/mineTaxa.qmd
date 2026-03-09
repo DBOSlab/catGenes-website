@@ -1,0 +1,154 @@
+---
+title: 'mineTaxa'
+description: 'Mine DNA sequences from GenBank using taxonomic queries'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::mineTaxa()
+```
+
+### Description
+
+A comprehensive function built on the [rentrez](https://docs.ropensci.org/rentrez/)
+package to search, download, and process DNA sequences from GenBank using
+taxonomic query terms. This function performs multiple operations including
+taxon name cleaning, voucher information extraction, duplicate removal,
+and plastome separation. It iss particularly useful for phylogenetic studies
+requiring large-scale sequence retrieval with consistent naming conventions.
+
+### Details
+
+The function performs the following steps:
+
+1. 
+
+2. 
+3.  Connects to GenBank using the specified search term
+
+4. 
+5.  Downloads sequences (up to 
+6. `retmax`
+7.  records)
+
+8. 
+9.  If 
+10. `clean_taxa = TRUE`
+11. :
+
+12. 
+- 
+
+- 
+-  Extracts and cleans organism names from each accession
+
+- 
+-  Optionally adds voucher information
+
+- 
+-  Standardizes naming format: Genus_species_voucher_accession
+
+- 
+-  Separates plastomes if 
+- `plastome_apart = TRUE`
+- 
+
+- 
+-  Removes duplicates if 
+- `rm_duplicated = TRUE`
+- 
+
+13. 
+
+14. 
+15.  Saves results to specified directory with date-stamped subfolder
+
+Taxon name cleaning includes:
+
+- 
+
+- 
+-  Removing periods and hyphens
+
+- 
+-  Converting "var.", "subsp.", "f." to simple spaces
+
+- 
+-  Converting spaces to underscores
+
+- 
+-  Trimming "sp." designations
+
+- 
+-  Removing trailing underscores
+
+- 
+-  Handling hybrid cultivars
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| term | Character string specifying the search query for GenBank. Should follow NCBI Entrez search syntax (e.g., "Solanaceae\[Organism\] AND matk", "Arabidopsis\[Organism\] AND rbcL\[Gene\]"). See NCBI's [Entrez Help](https://www.ncbi.nlm.nih.gov/books/NBK3837/) for detailed syntax. |
+| db | Character string specifying the NCBI database to search. Default is "nucleotide". Other options include "protein", "popset", etc. See `entrez_search` for details. |
+| filename | Character string for the output FASTA file name. Default is "mined_seqs_by_taxon.fasta". |
+| clean_taxa | Logical. If `TRUE` (default), taxon names are cleaned and standardized (removes authors, subsp./var. indicators, special characters). If `FALSE`, original GenBank names are preserved. |
+| add_voucher | Logical. If `TRUE` (default), voucher specimen information (when available) is extracted and appended to sequence names in the format: Genus_species_voucher_accession. If `FALSE`, voucher information is omitted. |
+| original_query | Logical. If `TRUE`, a copy of the original unprocessed FASTA file is saved with "_ORIGINAL_QUERY" suffix. If `FALSE` (default), only the cleaned file is kept. Ignored if `clean_taxa = FALSE`. |
+| plastome_apart | Logical. If `TRUE` (default), complete plastome sequences are separated into a separate file with "PLASTOMES_" prefix. Useful for distinguishing whole plastomes from individual gene sequences. |
+| rm_duplicated | Logical. If `TRUE` (default), removes duplicate sequences from the same species, keeping only the longest sequence. Applied separately to plastomes and other sequences. |
+| retmax | Numeric. Maximum number of sequences to retrieve from GenBank. Default is 4000. Increase for large queries, but note NCBI rate limits. |
+| verbose | Logical. If `TRUE` (default), progress messages are printed to the console. If `FALSE`, function runs silently. |
+| save | Logical. If `TRUE` (default), results are saved to disk in the specified directory. If `FALSE`, results are returned as R objects without saving. |
+| dir | Character string specifying the directory path for saving results. Default is "RESULTS_mineTaxa". A subdirectory with current date will be created within this directory. |
+
+### Value
+
+If `save = TRUE`, returns an invisible list of DNA sequences in
+`DNAbin` format (if `clean_taxa = TRUE`) or raw FASTA text (if
+`clean_taxa = FALSE`). If `save = FALSE`, returns the processed
+sequences as an R object. Files are written to disk in either case when
+`save = TRUE`.
+
+### Examples
+
+```r
+# Example 1: Basic search for matK sequences in Solanaceae (excluding Solanum)
+result1 <- mineTaxa(
+  term = "(Solanaceae[Organism] AND matk NOT Solanum[Organism])",
+  filename = "Solanaceae_outSolanum.fasta"
+)
+
+# Example 2: Search for rbcL sequences in Fabaceae with custom settings
+result2 <- mineTaxa(
+  term = "Fabaceae[Organism] AND rbcL[Gene]",
+  filename = "Fabaceae_rbcL.fasta",
+  clean_taxa = TRUE,
+  add_voucher = FALSE,          # Don't add voucher info
+  original_query = TRUE,        # Keep original unprocessed file
+  plastome_apart = FALSE,       # Don't separate plastomes
+  rm_duplicated = FALSE,        # Keep all sequences
+  retmax = 1000,
+  verbose = TRUE
+)
+
+# Example 3: Protein database search
+result3 <- mineTaxa(
+  term = "Rubisco[Protein] AND plants[Organism]",
+  db = "protein",
+  filename = "plant_Rubisco.fasta",
+  clean_taxa = FALSE           # Don't clean names for proteins
+)
+
+# Example 4: Return results without saving to disk
+result4 <- mineTaxa(
+  term = "Arabidopsis[Organism] AND chloroplast[Title]",
+  verbose = FALSE,
+  save = FALSE
+)
+```
+
+

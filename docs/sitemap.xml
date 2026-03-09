@@ -1,79 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/get-started/index.html</loc>
-    <lastmod>2025-06-22T17:36:41.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/get-started/index.html</loc>
+    <lastmod>2026-03-09T17:17:52.104Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_summary.html</loc>
-    <lastmod>2026-03-02T18:50:30.013Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/writeNexus.html</loc>
+    <lastmod>2026-03-09T10:40:29.385Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/index.html</loc>
-    <lastmod>2026-03-02T18:50:30.017Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/abbrevGen.html</loc>
+    <lastmod>2026-03-09T10:40:29.355Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_records.html</loc>
-    <lastmod>2026-03-02T18:50:30.012Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/nexusdframe.html</loc>
+    <lastmod>2026-03-09T10:40:29.379Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/about.html</loc>
-    <lastmod>2025-06-22T20:16:16.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/mineSeq.html</loc>
+    <lastmod>2026-03-09T10:40:29.373Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/filter_indeterminate_reflora_specimens.html</loc>
-    <lastmod>2025-06-22T19:37:18.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/index.html</loc>
+    <lastmod>2026-03-09T10:40:29.391Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/parse_reflora_dwca.html</loc>
-    <lastmod>2025-06-22T19:37:07.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/catfullGenes.html</loc>
+    <lastmod>2026-03-09T10:40:29.363Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/index.html</loc>
-    <lastmod>2025-06-22T19:26:58.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/writePhylip.html</loc>
+    <lastmod>2026-03-09T10:40:29.386Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/faq/index.html</loc>
-    <lastmod>2025-06-22T17:38:41.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/reference/mineTaxa.html</loc>
+    <lastmod>2026-03-09T10:40:29.375Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/LICENSE.html</loc>
+    <loc>https://dboslab.github.io/catGenes-website/reference/phylipdframe.html</loc>
+    <lastmod>2026-03-09T10:40:29.380Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/convertAlign.html</loc>
+    <lastmod>2026-03-09T10:40:29.366Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/mrbayesRun.html</loc>
+    <lastmod>2026-03-09T10:40:29.377Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/evomodelCmds.html</loc>
+    <lastmod>2026-03-09T10:40:29.367Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/about.html</loc>
+    <lastmod>2026-03-09T12:12:13.988Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/remove_redundant_accessions.html</loc>
+    <lastmod>2026-03-09T19:05:27.550Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/loading_alignments.html</loc>
+    <lastmod>2026-03-09T17:20:18.460Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/retrieve_sequences_by_accession.html</loc>
+    <lastmod>2026-03-09T19:02:27.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/mine_organellar_loci.html</loc>
+    <lastmod>2026-03-09T19:23:25.394Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/write_phylip_datasets.html</loc>
+    <lastmod>2026-03-09T19:04:54.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/combine_and_align_sequences.html</loc>
+    <lastmod>2026-03-09T16:32:08.347Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/plot_phylogenetic_trees.html</loc>
+    <lastmod>2026-03-09T19:05:36.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/duplicated_taxa_and_accessions.html</loc>
+    <lastmod>2026-03-09T19:06:09.343Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/articles/run_mrbayes.html</loc>
+    <lastmod>2026-03-09T19:05:17.343Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/authors/index.html</loc>
+    <lastmod>2026-03-09T11:08:25.409Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/LICENSE.html</loc>
     <lastmod>2025-06-23T17:45:32.000Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/authors/index.html</loc>
-    <lastmod>2025-06-22T21:38:11.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/faq/index.html</loc>
+    <lastmod>2026-03-09T11:46:06.472Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/summarize_reflora_collections.html</loc>
-    <lastmod>2026-02-28T22:54:31.838Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/concatenate_with_catfullGenes.html</loc>
+    <lastmod>2026-03-09T16:32:08.347Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/filter_reflora_records.html</loc>
-    <lastmod>2025-06-22T19:51:28.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/convert_alignment_formats.html</loc>
+    <lastmod>2026-03-09T19:05:58.088Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/download_reflora_collections.html</loc>
-    <lastmod>2025-06-22T19:37:54.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/write_nexus_datasets.html</loc>
+    <lastmod>2026-03-09T19:05:07.343Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/index.html</loc>
-    <lastmod>2026-02-28T22:22:53.309Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/index.html</loc>
+    <lastmod>2026-03-09T16:22:31.838Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/news/index.html</loc>
-    <lastmod>2025-06-24T12:57:21.000Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/model_selection_and_mrbayes.html</loc>
+    <lastmod>2026-03-09T19:05:45.489Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_indets.html</loc>
-    <lastmod>2026-03-02T18:50:30.008Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/standardizing_alignments.html</loc>
+    <lastmod>2026-03-09T17:21:22.552Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_download.html</loc>
-    <lastmod>2026-03-02T18:50:29.991Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/concatenate_with_catmultGenes.html</loc>
+    <lastmod>2026-03-09T16:32:08.347Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_parse.html</loc>
-    <lastmod>2026-03-02T18:50:30.010Z</lastmod>
+    <loc>https://dboslab.github.io/catGenes-website/articles/retrieve_sequences_by_taxon.html</loc>
+    <lastmod>2026-03-09T19:21:29.641Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/index.html</loc>
+    <lastmod>2026-03-09T12:12:29.818Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/news/index.html</loc>
+    <lastmod>2026-03-09T11:21:34.468Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/combineFASTA.html</loc>
+    <lastmod>2026-03-09T10:40:29.365Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/plotPhylo.html</loc>
+    <lastmod>2026-03-09T10:40:29.383Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/minePlastome.html</loc>
+    <lastmod>2026-03-09T10:40:29.372Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/splitTips.html</loc>
+    <lastmod>2026-03-09T10:40:29.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/run_catGenes.html</loc>
+    <lastmod>2026-03-09T10:40:29.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/dropSeq.html</loc>
+    <lastmod>2026-03-09T10:40:29.366Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/alignSeqs.html</loc>
+    <lastmod>2026-03-09T10:40:29.362Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/evomodelTest.html</loc>
+    <lastmod>2026-03-09T10:40:29.368Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/mineMitochondrion.html</loc>
+    <lastmod>2026-03-09T10:40:29.370Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/mrbayesStop.html</loc>
+    <lastmod>2026-03-09T10:40:29.378Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/fastadframe.html</loc>
+    <lastmod>2026-03-09T10:40:29.369Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/catGenes-website/reference/catmultGenes.html</loc>
+    <lastmod>2026-03-09T10:40:29.364Z</lastmod>
   </url>
 </urlset>

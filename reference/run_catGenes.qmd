@@ -1,0 +1,35 @@
+---
+title: 'run_catGenes'
+description: 'Run  *catGenes* under a Shiny Application'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::run_catGenes()
+```
+
+### Description
+
+This function runs the *catGenes* application. It will open
+the application by using the default internet browser, or the viewer if running
+from RStudio.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| launch.browser | Run catGenes in browser |
+| port | If launch.browser is FALSE, specify port to run catGenes |
+
+### Examples
+
+```r
+if (interactive()) {
+run_catGenes()
+}
+```
+
+

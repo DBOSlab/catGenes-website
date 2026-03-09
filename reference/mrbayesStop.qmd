@@ -1,0 +1,32 @@
+---
+title: 'mrbayesStop'
+description: 'Stop a MrBayes run started by `mrbayesRun`'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::mrbayesStop()
+```
+
+### Description
+
+Convenience wrapper to stop a MrBayes run returned by `mrbayesRun`.
+For programmatic stopping, the run must have been started with processx
+(i.e., `use_processx = TRUE`) and, for practical "stop anytime" control,
+`background = TRUE`.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| res | A result object returned by `mrbayesRun`. |
+| force | Logical. If `FALSE` (default), requests a graceful stop. If `TRUE`, force-kills the process. |
+
+### Value
+
+Invisibly returns `TRUE` if a stop signal was sent, otherwise `FALSE`.
+
+

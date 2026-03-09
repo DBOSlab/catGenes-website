@@ -1,0 +1,78 @@
+---
+title: "Function Reference"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+  }
+</style>
+
+## catGenes
+
+- [`abbrevGen()`](/reference/abbrevGen.qmd)
+
+- [`alignSeqs()`](/reference/alignSeqs.qmd)
+
+- [`catfullGenes()`](/reference/catfullGenes.qmd)
+
+- [`catmultGenes()`](/reference/catmultGenes.qmd)
+
+- [`combineFASTA()`](/reference/combineFASTA.qmd)
+
+- [`convertAlign()`](/reference/convertAlign.qmd)
+
+- [`dropSeq()`](/reference/dropSeq.qmd)
+
+- [`evomodelCmds()`](/reference/evomodelCmds.qmd)
+
+- [`evomodelTest()`](/reference/evomodelTest.qmd)
+
+- [`fastadframe()`](/reference/fastadframe.qmd)
+
+- [`mineMitochondrion()`](/reference/mineMitochondrion.qmd)
+
+- [`minePlastome()`](/reference/minePlastome.qmd)
+
+- [`mineSeq()`](/reference/mineSeq.qmd)
+
+- [`mineTaxa()`](/reference/mineTaxa.qmd)
+
+- [`mrbayesRun()`](/reference/mrbayesRun.qmd)
+
+- [`mrbayesStop()`](/reference/mrbayesStop.qmd)
+
+- [`nexusdframe()`](/reference/nexusdframe.qmd)
+
+- [`phylipdframe()`](/reference/phylipdframe.qmd)
+
+- [`plotPhylo()`](/reference/plotPhylo.qmd)
+
+- [`run_catGenes()`](/reference/run_catGenes.qmd)
+
+- [`splitTips()`](/reference/splitTips.qmd)
+
+- [`writeNexus()`](/reference/writeNexus.qmd)
+
+- [`writePhylip()`](/reference/writePhylip.qmd)
+
+

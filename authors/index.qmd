@@ -9,7 +9,6 @@ resources:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -40,7 +39,7 @@ resources:
   }
 </style>
 
-## The `refloraR` Developers
+## The `catGenes` Developers
 
 ```{=html}
 <div class="authors-group">
@@ -54,85 +53,26 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Taxonomist and bioinformatician leading the refloraR package, responsible for designing and coding functions as well as developing the project website</p>
+      <p>Taxonomist and bioinformatician leading the catGenes package, responsible for designing and coding functions as well as developing the project website</p>
     </div>
   </div>
   
   <div class="author-card">
-    <img src="images/carlos.jpg" alt="Carlos Calderón" class="author-photo" />
+    <img src="images/quezia.jpg" alt="Quezia" class="author-photo" />
     <div class="author-info">
-      <h3 class="author-name">Carlos Calderón</h3>
+      <h3 class="author-name">Quézia Cavalcante</h3>
       <p>
-        <a class="icon-link" href="mailto:caldecid@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-3897-4615" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/3331732061175660" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+        <a class="icon-link" href="mailto:queziacs@yahoo.com.br "><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-6754-7188" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="https://lattes.cnpq.br/1119050083225818" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Bioinformatician contributing to the refloraR package, with a focus on designing and implementing function workflows</p>
-    </div>
-  </div>
-  
-</div>
-```
-
-## The REFLORA Team
-
-```{=html}
-<div class="authors-group">
-
-  <div class="author-card">
-    <img src="images/rafaela.jpg" alt="Rafaela Forzza" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Rafaela Forzza</h3>
-      <p>
-        <a class="icon-link" href="mailto:rafaela@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-7035-9313" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/6249814039461102" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Senior taxonomist and coordinator of the REFLORA initiative in Brazil</p>
-    </div>
-  </div>
-
-  <div class="author-card">
-    <img src="images/paula.jpg" alt="Paula Leitman" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Paula Leitman</h3>
-      <p>
-        <a class="icon-link" href="mailto:reflora@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-2997-3784" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/6097135982786067" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Expert in biodiversity data integration and REFLORA team member</p>
-    </div>
-  </div>
-
-  <div class="author-card">
-    <img src="images/fabiana.jpg" alt="Fabiana Filardi" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Fabiana Filardi</h3>
-      <p>
-        <a class="icon-link" href="mailto:ffilardi@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-0372-4325" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/5902829568480499" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Expert in biodiversity data integration and REFLORA team member</p>
-    </div>
-  </div>
-
-  <div class="author-card">
-    <img src="images/anaflavia.jpg" alt="Flávia Versiane" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Flávia Versiane</h3>
-      <p>
-        <a class="icon-link" href="mailto:anaflaviaversiane@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0001-9634-0365" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/1843612090689191" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Research associate contributing to REFLORA data curation</p>
+      <p>Geophysicist contributing to the catGenes package, with a focus on conceptualizing and implementing concatenation functions</p>
     </div>
   </div>
   
 </div>
 ```
+
 
 <style>
 .authors-group {

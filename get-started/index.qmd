@@ -7,7 +7,6 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -29,16 +28,19 @@ format:
 
 ## Install the package
 
-You can install the latest development version of `refloraR` package from [GitHub](https://github.com/DBOSlab/refloraR) as follows:
+You can install the latest development version of `catGenes` package from [GitHub](https://github.com/DBOSlab/catGenes) as follows:
 
 
 ```{r}
 #| eval: false
 
 #install.packages("devtools")
-devtools::install_github("DBOSlab/refloraR")
+devtools::install_github("DBOSlab/catGenes")
 ```
 
-:::{.callout-caution}
-The steps in this section are only needed if you need to run [...]. If you already have a running [...], then skip this section. 
+Notes
+:::{.callout-note}
+`catGenes` is currently distributed from GitHub. Make sure devtools is installed before running devtools::install_github().
 :::
+:::{.callout-caution}
+Some functions in `catGenes` rely on additional external software or online resources. For example, functions that retrieve sequences from GenBank require an internet connection, and running `MrBayes` from R requires a working local installation of `MrBayes`.

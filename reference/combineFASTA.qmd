@@ -1,0 +1,108 @@
+---
+title: 'combineFASTA'
+description: 'Combine multiple FASTA files into a single file'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::combineFASTA()
+```
+
+### Description
+
+This function reads multiple FASTA files and combines them into a
+single FASTA file. It saves the combined sequences to a specified output directory.
+
+### Details
+
+The function performs the following steps:
+
+1. 
+
+2. 
+3.  Validates that all specified input files exist
+
+4. 
+5.  Creates an output directory with date stamp if 
+6. `save = TRUE`
+7. 
+
+8. 
+9.  Reads each specified FASTA file using 
+10. `ape::read.FASTA()`
+11. 
+
+12. 
+13.  Combines all sequences into a single DNAbin object
+
+14. 
+15.  Saves the combined sequences to the output file if 
+16. `save = TRUE`
+17. 
+
+18. 
+19.  Returns summary statistics
+
+Note: This function does not remove duplicate sequences. All sequences from
+all input files are included in the output.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| input_files | Character vector specifying the paths to FASTA files to be combined. This parameter is required - users must specify exactly which files they want to combine. |
+| output_file | Character string specifying the name of the output combined FASTA file. Default is "combined_sequences.fasta". |
+| save | Logical. If `TRUE` (default), the combined sequences are saved to disk in the specified directory. If `FALSE`, the combined sequences are only returned as an R object without saving. |
+| verbose | Logical. If `TRUE` (default), progress messages are printed to the console. |
+| dir | Character string specifying the directory path for saving results. Default is "RESULTS_combineFASTA". A subdirectory with current date will be created within this directory when `save = TRUE`. |
+
+### Value
+
+A list containing:
+
+- 
+
+- 
+-  
+- `sequences`
+- : DNAbin object with all combined sequences
+
+- 
+-  
+- `summary`
+- : Data frame with summary statistics
+
+- 
+-  
+- `output_path`
+- : Path to the saved combined FASTA file (if saved)
+
+### Examples
+
+```r
+# Basic usage: combine specific FASTA files
+result <- combineFASTA(input_files = c("file1.fasta", "file2.fasta", "file3.fasta"))
+
+# Combine files with custom output name
+result <- combineFASTA(
+  input_files = c("data/gene1.fasta", "data/gene2.fasta"),
+  output_file = "all_genes.fasta"
+)
+
+# Return results without saving to disk
+result <- combineFASTA(
+  input_files = c("temp1.fasta", "temp2.fasta"),
+  save = FALSE,
+  verbose = TRUE
+)
+
+# Access results
+sequences <- result$sequences
+summary_stats <- result$summary
+print(summary_stats)
+```
+
+

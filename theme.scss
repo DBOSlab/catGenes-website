@@ -1,24 +1,38 @@
 /*-- scss:defaults --*/
 
-// The Cosmo theme sets defaults for hover. Clear the defaults to allow
-// our coloring system to handle this
-$navbar-dark-hover-color:       null;
-$navbar-light-hover-color:      null;
+// Clear theme hover defaults so custom colors control interactions
+$navbar-dark-hover-color: null;
+$navbar-light-hover-color: null;
 
+// catGenes palette
+$catgenes-pink:   #F2A3A8;
+$catgenes-rose:   #B85C63;
+$catgenes-deep:   #1A1A1A;
+$catgenes-soft:   #F9E3E5;
+$catgenes-light:  #FAF7F7;
+
+// Optional global accents
+$body-bg: $catgenes-light;
+$body-color: $catgenes-deep;
+$link-color: $catgenes-rose;
+$navbar-bg: $catgenes-pink;
+$navbar-fg: $catgenes-deep;
+$footer-bg: $catgenes-soft;
+$sidebar-bg: #F6ECEC;
 
 
 /*-- scss:rules --*/
 
 .layout-example {
-  background: $gray-500;
-  color: $white;
+  background: $catgenes-rose;
+  color: white;
   text-align: center;
   margin-bottom: 1em;
   font-family: $font-family-monospace;
   font-size: .875em;
   font-weight: 600;
   padding-top: 1em;
-  border-radius: 3px;
+  border-radius: 6px;
 }
 
 .left {
@@ -32,46 +46,74 @@ $navbar-light-hover-color:      null;
 }
 
 .mainbox {
-  background-color: #f4f4f4;
+  background-color: $catgenes-soft;
+  color: $catgenes-deep;
   text-align: center;
+  border: 1px solid rgba(184, 92, 99, 0.18);
+  border-radius: 10px;
+  padding: 1rem;
 }
 
 .mainbox a {
+  color: $catgenes-rose;
   font-size: 90%;
   text-decoration: none;
 }
 
+.mainbox a:hover {
+  color: darken($catgenes-rose, 8%);
+  text-decoration: underline;
+}
+
 .mainbox h2 {
-  font-weight: lighter;
+  font-weight: 400;
   border-bottom-width: 0px;
+  color: $catgenes-deep;
 }
 
 .mainbox p {
-  font-weight: lighter;
+  font-weight: 300;
   font-size: 80%;
+  color: darken($catgenes-rose, 8%);
+}
+
+.whitebox {
+  background-color: white;
+  border: 1px solid rgba(184, 92, 99, 0.12);
+  border-radius: 10px;
+  padding: 1rem;
 }
 
 .whitebox h2 {
-  font-weight: lighter;
+  font-weight: 400;
   border-bottom-width: 0px;
+  color: $catgenes-deep;
 }
 
 .whitebox a {
-  font-weight: lighter;
+  font-weight: 300;
+  color: $catgenes-rose;
   text-decoration: none;
 }
 
+.whitebox a:hover {
+  text-decoration: underline;
+}
+
 .whitebox p {
-  font-weight: lighter;
+  font-weight: 300;
+  color: #4A4A4A;
 }
 
 .whitebox h1 {
-  font-weight: lighter;
+  font-weight: 300;
   font-size: 170%;
   padding-bottom: 0.5em;
+  color: $catgenes-deep;
 }
 
 .co {
   font-size: .830em;
   font-weight: 100;
+  color: $catgenes-rose;
 }

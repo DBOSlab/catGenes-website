@@ -1,0 +1,58 @@
+---
+title: 'evomodelCmds'
+description: 'Convert model names into efficient MrBayes commands'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::evomodelCmds()
+```
+
+### Description
+
+Convert model names into efficient MrBayes commands
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| model_vector | A character vector of model names where the position/index corresponds to the MrBayes partition number (e.g., `c("GTR+G+I", "HKY+G", "GTR+G+I")`). Partition 1 gets the first model, Partition 2 the second, etc. |
+
+### Value
+
+A list with:
+
+- 
+
+- 
+-  
+- `grouped_commands`
+- : A data frame showing partition grouping.
+
+- 
+-  
+- `all_commands`
+- : A character vector of unique 
+- `lset`
+-  and 
+- `prset`
+-  commands.
+
+- 
+-  
+- `partition_map`
+- : A named vector showing final partition assignments.
+
+### Examples
+
+```r
+# Partitions 1 and 3 share the same model, partition 2 is different
+models <- c("GTR+G(4)+I", "HKY+G(4)", "GTR+G(4)+I")
+cmds <- evomodelCmds(model_vector = models)
+cat(cmds$all_commands, sep = "\n")
+```
+
+

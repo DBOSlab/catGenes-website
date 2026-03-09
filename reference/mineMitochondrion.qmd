@@ -1,0 +1,53 @@
+---
+title: 'mineMitochondrion'
+description: 'Read and download targeted loci from mitochondrial genomes in GenBank'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::mineMitochondrion()
+```
+
+### Description
+
+A function built on the [rentrez](https://docs.ropensci.org/rentrez/)
+and [geneviewer](https://nvelden.github.io/geneviewer/)
+packages, designed to establish a connection with the GenBank database, donwload,
+and parse mitochondrial genomes. This function downloads mitochondrial sequences
+using provided accession numbers, extracting and formatting any specified targeted
+loci, and finally writing them in a fasta file format.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| genbank | A vector comprising the GenBank accession numbers specifically corresponding to the mitochondrial genome targeted for locus mining. |
+| taxon | A vector containing the taxon name linked to the mitochondrial genome. In the absence of this information, the function will default to the existing nomenclature linked to the mitochondrial genome, as originally provided in GenBank. |
+| voucher | A vector containing relevant voucher information linked to the mitochondrial genome. If this information is supplied, the function will promptly append it immediately following the taxon name of the downloaded targeted sequence. |
+| CDS | a logical controlling whether the targeted loci are protein coding genes, otherwise the function understands that entered gene names are e.g. intron or intergenic spacer regions. |
+| genes | A vector of one or more gene names as annotated in GenBank. |
+| rm_gb_files | Logical, if `TRUE`, the downloaded .gb files from GenBank will be removed from the directory after extracting the targeted loci. The default is `FALSE`, keeping the original .gb files. |
+| verbose | Logical, if `FALSE`, a message showing each step during the GenBank search will not be printed in the console in full. |
+| dir | The path to the directory where the mined DNA sequences in a fasta format file will be saved. The default is to create a directory named **RESULTS_mineMitochondrion** and the sequences will be saved within a subfolder named after the current date. |
+
+### Value
+
+A fasta format file of DNA sequences saved on disk.
+
+### Examples
+
+```r
+library(catGenes)
+
+mineMitochondrion(genbank = c("MN356196", "NC_008549"),
+                  CDS = TRUE,
+                  genes = c("COX1", "COX2", "ND4L"),
+                  rm_gb_files = FALSE,
+                  verbose = TRUE,
+                  dir = "RESULTS_mineMitochondrion")
+```
+
+

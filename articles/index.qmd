@@ -5,7 +5,6 @@ format: html
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -25,21 +24,36 @@ format: html
   }
 </style>
 
+These tutorials provide step-by-step guidance for common `catGenes` workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.
+
 ::: {layout-ncol="2"}
-::: {style="display: block;"}
-### Summarize REFLORA collections
-- [Summarize collections](/articles/summarize_reflora_collections.qmd)  
 
 ::: {style="display: block;"}
+### Input preparation
+- [Standardizing DNA alignments for `catGenes`](/articles/standardizing_alignments.qmd)
+- [Loading multiple alignments into R](/articles/loading_alignments.qmd)
+- [Working with duplicated taxa and multiple accessions](/articles/duplicated_taxa_and_accessions.qmd)
+
+### Sequence retrieval and preprocessing
+- [Retrieve sequences from GenBank with accession numbers](/articles/retrieve_sequences_by_accession.qmd)
+- [Retrieve sequences from GenBank with taxonomic queries](/articles/retrieve_sequences_by_taxon.qmd)
+- [Mine loci from plastomes and mitochondrial genomes](/articles/mine_organellar_loci.qmd)
 :::
-### Download and parse REFLORA records   
-- [Download specimen records](/articles/download_reflora_collections.qmd)
-- [Parse REFLORA Darwin Core Archives](/articles/parse_reflora_dwca.qmd)
 
 ::: {style="display: block;"}
+### Alignment and concatenation workflows
+- [Combine FASTA files and align sequences](/articles/combine_and_align_sequences.qmd)
+- [Convert among FASTA, NEXUS, and PHYLIP](/articles/convert_alignment_formats.qmd)
+- [Concatenate multilocus datasets with `catfullGenes()`](/articles/concatenate_with_catfullGenes.qmd)
+- [Concatenate datasets with duplicated accessions using `catmultGenes()`](/articles/concatenate_with_catmultGenes.qmd)
+- [Remove redundant accessions with `dropSeq()`](/articles/remove_redundant_accessions.qmd)
+
+### Export, analysis, and visualization
+- [Export concatenated datasets with `writeNexus()`](/articles/write_nexus_datasets.qmd)
+- [Export concatenated datasets with `writePhylip()`](/articles/write_phylip_datasets.qmd)
+- [Model selection and MrBayes preparation with `evomodelTest()`](/articles/model_selection_and_mrbayes.qmd)
+- [Run MrBayes from R](/articles/run_mrbayes.qmd)
+- [Plot and edit phylogenetic trees with `plotPhylo()`](/articles/plot_phylogenetic_trees.qmd)
 :::
-### Filter REFLORA records   
-- [Retrieve taxon-specific specimens](/articles/filter_reflora_records.qmd)
-- [Filter indeterminate specimens](/articles/filter_indeterminate_reflora_specimens.qmd)
-:::
+
 :::
