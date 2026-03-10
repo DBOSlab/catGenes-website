@@ -1456,7 +1456,7 @@
     "href": "articles/index.html",
     "title": "Articles",
     "section": "",
-    "text": "These tutorials provide step-by-step guidance for common catGenes workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.\n\n\n\n\nInput preparation\n\nStandardizing DNA alignments for catGenes\nLoading multiple alignments into R\nWorking with duplicated taxa and multiple accessions\n\n\n\nSequence retrieval and preprocessing\n\nRetrieve sequences from GenBank with accession numbers\nRetrieve sequences from GenBank with taxonomic queries\nMine loci from plastomes and mitochondrial genomes\n\n\n\n\n\nAlignment and concatenation workflows\n\nCombine FASTA files and align sequences\nConvert among FASTA, NEXUS, and PHYLIP\nConcatenate multilocus datasets with catfullGenes()\nConcatenate datasets with duplicated accessions using catmultGenes()\nRemove redundant accessions with dropSeq()\n\n\n\nExport, analysis, and visualization\n\nExport concatenated datasets with writeNexus()\nExport concatenated datasets with writePhylip()\nModel selection and MrBayes preparation with evomodelTest()\nRun MrBayes from R\nPlot and edit phylogenetic trees with plotPhylo()",
+    "text": "These tutorials provide step-by-step guidance for common catGenes workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.\n\n\n\n\nInput preparation\n\nStandardizing DNA alignments for catGenes\nLoading multiple alignments into R\nWorking with duplicated taxa and multiple accessions\n\n\n\nSequence retrieval and preprocessing\n\nRetrieve sequences from GenBank with accession numbers\nRetrieve sequences from GenBank with taxonomic queries\nMine loci from plastomes and mitochondrial genomes\n\n\n\n\n\nAlignment and concatenation workflows\n\nCombine FASTA files and align sequences\nConvert among FASTA, NEXUS, and PHYLIP\nConcatenate multilocus datasets with catfullGenes()\nConcatenate datasets with duplicated accessions using catmultGenes()\nRemove redundant accessions with dropSeq()\n\n\n\nExport, analysis, and visualization\n\nExport concatenated datasets\nModel selection and MrBayes preparation with evomodelTest()\nRun MrBayes from R\nPlot and edit phylogenetic trees with plotPhylo()",
     "crumbs": [
       "Articles",
       "Overview"
@@ -2378,6 +2378,330 @@
       "Articles",
       "Alignment and concatenation workflows",
       "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catmultGenes.html#overview",
+    "href": "articles/concatenate_with_catmultGenes.html#overview",
+    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "section": "Overview",
+    "text": "Overview\nThe function catmultGenes() is the main catGenes workflow for concatenating multilocus DNA datasets when one or more species are represented by multiple accessions across individual alignments. This situation is common in phylogenetic and phylogenomic studies that include different vouchers, collections, DNA extractions, or GenBank accessions for the same species.\nUnlike catfullGenes(), which assumes one sequence per species per locus, catmultGenes() compares alignments while taking accession identity into account. For this reason, it is the appropriate function whenever taxa are duplicated in one or more input matrices.\nThis article explains how to prepare the input data, how catmultGenes() works, how the main arguments affect the concatenated output, and how to export the resulting dataset for downstream phylogenetic analyses.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catmultGenes.html#when-to-use-catmultgenes",
+    "href": "articles/concatenate_with_catmultGenes.html#when-to-use-catmultgenes",
+    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "section": "When to use catmultGenes()",
+    "text": "When to use catmultGenes()\nUse catmultGenes() when:\n\none or more species are represented by multiple accessions in one or more loci\nthe same accession must be tracked across loci\nlabels include both taxon name and a stable identifier\nyou want to maximize taxon coverage while preserving accession-level matching\nyou are working with multilocus datasets that include duplicated taxa\n\nIf every species is represented by only one sequence per locus, use catfullGenes() instead.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catmultGenes.html#why-duplicated-accessions-require-a-different-workflow",
+    "href": "articles/concatenate_with_catmultGenes.html#why-duplicated-accessions-require-a-different-workflow",
+    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "section": "Why duplicated accessions require a different workflow",
+    "text": "Why duplicated accessions require a different workflow\nWhen a species appears only once per locus, taxa can be matched across alignments using the scientific name alone. However, when a species is represented by multiple accessions, the scientific name is not enough to determine which sequence in one locus corresponds to which sequence in another.\nFor example, a species such as Vatairea_fusca may appear in one alignment with two accessions:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Silva1820\n\nIf the same species also appears in another locus, catGenes must know which accession should be matched with which. This is why the duplicated-accession workflow requires labels that include both:\n\nthe scientific name\na stable accession identifier",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catmultGenes.html#input-structure",
+    "href": "articles/concatenate_with_catmultGenes.html#input-structure",
+    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "section": "Input structure",
+    "text": "Input structure\ncatmultGenes() expects a named list of individual DNA alignments, usually loaded from NEXUS files with ape::read.nexus.data().\nEach alignment should be part of a named list in which:\n\neach list element corresponds to one locus\nthe list names correspond to gene or locus names\nsequence labels follow a consistent accession-aware format\n\nFor example:\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(\"path_to_DNA_alignments_folder\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"path_to_DNA_alignments_folder/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))\n\nLabel formatting for duplicated taxa When using catmultGenes(), labels should include both taxon name and identifier, for example: Genus_species_identifier Genus_species_identifier_everythingelse Examples: Vatairea_fusca_Cardoso2939 Vatairea_fusca_Cardoso2939_JX152598 Vatairea_fusca_Silva1820 Vatairea_fusca_RB123456 The key requirement is that the identifying component be used consistently across loci for the same accession. Example of accession-aware labels The figure below illustrates the kind of sequence labels expected when species are duplicated with multiple accessions.\nBasic usage A typical concatenation workflow with duplicated accessions looks like this: catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) This compares taxa across loci while taking duplicated accessions into account and returns a list of equalized data frames ready for export. What catmultGenes() returns As with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains: a species column with the matched accession-aware taxon labels a sequence column with the corresponding aligned DNA sequence You can inspect the result with: str(catdf, max.level = 1) And inspect one locus: head(catdf[[1]]) Understanding maxspp The argument maxspp determines how species without duplicated accessions are handled in the final concatenated output. A typical call is:\ncatdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) When maxspp = TRUE, species that are not duplicated in any alignment are retained in the final concatenated dataset. This helps maximize taxon coverage, which is usually desirable. When maxspp = FALSE, taxa that are never duplicated may end up being removed or duplicated depending on the interaction with the missdata setting and the structure of the dataset.\nIn most cases, maxspp = TRUE is the recommended setting.\nUnderstanding shortaxlabel The argument shortaxlabel controls how much of the original label is retained in the output. When shortaxlabel = TRUE, output labels are kept shorter and more standardized:\ncatdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) When shortaxlabel = FALSE, more of the original accession label is retained: catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = FALSE, missdata = TRUE ) Retaining the full original label is often useful in genomic, voucher-rich, or accession-traceable workflows where the exact identity of each accession must be preserved throughout downstream analyses. Understanding missdata The argument missdata controls whether taxa lacking one or more loci are retained in the final concatenated dataset. When missdata = TRUE, incomplete taxa are retained and missing partitions are filled with missing data:\ncatdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) This is often the most useful setting when trying to maximize taxon representation. When missdata = FALSE, taxa lacking any locus are excluded:\ncatdf_complete &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = FALSE ) This produces a more conservative matrix containing only accessions with complete locus coverage. Understanding outgroup As in other concatenation workflows, outgroup can be used to indicate one or more taxa that should be treated as outgroups in incomplete datasets. For example:\ncatdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE, outgroup = “Outgroup_species_identifier” ) Or with multiple outgroups: catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE, outgroup = c(“Outgroup_1”, “Outgroup_2”) ) This can be useful when maintaining incomplete taxa and ensuring that critical outgroup accessions remain in the concatenated dataset. Understanding verbose The argument verbose controls how much progress information is printed during matching and concatenation. catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE, verbose = TRUE ) To suppress the detailed output: catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE, verbose = FALSE ) This can be useful for large datasets or rendered tutorials. A typical workflow A common duplicated-accession workflow is: Step 1. Load the alignments library(catGenes)\ngenes &lt;- list.files(“path_to_DNA_alignments_folder”) my_alignments &lt;- list()\nfor (i in genes) { my_alignments[[i]] &lt;- ape::read.nexus.data( paste0(“path_to_DNA_alignments_folder/”, i) ) }\nnames(my_alignments) &lt;- gsub(“[.].*“,”“, names(my_alignments)) Step 2. Run catmultGenes() catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) Step 3. Inspect the output names(catdf) head(catdf[[1]]) At this point, the dataset is ready for export. Exporting the concatenated output After running catmultGenes(), the most common next step is to export the result with writeNexus() or writePhylip(). Export as NEXUS writeNexus( catdf, file =”duplicated_accessions_dataset.nex”, genomics = FALSE, interleave = TRUE, bayesblock = TRUE ) Export as PHYLIP writePhylip( catdf, file = “duplicated_accessions_dataset.phy”, genomics = FALSE, catalignments = TRUE, partitionfile = TRUE ) These exports produce final concatenated datasets that can be used in downstream phylogenetic analyses. Preserving full accession labels in exported datasets When the full original accession labels need to be preserved, use shortaxlabel = FALSE during concatenation. catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = FALSE, missdata = TRUE ) Then export using settings that preserve this level of identifier detail. For example:\nwriteNexus( catdf, file = “full_labels_dataset.nex”, genomics = TRUE, interleave = TRUE, bayesblock = TRUE ) This is particularly useful in phylogenomic datasets where accession identity needs to remain explicit in the final matrix. Handling differing identifiers across partitions When full labels are retained, writeNexus() can preserve differing identifiers across partitions by representing them in a structured way in the output. This helps maintain traceability between the concatenated dataset and the original accessions. The examples below illustrate how these labels can appear in exported matrices.\nRemoving redundant duplicated accessions after concatenation In some cases, after concatenation you may decide that duplicated accessions of the same species should be reduced to the best or most complete representative. The function dropSeq() was designed for this purpose. clean_catdf &lt;- dropSeq(catdf) This function removes smaller or less informative duplicated sequences, typically favoring accessions with better completeness. The screenshots below illustrate this type of cleanup.\nRelationship with large genomic datasets catmultGenes() is particularly useful in larger phylogenomic workflows where many loci are available and one or more taxa may be represented by multiple genome-derived accessions. The function has been used efficiently with larger multilocus organellar datasets. In such contexts, careful label standardization and accession consistency are especially important.\nThe example below illustrates a larger concatenated genomic matrix.\nCommon mistakes Using catfullGenes() on duplicated-accession datasets If taxa are duplicated in one or more loci, catfullGenes() is not the correct workflow. In that case, use catmultGenes(). Inconsistent accession identifiers across loci If the same accession is labeled differently in different alignments, catGenes will treat those labels as different accessions. For example, these may not be matched correctly:\nVatairea_fusca_Cardoso2939 Vatairea_fusca_DCardoso2939 Vatairea_fusca_RB2939 Missing accession identifiers in some loci If duplicated taxa are identified with accession-aware labels in one alignment but not in another, the function may not be able to resolve them correctly. Mixing label schemes across loci Using collector numbers in one locus and GenBank accession numbers in another for the same accession can create mismatches unless the same stable identifier is carried across all loci. Unexpected loss of taxa If fewer taxa appear than expected, inspect the settings of missdata and maxspp, and make sure the input labels are truly consistent across loci. Recommended practice For the smoothest use of catmultGenes(): choose one stable identifier for each accession use that identifier consistently across all loci separate label components with underscores load alignments into R as a named list use maxspp = TRUE in most cases inspect the resulting output before export use dropSeq() when cleanup of redundant duplicated accessions is needed Next step Once a duplicated-accession dataset has been concatenated with catmultGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), then proceed to downstream phylogenetic analyses and tree visualization.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#overview",
+    "href": "articles/write_concatenated_datasets.html#overview",
+    "title": "Export concatenated datasets",
+    "section": "Overview",
+    "text": "Overview\nAfter comparing and standardizing multilocus alignments with catfullGenes() or catmultGenes(), the next step is usually to export the concatenated dataset for downstream phylogenetic analyses. In catGenes, this is done mainly with two functions:\n\nwriteNexus() to write concatenated datasets in NEXUS format\nwritePhylip() to write concatenated datasets in PHYLIP format and generate an associated partition file\n\nThese functions transform the list of equalized alignments returned by the concatenation workflow into files ready for downstream phylogenetic programs.\nThis article explains when to use each export function, how the main arguments affect the output, and how to choose between NEXUS and PHYLIP depending on the next analytical step.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#input-required-by-both-functions",
+    "href": "articles/write_concatenated_datasets.html#input-required-by-both-functions",
+    "title": "Export concatenated datasets",
+    "section": "Input required by both functions",
+    "text": "Input required by both functions\nBoth writeNexus() and writePhylip() expect as input the object returned by either:\n\ncatfullGenes()\ncatmultGenes()\n\nFor example, using a small example dataset:\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThe object catdf is now ready to be exported with either writeNexus() or writePhylip().",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#when-to-use-writenexus",
+    "href": "articles/write_concatenated_datasets.html#when-to-use-writenexus",
+    "title": "Export concatenated datasets",
+    "section": "When to use writeNexus()",
+    "text": "When to use writeNexus()\nUse writeNexus() when you want: - a concatenated dataset in NEXUS format - optional interleaved or non-interleaved output - partition definitions embedded in the matrix - a preliminary MrBayes block with character sets - a file structure convenient for Bayesian phylogenetic analysis and inspection\nThis is often the preferred output format when the next step involves MrBayes or when a richer, more descriptive matrix format is useful.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#when-to-use-writephylip",
+    "href": "articles/write_concatenated_datasets.html#when-to-use-writephylip",
+    "title": "Export concatenated datasets",
+    "section": "When to use writePhylip()",
+    "text": "When to use writePhylip()\nUse writePhylip() when you want: a concatenated dataset in PHYLIP format a separate partition file describing locus boundaries compatibility with downstream workflows that expect PHYLIP a simpler matrix representation plus an external partition definition\nThis is especially useful when preparing datasets for software or pipelines that use PHYLIP together with a partition text file.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#writing-a-concatenated-nexus-dataset",
+    "href": "articles/write_concatenated_datasets.html#writing-a-concatenated-nexus-dataset",
+    "title": "Export concatenated datasets",
+    "section": "Writing a concatenated NEXUS dataset",
+    "text": "Writing a concatenated NEXUS dataset\nA basic writeNexus() workflow looks like this:\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis writes a concatenated NEXUS file in which: - each locus is included in the final matrix - the matrix is interleaved - a preliminary MrBayes block is added - character sets are included to define the partitions",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-the-file-argument",
+    "href": "articles/write_concatenated_datasets.html#understanding-the-file-argument",
+    "title": "Export concatenated datasets",
+    "section": "Understanding the file argument",
+    "text": "Understanding the file argument\nThe argument file defines the output file name.\n\nwriteNexus(\n  catdf,\n  file = \"my_dataset.nex\"\n)\n\nor\n\nwritePhylip(\n  catdf,\n  file = \"my_dataset.phy\"\n)\n\nUse a file name that clearly reflects the dataset or project, especially when working with multiple concatenated outputs.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-genomics",
+    "href": "articles/write_concatenated_datasets.html#understanding-genomics",
+    "title": "Export concatenated datasets",
+    "section": "Understanding genomics",
+    "text": "Understanding genomics\nBoth export functions include a genomics argument, which controls how accession identifiers are preserved in the final dataset. When genomics = FALSE, the output is usually more simplified and species-oriented:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = FALSE\n)\n\nWhen genomics = TRUE, accession or identifier information is retained more explicitly:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = TRUE\n)\n\nThis is especially useful when: - the original labels contain voucher information - the dataset is accession-rich - the goal is to preserve traceability between the concatenated matrix and the original sequences In phylogenomic workflows or datasets with detailed accession information, genomics = TRUE is often preferable.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-interleave-in-writenexus",
+    "href": "articles/write_concatenated_datasets.html#understanding-interleave-in-writenexus",
+    "title": "Export concatenated datasets",
+    "section": "Understanding interleave in writeNexus()",
+    "text": "Understanding interleave in writeNexus()\nThe argument interleave controls whether the NEXUS matrix is written as interleaved or fully concatenated. When interleave = TRUE, each locus remains visually distinguished in the matrix:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  interleave = TRUE\n)\n\nWhen interleave = FALSE, the dataset is written as a fully concatenated non-interleaved matrix:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  interleave = FALSE\n)\n\nInterleaved output is often more readable when inspecting partitions manually, while non-interleaved output gives a more compact concatenated matrix.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-bayesblock-in-writenexus",
+    "href": "articles/write_concatenated_datasets.html#understanding-bayesblock-in-writenexus",
+    "title": "Export concatenated datasets",
+    "section": "Understanding bayesblock in writeNexus()",
+    "text": "Understanding bayesblock in writeNexus()\nThe argument bayesblock controls whether a preliminary MrBayes block is included in the output file. When bayesblock = TRUE, the output includes character sets for the partitions and a basic block structure useful for MrBayes workflows:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = TRUE\n)\n\nWhen bayesblock = FALSE, the dataset is written without this block:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = FALSE\n)\n\nThis option is useful when the NEXUS file is needed only as a matrix or when the MrBayes commands will be prepared separately.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-endgaps.to.miss-in-writenexus",
+    "href": "articles/write_concatenated_datasets.html#understanding-endgaps.to.miss-in-writenexus",
+    "title": "Export concatenated datasets",
+    "section": "Understanding endgaps.to.miss in writeNexus()",
+    "text": "Understanding endgaps.to.miss in writeNexus()\nThe argument endgaps.to.miss controls whether terminal gaps are converted into missing characters (?) in the output matrix.\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = TRUE\n)\n\nThis is often desirable because terminal gaps may be more appropriately treated as missing data rather than explicit gaps in some phylogenetic workflows. If you want to preserve terminal gaps as they are:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#writing-a-concatenated-phylip-dataset",
+    "href": "articles/write_concatenated_datasets.html#writing-a-concatenated-phylip-dataset",
+    "title": "Export concatenated datasets",
+    "section": "Writing a concatenated PHYLIP dataset",
+    "text": "Writing a concatenated PHYLIP dataset\nA basic writePhylip() workflow looks like this:\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis writes: - a concatenated PHYLIP matrix - a separate partition file describing the locus boundaries This is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-catalignments-in-writephylip",
+    "href": "articles/write_concatenated_datasets.html#understanding-catalignments-in-writephylip",
+    "title": "Export concatenated datasets",
+    "section": "Understanding catalignments in writePhylip()",
+    "text": "Understanding catalignments in writePhylip()\nThe argument catalignments controls whether the concatenated PHYLIP matrix itself is written.\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  catalignments = TRUE\n)\n\nIn most cases, this should remain TRUE, since writing the matrix is usually the main purpose of the function.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-partitionfile-in-writephylip",
+    "href": "articles/write_concatenated_datasets.html#understanding-partitionfile-in-writephylip",
+    "title": "Export concatenated datasets",
+    "section": "Understanding partitionfile in writePhylip()",
+    "text": "Understanding partitionfile in writePhylip()\nThe argument partitionfile controls whether a separate partition text file is written.\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = TRUE\n)\n\nThis partition file defines the coordinate ranges for each locus in the concatenated matrix and is important for partitioned phylogenetic analyses. If you do not need a separate partition file:\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#understanding-endgaps.to.miss-in-writephylip",
+    "href": "articles/write_concatenated_datasets.html#understanding-endgaps.to.miss-in-writephylip",
+    "title": "Export concatenated datasets",
+    "section": "Understanding endgaps.to.miss in writePhylip()",
+    "text": "Understanding endgaps.to.miss in writePhylip()\nAs in writeNexus(), the writePhylip() function can also convert terminal gaps to missing characters.\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  endgaps.to.miss = TRUE\n)\n\nOr preserve them as gaps:\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  endgaps.to.miss = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#example-nexus-workflow",
+    "href": "articles/write_concatenated_datasets.html#example-nexus-workflow",
+    "title": "Export concatenated datasets",
+    "section": "Example NEXUS workflow",
+    "text": "Example NEXUS workflow\nA common NEXUS export workflow is: Step 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write `NEXUS``\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis produces a concatenated NEXUS matrix suitable for downstream Bayesian workflows.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#example-phylip-workflow",
+    "href": "articles/write_concatenated_datasets.html#example-phylip-workflow",
+    "title": "Export concatenated datasets",
+    "section": "Example PHYLIP workflow",
+    "text": "Example PHYLIP workflow\nThe corresponding PHYLIP workflow is: Step 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write PHYLIP\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis produces a concatenated PHYLIP matrix together with a partition file.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#what-the-nexus-output-looks-like",
+    "href": "articles/write_concatenated_datasets.html#what-the-nexus-output-looks-like",
+    "title": "Export concatenated datasets",
+    "section": "What the NEXUS output looks like",
+    "text": "What the NEXUS output looks like\nWhen writeNexus() is used with interleaving and partition definitions, the file contains: - a concatenated NEXUS matrix - each partition defined by character ranges - optionally a preliminary MrBayes block - The beginning of the matrix may look similar to the screenshots below:\nAnd the end of the file may include the partition definitions:",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#keeping-differing-identifiers-in-nexus-output",
+    "href": "articles/write_concatenated_datasets.html#keeping-differing-identifiers-in-nexus-output",
+    "title": "Export concatenated datasets",
+    "section": "Keeping differing identifiers in NEXUS output",
+    "text": "Keeping differing identifiers in NEXUS output\nIf you ran catfullGenes() or catmultGenes() with shortaxlabel = FALSE, writeNexus() can preserve differing identifiers across partitions while retaining a species-oriented concatenated matrix structure. This is particularly useful when accession labels differ among loci but still need to remain traceable.\nThe output may appear as shown below:",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#what-the-phylip-output-looks-like",
+    "href": "articles/write_concatenated_datasets.html#what-the-phylip-output-looks-like",
+    "title": "Export concatenated datasets",
+    "section": "What the PHYLIP output looks like",
+    "text": "What the PHYLIP output looks like\nWhen writePhylip() is used, the result usually consists of: - a concatenated PHYLIP matrix - a separate partition file The matrix may resemble the example below:\nAnd the partition file may look like this:",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#choosing-between-nexus-and-phylip",
+    "href": "articles/write_concatenated_datasets.html#choosing-between-nexus-and-phylip",
+    "title": "Export concatenated datasets",
+    "section": "Choosing between NEXUS and PHYLIP",
+    "text": "Choosing between NEXUS and PHYLIP\nUse writeNexus() when you want: - a richer, self-contained matrix format - embedded partition information - optional MrBayes blocks - a file structure convenient for Bayesian analyses and inspection\nUse writePhylip() when you want: - a simpler matrix format - a separate partition file - compatibility with external workflows expecting PHYLIP In many catGenes projects, both exports are useful, depending on which downstream programs or analyses will be used.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#common-issues",
+    "href": "articles/write_concatenated_datasets.html#common-issues",
+    "title": "Export concatenated datasets",
+    "section": "Common issues",
+    "text": "Common issues\n\nOutput labels are not what you expected\nIf output labels seem too short or too detailed, check: whether shortaxlabel was set appropriately during concatenation whether genomics is set correctly during export\n\n\nPartition information is missing\nIn writeNexus(), make sure bayesblock = TRUE if you want embedded partition definitions and a preliminary MrBayes block. In writePhylip(), make sure partitionfile = TRUE if you want the separate partition file.\n\n\nTerminal gaps are treated unexpectedly\nCheck the setting of endgaps.to.miss, especially if you need terminal gaps preserved as gaps rather than converted to missing characters.\n\n\nFile names are unclear\nUse output file names that clearly identify the dataset, especially when writing multiple alternative matrices with different settings.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#recommended-practice",
+    "href": "articles/write_concatenated_datasets.html#recommended-practice",
+    "title": "Export concatenated datasets",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest export workflow: - inspect the concatenated object before export - decide whether identifiers should be simplified or preserved - use writeNexus() for MrBayes-oriented or richly annotated outputs - use writePhylip() when a matrix plus partition file is the preferred downstream input - use clear file names for each exported dataset - keep track of export settings in project notes or analysis scripts",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
+    ]
+  },
+  {
+    "objectID": "articles/write_concatenated_datasets.html#next-step",
+    "href": "articles/write_concatenated_datasets.html#next-step",
+    "title": "Export concatenated datasets",
+    "section": "Next step",
+    "text": "Next step\nOnce the concatenated dataset has been written to disk, the next step is usually to: - select evolutionary models with evomodelTest() - prepare or refine MrBayes blocks - run phylogenetic analyses - visualize resulting trees with plotPhylo()",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Export concatenated datasets"
     ]
   }
 ]
