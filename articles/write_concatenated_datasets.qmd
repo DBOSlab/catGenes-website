@@ -1,5 +1,5 @@
 ---
-title: "Export concatenated datasets"
+title: "Write concatenated datasets"
 format:
   html:
     toc: true
