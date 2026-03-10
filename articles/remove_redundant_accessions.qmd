@@ -44,7 +44,6 @@ However, after concatenation you may decide that:
 The function `dropSeq()` expects a concatenated object, typically the result of `catmultGenes()`.
 
 For example:
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -64,6 +63,7 @@ This returns a new concatenated object in which redundant duplicated accessions 
 ## How `dropSeq()` decides which accession to keep
 
 The general purpose of `dropSeq()` is to retain the most informative accession when a species is duplicated. In practice, this typically means favoring the accession with:
+
 - fewer missing characters
 - greater sequence completeness
 - more informative data across the concatenated matrix
@@ -107,7 +107,7 @@ writeNexus(
 )
 ```
 
-Or:
+or
 ```{r, eval=FALSE}
 writePhylip(
   clean_catdf,
@@ -160,6 +160,7 @@ This workflow first maximizes taxon representation and then reduces redundancy i
 
 ## When not to use `dropSeq()`
 You may not want to use `dropSeq()` when:
+
 - accession-level representation is biologically important
 - multiple accessions per species are intentionally being retained for downstream analyses
 - the goal is to preserve voucher-level or population-level diversity
@@ -169,6 +170,7 @@ In such cases, the full accession-aware output from `catmultGenes()` may already
 
 ## Typical use cases
 `dropSeq()` is especially useful when:
+
 - building a species-level phylogeny from accession-rich input data
 - simplifying a matrix after accession-aware matching
 - selecting the best accession of each species for final export
@@ -179,6 +181,7 @@ It is less relevant in workflows focused explicitly on within-species sampling o
 ## Common issues
 ### No duplicated accessions are removed
 If `dropSeq()` does not appear to change the dataset, this may mean:
+
 - no duplicated species remained after concatenation
 - the labels are not formatted in a way that allows duplicated taxa to be recognized
 - the input object did not contain the expected accession-level redundancy
@@ -191,6 +194,7 @@ Because `dropSeq()` is designed to simplify the dataset, always inspect the clea
 
 ## Recommended practice
 For the smoothest use of `dropSeq()`:
+
 - use it after `catmultGenes()`, not before concatenation
 - inspect the concatenated output before deciding to simplify it
 - verify that labels are standardized and accession-aware

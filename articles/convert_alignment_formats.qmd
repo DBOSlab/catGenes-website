@@ -30,7 +30,6 @@ In many `catGenes` workflows, `NEXUS` is the most convenient format for downstre
 ## Basic usage
 
 A typical conversion workflow looks like this:
-
 ```{r, eval=FALSE}
 library(catGenes)
 
@@ -44,6 +43,7 @@ This reads one or more alignment files from the specified directory and writes t
 
 ## Choosing the output format
 The argument format defines the output format to be written. Supported values are:
+
 - `NEXUS`
 - `FASTA`
 - `PHYLIP``
@@ -87,7 +87,6 @@ convertAlign(
 
 ## Converting alignments to `PHYLIP`
 Some phylogenetic programs and external workflows require `PHYLIP` format.
-
 ```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
@@ -109,7 +108,6 @@ convertAlign(
 ```
 
 or
-
 ```{r, eval=FALSE}
 convertAlign(
   filepath = "RESULTS_mineSeq/09Mar2026",
@@ -121,7 +119,6 @@ This batch-conversion approach helps standardize a workflow quickly.
 
 ## Saving converted files in a custom directory
 By default, `convertAlign()` creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument.
-
 ```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
@@ -148,7 +145,7 @@ This removes the original input files after conversion.
 Because deleting original files can be risky, it is usually safer to keep `rmfiles = FALSE` unless you are sure the converted outputs are correct.
 
 ## Example workflow after sequence alignment
-A common use case is to convert aligned files into NEXUS format after a previous alignment step.
+A common use case is to convert aligned files into `NEXUS` format after a previous alignment step.
 
 For example:
 
@@ -185,7 +182,7 @@ for (i in genes) {
 names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
 ```
 
-This produces a named list ready for concatenation with catGenes.
+This produces a named list ready for concatenation with `catGenes`.
 
 ## Understanding the output directory
 
@@ -193,6 +190,7 @@ When converted files are written to disk, they are typically saved in a director
 ```{r, eval=FALSE}
 RESULTS_convertAlign/09Mar2026/
 ```
+
 This date-based structure helps keep conversion results organized across runs.
 
 ## Recommended file naming
@@ -233,7 +231,6 @@ catdf <- catfullGenes(
 ```
 
 For datasets containing duplicated taxa or multiple accessions:
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -259,6 +256,7 @@ Conversion changes file format, not naming conventions. If file names are unclea
 
 ## Recommended practice
 For the smoothest workflow:
+
 - keep one file per locus
 - use simple and consistent file names
 - convert alignments to `NEXUS` before loading them into catGenes
@@ -267,6 +265,7 @@ For the smoothest workflow:
 
 ## Next step
 Once your alignments have been converted into the desired format, the next step is usually to:
+
 - load them into R
 - organize them as a named list
 - concatenate loci with `catfullGenes()` or `catmultGenes()`

@@ -40,7 +40,6 @@ The main input to `mineSeq()` is a data frame containing GenBank accession numbe
 - one column for each locus or gene containing the relevant GenBank accessions
 
 For example:
-
 ```{r, eval=FALSE}
 example_accessions <- data.frame(
   Species = c("Vatairea_fusca", "Vatairea_guianensis"),
@@ -68,7 +67,6 @@ This allows the function to retrieve sequences only from the relevant columns.
 
 ## Basic usage
 A typical `mineSeq()` call looks like this:
-
 ```{r, eval=FALSE}
 library(catGenes)
 
@@ -109,7 +107,6 @@ If the `Species` and `Voucher` columns are not present, `mineSeq()` falls back t
 
 ## Saving sequences to disk
 By default, mineSeq() can save the retrieved sequences to disk as a `FASTA` file.
-
 ```{r, eval=FALSE}
 mineSeq(
   inputdf = example_accessions,
@@ -131,7 +128,6 @@ RESULTS_mineSeq/09Mar2026/
 ```
 
 with a file like:
-
 ```{r, eval=FALSE}
 GenBank_seqs.fasta
 ```
@@ -140,8 +136,8 @@ This output can then be used directly in later steps such as combining `FASTA` f
 
 ## Working with missing accessions
 In many real datasets, some taxa will lack accessions for one or more loci. In those cases, it is fine to keep `NA` values in the input table.
-For example:
 
+For example:
 ```{r, eval=FALSE}
 example_accessions_missing <- data.frame(
   Species = c("Vatairea_fusca", "Vatairea_guianensis"),
@@ -194,6 +190,7 @@ Because `mineSeq()` connects to GenBank, it requires an active internet connecti
 
 ## Recommended practice
 For the smoothest downstream workflow:
+
 - keep accession numbers in clearly named columns
 - include Species and Voucher columns whenever possible
 - use stable and consistent voucher identifiers
@@ -202,7 +199,9 @@ For the smoothest downstream workflow:
 
 ## Next step
 Once sequences have been retrieved with mineSeq(), the next step is usually to:
-combine and align the sequences
-convert the resulting alignments if needed
-load them into R for concatenation with `catGenes`
+
+- combine and align the sequences
+- convert the resulting alignments if needed
+- load them into R for concatenation with `catGenes`
+
 See the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.

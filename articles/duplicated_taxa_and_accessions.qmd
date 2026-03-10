@@ -117,7 +117,6 @@ If the answer to any of these is yes, `catmultGenes()` is usually the correct ch
 ## Example workflow with duplicated accessions
 
 The example below assumes that the alignments have already been loaded into R as a named list and that labels include stable identifiers.
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -131,7 +130,6 @@ This compares alignments while taking duplicated accessions into account.
 
 ## Understanding the maxspp argument
 The `catmultGenes()` function includes the argument maxspp, which controls how taxa without duplicated accessions are treated.
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -186,7 +184,6 @@ Once `catmultGenes()` has been run successfully, the resulting list of equalized
 - `writePhylip()`
 
 For example:
-
 ```{r, eval=FALSE}
 writeNexus(
   catdf,
@@ -198,7 +195,6 @@ writeNexus(
 ```
 
 or
-
 ```{r, eval=FALSE}
 writePhylip(
   catdf,
@@ -216,7 +212,6 @@ In some workflows, you may want to preserve all original identifiers in the conc
 When you run `catfullGenes()` or `catmultGenes()` with `shortaxlabel = FALSE`, the export functions can preserve accession detail in the final output.
 
 For example:
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -254,14 +249,16 @@ If one or more species are represented by multiple accessions, `catfullGenes()` 
 ### Inconsistent identifiers across loci
 If the same accession is labeled differently in different alignments, `catGenes` will treat them as different accessions.
 For example, these may fail to match as intended:
-- Vatairea_fusca_Cardoso2939
-- Vatairea_fusca_DCardoso2939
-- Vatairea_fusca_RB2939
+```{r, eval=FALSE}
+Vatairea_fusca_Cardoso2939
+Vatairea_fusca_DCardoso2939
+Vatairea_fusca_RB2939
+```
 
-## Missing identifiers in only some loci
+### Missing identifiers in only some loci
 If duplicated taxa are identified with accession codes in one alignment but not in another, `catGenes` may not be able to resolve them correctly.
 
-## Mixing multiple identification schemes
+### Mixing multiple identification schemes
 Using collector numbers in one alignment and GenBank accessions in another for the same accession can create mismatches unless the same identifier is carried consistently across loci.
 
 ## Recommended practice

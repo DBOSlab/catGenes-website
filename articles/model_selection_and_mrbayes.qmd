@@ -47,7 +47,6 @@ This means `evomodelTest()` serves as the bridge between dataset preparation and
 ## Basic usage
 
 A simple model-selection workflow looks like this:
-
 ```{r, eval=FALSE}
 library(catGenes)
 
@@ -245,7 +244,7 @@ This can be useful when rendering tutorials or running batch workflows.
 ## A complete example workflow
 A typical workflow might look like this:
 
-Step 1. Export a concatenated NEXUS dataset
+Step 1. Export a concatenated `NEXUS` dataset
 ```{r, eval=FALSE}
 writeNexus(
   catdf,
@@ -271,6 +270,7 @@ evomodelTest(
 ```
 
 At this point, you have:
+
 - a model-selection report
 - a `NEXUS` file with a generated `MrBayes` block
 - a prepared input for downstream Bayesian analysis
@@ -288,20 +288,21 @@ This keeps model choice tied to each locus while preparing a combined Bayesian a
 
 The results directory may also contain:
 - a detailed text report
-- modified `NEXUS` files with appended MrBayes blocks
+- modified `NEXUS` files with appended `MrBayes` blocks
 - summaries of the selected models
 
 Inspecting these outputs is useful before proceeding to Bayesian inference.
 
 ## Common issues
 ### Input file is not in NEXUS format
-`evomodelTest()` expects `NEXUS` alignment files. If your data are in another format, convert them first using convertAlign() or export them with w`riteNexus()`.
+`evomodelTest()` expects `NEXUS` alignment files. If your data are in another format, convert them first using `convertAlign()` or export them with w`riteNexus()`.
 
 ### Model comparison takes too long
 Large alignments or many candidate models can increase runtime. To reduce computation time, you can:
+
 - reduce the number of models tested
 - lower retmax-style dataset size earlier in the workflow
-- increase mc.cores
+- increase `mc.cores`
 - use "standard" rather than "all"
 
 ### Original `NEXUS` file is overwritten unintentionally
@@ -309,6 +310,7 @@ Be cautious when using `overwrite_original_nexus = TRUE`. If you want to preserv
 
 ### The `MrBayes` block is not appended where expected
 Make sure:
+
 - `append_mrbayes_to_nexus = TRUE`
 - the `nexus_file_path` is correct
 - `combined_nexus_file_path` is provided when working with a separate concatenated matrix
@@ -318,10 +320,10 @@ Different criteria (AIC vs BIC) or different choices for `include_G` and `includ
 
 ## Recommended practice
 For the smoothest model-selection workflow:
+
 - work from clean `NEXUS` alignments
 - decide in advance whether to use AIC or BIC
 - test a manageable but meaningful model set
-=
 - include +G and +I only when justified by the workflow
 - preserve original `NEXUS` files unless replacement is intentional
 - inspect the generated `MrBayes` block before starting the analysis

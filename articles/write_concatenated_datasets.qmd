@@ -53,6 +53,7 @@ The object catdf is now ready to be exported with either `writeNexus()` or `writ
 
 ## When to use `writeNexus()`
 Use `writeNexus()` when you want:
+
 - a concatenated dataset in `NEXUS` format
 - optional interleaved or non-interleaved output
 - partition definitions embedded in the matrix
@@ -63,6 +64,7 @@ This is often the preferred output format when the next step involves `MrBayes` 
 
 ## When to use `writePhylip()`
 Use writePhylip() when you want:
+
 - a concatenated dataset in `PHYLIP` format
 - a separate partition file describing locus boundaries
 - compatibility with downstream workflows that expect `PHYLIP`
@@ -157,7 +159,8 @@ writeNexus(
 Interleaved output is often more readable when inspecting partitions manually, while non-interleaved output gives a more compact concatenated matrix.
 
 ## Understanding bayesblock in `writeNexus()`
-The argument bayesblock controls whether a preliminary `MrBayes` block is included in the output file.
+The argument `bayesblock` controls whether a preliminary `MrBayes` block is included in the output file.
+
 When `bayesblock = TRUE`, the output includes character sets for the partitions and a basic block structure useful for `MrBayes` workflows:
 ```{r eval=FALSE}
 writeNexus(
@@ -189,6 +192,7 @@ writeNexus(
 ```
 
 This is often desirable because terminal gaps may be more appropriately treated as missing data rather than explicit gaps in some phylogenetic workflows.
+
 If you want to preserve terminal gaps as they are:
 ```{r eval=FALSE}
 writeNexus(
@@ -211,13 +215,14 @@ writePhylip(
 ```
 
 This writes:
+
 - a concatenated `PHYLIP` matrix
 - a separate partition file describing the locus boundaries
 
 This is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.
 
 ## Understanding catalignments in `writePhylip()`
-The argument catalignments controls whether the concatenated `PHYLIP` matrix itself is written.
+The argument `catalignments` controls whether the concatenated `PHYLIP` matrix itself is written.
 ```{r eval=FALSE}
 writePhylip(
   catdf,
@@ -229,7 +234,7 @@ writePhylip(
 In most cases, this should remain `TRUE`, since writing the matrix is usually the main purpose of the function.
 
 ## Understanding partitionfile in `writePhylip()`
-The argument partitionfile controls whether a separate partition text file is written.
+The argument `partitionfile` controls whether a separate partition text file is written.
 ```{r eval=FALSE}
 writePhylip(
   catdf,
@@ -239,6 +244,7 @@ writePhylip(
 ```
 
 This partition file defines the coordinate ranges for each locus in the concatenated matrix and is important for partitioned phylogenetic analyses.
+
 If you do not need a separate partition file:
 ```{r eval=FALSE}
 writePhylip(
@@ -269,6 +275,7 @@ writePhylip(
 
 ## Example `NEXUS` workflow
 A common `NEXUS` export workflow is:
+
 Step 1. Load alignments
 ```{r eval=FALSE}
 library(catGenes)
@@ -310,6 +317,7 @@ This produces a concatenated `NEXUS` matrix suitable for downstream Bayesian wor
 
 ## Example `PHYLIP` workflow
 The corresponding `PHYLIP` workflow is:
+
 Step 1. Load alignments
 ```{r eval=FALSE}
 library(catGenes)
@@ -351,6 +359,7 @@ This produces a concatenated `PHYLIP` matrix together with a partition file.
 
 ## What the `NEXUS` output looks like
 When `writeNexus()` is used with interleaving and partition definitions, the file contains:
+
 - a concatenated `NEXUS` matrix
 - each partition defined by character ranges
 - optionally a preliminary MrBayes block
@@ -368,32 +377,37 @@ The output may appear as shown below:
 
 ## What the `PHYLIP` output looks like
 When `writePhylip()` is used, the result usually consists of:
+
 - a concatenated `PHYLIP` matrix
 - a separate partition file
+
 The matrix may resemble the example below:
 
 And the partition file may look like this:
 
-
 ## Choosing between `NEXUS` and `PHYLIP`
 Use `writeNexus()` when you want:
+
 - a richer, self-contained matrix format
 - embedded partition information
 - optional `MrBayes` blocks
 - a file structure convenient for Bayesian analyses and inspection
 
 Use `writePhylip()` when you want:
+
 - a simpler matrix format
 - a separate partition file
 - compatibility with external workflows expecting `PHYLIP`
+
 In many `catGenes` projects, both exports are useful, depending on which downstream programs or analyses will be used.
 
 ## Common issues
 
 ### Output labels are not what you expected
 If output labels seem too short or too detailed, check:
-whether shortaxlabel was set appropriately during concatenation
-whether genomics is set correctly during export
+
+- whether shortaxlabel was set appropriately during concatenation
+- whether genomics is set correctly during export
 
 ### Partition information is missing
 In `writeNexus()`, make sure `bayesblock = TRUE` if you want embedded partition definitions and a preliminary `MrBayes` block.
@@ -407,6 +421,7 @@ Use output file names that clearly identify the dataset, especially when writing
 
 ## Recommended practice
 For the smoothest export workflow:
+
 - inspect the concatenated object before export
 - decide whether identifiers should be simplified or preserved
 - use `writeNexus()` for MrBayes-oriented or richly annotated outputs
@@ -416,6 +431,7 @@ For the smoothest export workflow:
 
 ## Next step
 Once the concatenated dataset has been written to disk, the next step is usually to:
+
 - select evolutionary models with `evomodelTest()`
 - prepare or refine `MrBayes` blocks
 - run phylogenetic analyses

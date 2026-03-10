@@ -80,6 +80,7 @@ In this case, the function returns the combined sequence object and summary info
 
 ## Inspecting the result of combineFASTA()
 The result returned by `combineFASTA()` includes:
+
 - sequences: a DNAbin object containing all combined sequences
 - summary: a data frame with summary information
 - output_path: the output file path when saving is enabled
@@ -98,10 +99,12 @@ This behavior is useful because it preserves the original contents of the input 
 Use `alignSeqs()` when you have one or more `FASTA` files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.
 
 The function uses the msa package and supports:
+
 - ClustalW
 - Muscle
 
 It can write aligned results in:
+
 - NEXUS
 - FASTA
 - PHYLIP
@@ -116,10 +119,11 @@ alignSeqs(
 )
 ```
 
-This reads one or more FASTA files from the specified directory, aligns them, and writes the aligned output in `NEXUS` format.
+This reads one or more `FASTA` files from the specified directory, aligns them, and writes the aligned output in `NEXUS` format.
 
 ## Choosing an alignment method
 Currently, `alignSeqs()` supports two main alignment algorithms:
+
 - ClustalW
 - Muscle
 
@@ -133,7 +137,6 @@ alignSeqs(
 ```
 
 Or using `Muscle`:
-
 ```{r, eval=FALSE}
 alignSeqs(
   filepath = "path_to_fasta_files",
@@ -142,11 +145,11 @@ alignSeqs(
 )
 ```
 
-
 Both methods are widely used, and the best choice may depend on the characteristics of the dataset.
 
 ## Choosing the output format
 The argument format determines how the aligned files are written. Supported output formats are:
+
 - NEXUS
 - FASTA
 - PHYLIP
@@ -190,7 +193,6 @@ In many cases, the default setting is adequate. However, if your dataset require
 A typical workflow might look like this:
 
 Step 1. Retrieve sequences
-
 ```{r, eval=FALSE}
 seqs <- mineSeq(
   inputdf = my_accession_table,
@@ -202,7 +204,6 @@ seqs <- mineSeq(
 ```
 
 Step 2. Combine `FASTA` files if needed
-
 ```{r, eval=FALSE}
 combined <- combineFASTA(
   input_files = c(
@@ -215,7 +216,6 @@ combined <- combineFASTA(
 ```
 
 Step 3. Align the combined sequences
-
 ```{r, eval=FALSE}
 alignSeqs(
   filepath = "RESULTS_combineFASTA/09Mar2026",
@@ -248,7 +248,7 @@ By default, aligned files are written to a directory such as:
 RESULTS_alignSeqs/09Mar2026/
 ```
 
-Similarly, combined FASTA outputs may be written to:
+Similarly, combined `FASTA` outputs may be written to:
 
 ```{r, eval=FALSE}
 RESULTS_combineFASTA/09Mar2026/
@@ -264,6 +264,7 @@ This makes it easier to trace each aligned output back to the original input loc
 After running `alignSeqs()`, it is good practice to inspect the resulting alignment files before using them in downstream workflows.
 
 Questions to check include:
+
 - are all expected sequences present?
 - do sequence labels look correct and consistent?
 - are the alignments the expected length?
@@ -291,6 +292,7 @@ This creates the named list structure expected by catGenes concatenation functio
 
 ## Typical workflow after alignment
 Once the alignments are loaded into R, the next step is usually:
+
 - `catfullGenes()` for datasets with one sequence per species per locus
 - `catmultGenes()` for datasets containing duplicated taxa or multiple accessions
 
@@ -332,14 +334,16 @@ If your next step is concatenation with `catGenes`, `NEXUS` is often the most co
 
 ## Recommended practice
 For a smooth workflow:
+
 - combine `FASTA` files only when merging sequence batches is necessary
 - align each locus as a separate dataset
 - use clear and stable file names
 - inspect combined and aligned outputs before concatenation
-- write alignments in `NEXUS` format if you plan to load them directly into catGenes
+- write alignments in `NEXUS` format if you plan to load them directly into `catGenes`
 
 ## Next step
 Once your sequences have been combined and aligned, the next step is usually to:
+
 - load the alignments into R
 - choose `catfullGenes()` or `catmultGenes()`
 - concatenate loci for downstream phylogenetic analysis

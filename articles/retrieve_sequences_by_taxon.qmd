@@ -143,7 +143,7 @@ This is particularly useful when the same species is represented by multiple acc
 
 # Saving the original unprocessed query
 
-If you want to preserve a copy of the original unprocessed FASTA output alongside the cleaned version, use `original_query = TRUE`.
+If you want to preserve a copy of the original unprocessed `FASTA` output alongside the cleaned version, use `original_query = TRUE`.
 
 ```{r, eval=FALSE}
 mineTaxa(
@@ -174,7 +174,7 @@ PLASTOMES_mined_seqs_by_taxon.fasta
 This helps distinguish whole plastome accessions from ordinary gene sequences, which is often important when building clean locus-based datasets.
 
 ## Removing duplicated sequences
-By default, mineTaxa() removes duplicate sequences from the same species, keeping only the longest one.
+By default, `mineTaxa()` removes duplicate sequences from the same species, keeping only the longest one.
 
 ```{r, eval=FALSE}
 seqs <- mineTaxa(
@@ -189,7 +189,6 @@ This behavior is useful for reducing redundancy in large GenBank downloads, espe
 ## Keeping all retrieved sequences
 
 If you want to retain all retrieved sequences, including duplicates, disable duplicate removal.
-
 ```{r, eval=FALSE}
 seqs_all <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
@@ -200,9 +199,7 @@ seqs_all <- mineTaxa(
 This can be useful when you want to inspect raw diversity in the retrieved dataset before deciding how to filter it.
 
 ## Saving results to disk
-
 By default, `mineTaxa()` can save results to disk.
-
 ```{r, eval=FALSE}
 mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",

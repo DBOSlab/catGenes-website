@@ -104,7 +104,6 @@ This makes it easier to load all alignments into R and helps preserve clear part
 ## 5. Loading multiple alignments into R
 
 The example below uses the Vataireoid example alignments included in `catGenes`.
-
 ```{r eval=FALSE}
 
 library(catGenes)

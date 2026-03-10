@@ -204,7 +204,7 @@
     "href": "articles/remove_redundant_accessions.html#how-dropseq-decides-which-accession-to-keep",
     "title": "Remove redundant accessions",
     "section": "How dropSeq() decides which accession to keep",
-    "text": "How dropSeq() decides which accession to keep\nThe general purpose of dropSeq() is to retain the most informative accession when a species is duplicated. In practice, this typically means favoring the accession with: - fewer missing characters - greater sequence completeness - more informative data across the concatenated matrix\nThe function is especially useful when duplicated accessions differ mainly in how complete their sequences are.",
+    "text": "How dropSeq() decides which accession to keep\nThe general purpose of dropSeq() is to retain the most informative accession when a species is duplicated. In practice, this typically means favoring the accession with:\n\nfewer missing characters\ngreater sequence completeness\nmore informative data across the concatenated matrix\n\nThe function is especially useful when duplicated accessions differ mainly in how complete their sequences are.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -228,7 +228,7 @@
     "href": "articles/remove_redundant_accessions.html#example-workflow",
     "title": "Remove redundant accessions",
     "section": "Example workflow",
-    "text": "Example workflow\nStep 1. Run catmultGenes()\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 2. Remove redundant duplicated accessions\n\nclean_catdf &lt;- dropSeq(catdf)\n\nStep 3. Export the cleaned dataset\n\nwriteNexus(\n  clean_catdf,\n  file = \"cleaned_dataset.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nOr:\n\nwritePhylip(\n  clean_catdf,\n  file = \"cleaned_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)",
+    "text": "Example workflow\nStep 1. Run catmultGenes()\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 2. Remove redundant duplicated accessions\n\nclean_catdf &lt;- dropSeq(catdf)\n\nStep 3. Export the cleaned dataset\n\nwriteNexus(\n  clean_catdf,\n  file = \"cleaned_dataset.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nor\n\nwritePhylip(\n  clean_catdf,\n  file = \"cleaned_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -276,7 +276,7 @@
     "href": "articles/remove_redundant_accessions.html#when-not-to-use-dropseq",
     "title": "Remove redundant accessions",
     "section": "When not to use dropSeq()",
-    "text": "When not to use dropSeq()\nYou may not want to use dropSeq() when: - accession-level representation is biologically important - multiple accessions per species are intentionally being retained for downstream analyses - the goal is to preserve voucher-level or population-level diversity - no duplicated taxa remain after concatenation\nIn such cases, the full accession-aware output from catmultGenes() may already be the appropriate final dataset.",
+    "text": "When not to use dropSeq()\nYou may not want to use dropSeq() when:\n\naccession-level representation is biologically important\nmultiple accessions per species are intentionally being retained for downstream analyses\nthe goal is to preserve voucher-level or population-level diversity\nno duplicated taxa remain after concatenation\n\nIn such cases, the full accession-aware output from catmultGenes() may already be the appropriate final dataset.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -288,7 +288,7 @@
     "href": "articles/remove_redundant_accessions.html#typical-use-cases",
     "title": "Remove redundant accessions",
     "section": "Typical use cases",
-    "text": "Typical use cases\ndropSeq() is especially useful when: - building a species-level phylogeny from accession-rich input data - simplifying a matrix after accession-aware matching - selecting the best accession of each species for final export - reducing noise before downstream model selection or phylogenetic inference\nIt is less relevant in workflows focused explicitly on within-species sampling or accession-level phylogenetic structure.",
+    "text": "Typical use cases\ndropSeq() is especially useful when:\n\nbuilding a species-level phylogeny from accession-rich input data\nsimplifying a matrix after accession-aware matching\nselecting the best accession of each species for final export\nreducing noise before downstream model selection or phylogenetic inference\n\nIt is less relevant in workflows focused explicitly on within-species sampling or accession-level phylogenetic structure.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -300,7 +300,7 @@
     "href": "articles/remove_redundant_accessions.html#common-issues",
     "title": "Remove redundant accessions",
     "section": "Common issues",
-    "text": "Common issues\n\nNo duplicated accessions are removed\nIf dropSeq() does not appear to change the dataset, this may mean: - no duplicated species remained after concatenation - the labels are not formatted in a way that allows duplicated taxa to be recognized - the input object did not contain the expected accession-level redundancy\n\n\nLabels are inconsistent\nIf the same species is labeled inconsistently across loci or across accessions, the cleanup step may not behave as intended. Always standardize labels before concatenation.\n\n\nImportant accessions were removed unintentionally\nBecause dropSeq() is designed to simplify the dataset, always inspect the cleaned result before export, especially if some accessions are biologically important.",
+    "text": "Common issues\n\nNo duplicated accessions are removed\nIf dropSeq() does not appear to change the dataset, this may mean:\n\nno duplicated species remained after concatenation\nthe labels are not formatted in a way that allows duplicated taxa to be recognized\nthe input object did not contain the expected accession-level redundancy\n\n\n\nLabels are inconsistent\nIf the same species is labeled inconsistently across loci or across accessions, the cleanup step may not behave as intended. Always standardize labels before concatenation.\n\n\nImportant accessions were removed unintentionally\nBecause dropSeq() is designed to simplify the dataset, always inspect the cleaned result before export, especially if some accessions are biologically important.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -312,7 +312,7 @@
     "href": "articles/remove_redundant_accessions.html#recommended-practice",
     "title": "Remove redundant accessions",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest use of dropSeq(): - use it after catmultGenes(), not before concatenation - inspect the concatenated output before deciding to simplify it - verify that labels are standardized and accession-aware - compare the cleaned and original outputs before export - use dropSeq() only when species-level simplification is the intended goal",
+    "text": "Recommended practice\nFor the smoothest use of dropSeq():\n\nuse it after catmultGenes(), not before concatenation\ninspect the concatenated output before deciding to simplify it\nverify that labels are standardized and accession-aware\ncompare the cleaned and original outputs before export\nuse dropSeq() only when species-level simplification is the intended goal",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -360,7 +360,7 @@
     "href": "articles/loading_alignments.html#common-issues",
     "title": "Loading multiple alignments into R",
     "section": "Common issues",
-    "text": "Common issues",
+    "text": "Common issues\n\nFile paths are incorrect\nIf R cannot find your files, check that the path provided to list.files() or ape::read.nexus.data() is correct.\n\n\nFiles are not in NEXUS format\nThe examples in this article assume NEXUS input. If your files are in another format, you may need to convert them first using convertAlign().\n\n\nList names are not informative\nIf you do not remove file extensions or prefixes, the resulting list names may be difficult to interpret in downstream analyses. Clean list names as early as possible.\n\n\nTaxa do not match across loci\nIf concatenation behaves unexpectedly, the problem is often due to inconsistent taxon labels rather than the import step itself. In that case, revisit the alignment standardization tutorial.",
     "crumbs": [
       "Articles",
       "Input preparation",
@@ -492,7 +492,7 @@
     "href": "articles/retrieve_sequences_by_accession.html#working-with-missing-accessions",
     "title": "Retrieve sequences from GenBank with accession numbers",
     "section": "Working with missing accessions",
-    "text": "Working with missing accessions\nIn many real datasets, some taxa will lack accessions for one or more loci. In those cases, it is fine to keep NA values in the input table. For example:\n\nexample_accessions_missing &lt;- data.frame(\n  Species = c(\"Vatairea_fusca\", \"Vatairea_guianensis\"),\n  Voucher = c(\"Cardoso2939\", \"Silva1820\"),\n  ITS = c(\"JX152598\", NA),\n  matK = c(\"JX152610\", \"JX152611\"),\n  rbcL = c(NA, \"JX152621\"),\n  stringsAsFactors = FALSE\n)\n\nmineSeq() will attempt to retrieve only the accession numbers that are actually present.",
+    "text": "Working with missing accessions\nIn many real datasets, some taxa will lack accessions for one or more loci. In those cases, it is fine to keep NA values in the input table.\nFor example:\n\nexample_accessions_missing &lt;- data.frame(\n  Species = c(\"Vatairea_fusca\", \"Vatairea_guianensis\"),\n  Voucher = c(\"Cardoso2939\", \"Silva1820\"),\n  ITS = c(\"JX152598\", NA),\n  matK = c(\"JX152610\", \"JX152611\"),\n  rbcL = c(NA, \"JX152621\"),\n  stringsAsFactors = FALSE\n)\n\nmineSeq() will attempt to retrieve only the accession numbers that are actually present.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -540,7 +540,7 @@
     "href": "articles/retrieve_sequences_by_accession.html#recommended-practice",
     "title": "Retrieve sequences from GenBank with accession numbers",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest downstream workflow: - keep accession numbers in clearly named columns - include Species and Voucher columns whenever possible - use stable and consistent voucher identifiers - save retrieved sequences to disk so they can be aligned later - inspect output labels before moving to alignment or concatenation",
+    "text": "Recommended practice\nFor the smoothest downstream workflow:\n\nkeep accession numbers in clearly named columns\ninclude Species and Voucher columns whenever possible\nuse stable and consistent voucher identifiers\nsave retrieved sequences to disk so they can be aligned later\ninspect output labels before moving to alignment or concatenation",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -552,7 +552,7 @@
     "href": "articles/retrieve_sequences_by_accession.html#next-step",
     "title": "Retrieve sequences from GenBank with accession numbers",
     "section": "Next step",
-    "text": "Next step\nOnce sequences have been retrieved with mineSeq(), the next step is usually to: combine and align the sequences convert the resulting alignments if needed load them into R for concatenation with catGenes See the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.",
+    "text": "Next step\nOnce sequences have been retrieved with mineSeq(), the next step is usually to:\n\ncombine and align the sequences\nconvert the resulting alignments if needed\nload them into R for concatenation with catGenes\n\nSee the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -624,7 +624,7 @@
     "href": "articles/mine_organellar_loci.html#providing-taxon-names",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Providing taxon names",
-    "text": "Providing taxon names\nIf you want the output labels to use your preferred taxon naming rather than relying only on GenBank metadata, you can supply a vector of taxon names. For example:\n\nminePlastome(\n  genbank = c(\"NC_000932\", \"NC_026462\"),\n  taxon = c(\"Arabidopsis_thaliana\", \"Some_species\"),\n  genes = c(\"matK\", \"rbcL\")\n)\n\nThis is especially useful when you want consistent naming across multiple downstream datasets.",
+    "text": "Providing taxon names\nIf you want the output labels to use your preferred taxon naming rather than relying only on GenBank metadata, you can supply a vector of taxon names.\nFor example:\n\nminePlastome(\n  genbank = c(\"NC_000932\", \"NC_026462\"),\n  taxon = c(\"Arabidopsis_thaliana\", \"Some_species\"),\n  genes = c(\"matK\", \"rbcL\")\n)\n\nThis is especially useful when you want consistent naming across multiple downstream datasets.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -672,7 +672,7 @@
     "href": "articles/mine_organellar_loci.html#a-more-complete-plastome-example",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "A more complete plastome example",
-    "text": "A more complete plastome example\nA fuller plastome workflow might look like this:\n\nminePlastome(\n  genbank = c(\"NC_000932\", \"NC_026462\"),\n  taxon = c(\"Arabidopsis_thaliana\", \"Example_species\"),\n  voucher = c(\"Voucher1\", \"Voucher2\"),\n  CDS = TRUE,\n  genes = c(\"matK\", \"rbcL\", \"ndhF\"),\n  rm_gb_files = FALSE,\n  verbose = TRUE,\n  dir = \"RESULTS_minePlastome\"\n)\n\nThis: - downloads the plastome GenBank files - extracts the target coding genes - labels sequences with taxon and voucher information - retains the original downloaded .gb files - writes results into the specified output directory",
+    "text": "A more complete plastome example\nA fuller plastome workflow might look like this:\n\nminePlastome(\n  genbank = c(\"NC_000932\", \"NC_026462\"),\n  taxon = c(\"Arabidopsis_thaliana\", \"Example_species\"),\n  voucher = c(\"Voucher1\", \"Voucher2\"),\n  CDS = TRUE,\n  genes = c(\"matK\", \"rbcL\", \"ndhF\"),\n  rm_gb_files = FALSE,\n  verbose = TRUE,\n  dir = \"RESULTS_minePlastome\"\n)\n\nThis:\n\ndownloads the plastome GenBank files\nextracts the target coding genes\nlabels sequences with taxon and voucher information\nretains the original downloaded .gb files\nwrites results into the specified output directory",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -696,7 +696,7 @@
     "href": "articles/mine_organellar_loci.html#understanding-the-output",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Understanding the output",
-    "text": "Understanding the output\nBoth functions write the mined loci as FASTA files in the specified output directory. Typical outputs include: - one or more FASTA files containing the extracted target loci - optionally the original downloaded GenBank files, if rm_gb_files = FALSE\nFor example, plastome results may be saved under a directory such as:\n\nRESULTS_minePlastome/09Mar2026/\n\nand mitochondrial results under:\n\nRESULTS_mineMitochondrion/09Mar2026/\n\nThese FASTA outputs can then be aligned and incorporated into later concatenation workflows.",
+    "text": "Understanding the output\nBoth functions write the mined loci as FASTA files in the specified output directory. Typical outputs include:\n\none or more FASTA files containing the extracted target loci\noptionally the original downloaded GenBank files, if rm_gb_files = FALSE\n\nFor example, plastome results may be saved under a directory such as:\n\nRESULTS_minePlastome/09Mar2026/\n\nand mitochondrial results under:\n\nRESULTS_mineMitochondrion/09Mar2026/\n\nThese FASTA outputs can then be aligned and incorporated into later concatenation workflows.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -732,7 +732,7 @@
     "href": "articles/mine_organellar_loci.html#typical-workflow-after-locus-mining",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Typical workflow after locus mining",
-    "text": "Typical workflow after locus mining\nA common organellar-locus workflow is: - compile accession numbers for complete plastomes or mitochondrial genomes - mine target loci with minePlastome() or mineMitochondrion() - save the extracted loci as FASTA - align the resulting sequences with alignSeqs() - convert formats if needed - load alignments into R - concatenate loci with catfullGenes() or catmultGenes()\nFor example, once mined loci have been written to disk, you may proceed with alignment:\n\nalignSeqs(\n  filepath = \"RESULTS_minePlastome/09Mar2026\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nThe same logic applies to mitochondrial loci.",
+    "text": "Typical workflow after locus mining\nA common organellar-locus workflow is:\n\ncompile accession numbers for complete plastomes or mitochondrial genomes\nmine target loci with minePlastome() or mineMitochondrion()\nsave the extracted loci as FASTA\nalign the resulting sequences with alignSeqs()\nconvert formats if needed\nload alignments into R\nconcatenate loci with catfullGenes() or catmultGenes()\n\nFor example, once mined loci have been written to disk, you may proceed with alignment:\n\nalignSeqs(\n  filepath = \"RESULTS_minePlastome/09Mar2026\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nThe same logic applies to mitochondrial loci.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -744,7 +744,7 @@
     "href": "articles/mine_organellar_loci.html#common-issues",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Common issues",
-    "text": "Common issues\n\nGene names do not match GenBank annotations\nThe most common reason a locus is not extracted is that the requested gene name does not match the annotation in the downloaded GenBank record. Always check annotation conventions for the genomes you are using.\n\n\nSome loci are missing in some genomes\nNot all plastomes or mitochondrial genomes have exactly the same annotation completeness. Some requested genes or spacers may be absent, unannotated, or named differently.\n\n\nTaxon or voucher vectors have the wrong length\nIf you provide taxon or voucher, make sure those vectors have the same length and order as the genbank accession vector.\n###Internet connection is unavailable Both functions connect to GenBank and require internet access.\n\n\nNon-coding regions are not extracted as expected\nIf you are targeting introns or intergenic spacers, make sure CDS = FALSE. Otherwise, the function may interpret the request as a coding-gene workflow.",
+    "text": "Common issues\n\nGene names do not match GenBank annotations\nThe most common reason a locus is not extracted is that the requested gene name does not match the annotation in the downloaded GenBank record. Always check annotation conventions for the genomes you are using.\n\n\nSome loci are missing in some genomes\nNot all plastomes or mitochondrial genomes have exactly the same annotation completeness. Some requested genes or spacers may be absent, unannotated, or named differently.\n\n\nTaxon or voucher vectors have the wrong length\nIf you provide taxon or voucher, make sure those vectors have the same length and order as the genbank accession vector.\n\n\nInternet connection is unavailable\nBoth functions connect to GenBank and require internet access.\n\n\nNon-coding regions are not extracted as expected\nIf you are targeting introns or intergenic spacers, make sure CDS = FALSE. Otherwise, the function may interpret the request as a coding-gene workflow.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -756,7 +756,7 @@
     "href": "articles/mine_organellar_loci.html#recommended-practice",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor smooth organellar mining workflows: - start from curated accession lists of complete genomes - verify the exact gene names used in GenBank annotations - provide taxon and voucher information when you want standardized downstream labels - choose CDS = TRUE for protein-coding genes and CDS = FALSE for non-coding regions - inspect the mined output before alignment - keep downloaded GenBank files when testing new extraction workflows",
+    "text": "Recommended practice\nFor smooth organellar mining workflows:\n\nstart from curated accession lists of complete genomes\nverify the exact gene names used in GenBank annotations\nprovide taxon and voucher information when you want standardized downstream labels\nchoose CDS = TRUE for protein-coding genes and CDS = FALSE for non-coding regions\ninspect the mined output before alignment\nkeep downloaded GenBank files when testing new extraction workflows",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -768,7 +768,7 @@
     "href": "articles/mine_organellar_loci.html#next-step",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Next step",
-    "text": "Next step\nOnce loci have been mined from plastomes or mitochondrial genomes, the next step is usually to: - align the extracted sequences with alignSeqs() - convert alignment formats if necessary - load the alignments into R - concatenate loci for downstream phylogenetic analysis\nSee the next tutorials for combining FASTA files, aligning sequences, converting formats, and concatenating multilocus datasets with catGenes.",
+    "text": "Next step\nOnce loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:\n\nalign the extracted sequences with alignSeqs()\nconvert alignment formats if necessary\nload the alignments into R\nconcatenate loci for downstream phylogenetic analysis\n\nSee the next tutorials for combining FASTA files, aligning sequences, converting formats, and concatenating multilocus datasets with catGenes.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -787,11 +787,11 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#why-standardization-matters",
-    "href": "articles/plot_phylogenetic_trees.html#why-standardization-matters",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "Why standardization matters",
-    "text": "Why standardization matters\nBefore using the concatenation functions in catGenes, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.\nFor datasets without duplicated accessions, catGenes matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.",
+    "objectID": "articles/plot_phylogenetic_trees.html#overview",
+    "href": "articles/plot_phylogenetic_trees.html#overview",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Overview",
+    "text": "Overview\nThe function plotPhylo() provides a flexible workflow for plotting and editing phylogenetic trees in catGenes using ggtree. It was designed to help users move from a raw phylogeny to a more informative and publication-ready figure, with options for changing layouts, displaying support values, highlighting clades or taxa, modifying labels, pruning tips, and exporting the final result.\nThis article explains how to use plotPhylo() in a range of common situations, from simple tree plotting to more customized phylogenetic figures.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -799,11 +799,11 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#general-principles",
-    "href": "articles/plot_phylogenetic_trees.html#general-principles",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "General principles",
-    "text": "General principles\nWhen preparing alignments for catGenes:\n\nuse consistent taxon naming across all loci\nseparate all components of sequence labels with underscores\navoid spaces and hyphens in sequence names\nkeep identifiers stable across all alignments when the same accession is represented in multiple loci\nuse simple and consistent file names for each alignment",
+    "objectID": "articles/plot_phylogenetic_trees.html#when-to-use-plotphylo",
+    "href": "articles/plot_phylogenetic_trees.html#when-to-use-plotphylo",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "When to use plotPhylo()",
+    "text": "When to use plotPhylo()\nUse plotPhylo() when you want to:\n\nvisualize a phylogenetic tree in R\nadd node support information\nhighlight particular clades or taxa\nrename or prune selected tips\nadjust tip label formatting\ncreate more presentation-ready or publication-ready figures\nsave the resulting tree as an image file\n\nThe function is especially useful after a phylogenetic analysis has already been completed and the resulting tree is available as a phylo object.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -811,11 +811,11 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#datasets-with-a-single-sequence-per-species",
-    "href": "articles/plot_phylogenetic_trees.html#datasets-with-a-single-sequence-per-species",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "1. Datasets with a single sequence per species",
-    "text": "1. Datasets with a single sequence per species\nWhen each species is represented by only one sequence per locus, taxon labels can be formatted simply as:\n\nGenus_species\nG_species\n\nLabels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:\n\nGenus_species_identifier\nGenus_species_identifier_accession\n\nExamples:\n\nVatairea_fusca\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\n\n\n\nExample with no identifiers in the sequences\n\n\n\n\n\nExample with identifiers in the sequences",
+    "objectID": "articles/plot_phylogenetic_trees.html#required-input",
+    "href": "articles/plot_phylogenetic_trees.html#required-input",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Required input",
+    "text": "Required input\nThe main required input is a tree of class phylo.\nFor example:\n\nlibrary(catGenes)\nlibrary(ape)\n\ntree &lt;- read.tree(\"my_tree.tre\")\n\nOnce the tree has been imported, it can be passed to plotPhylo().",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -823,11 +823,11 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "href": "articles/plot_phylogenetic_trees.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "2. Datasets with duplicated species or multiple accessions",
-    "text": "2. Datasets with duplicated species or multiple accessions\nWhen one or more species are represented by multiple accessions, catGenes requires labels that include both:\n\nthe scientific name\na stable accession identifier\n\nThis identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.\nRecommended format:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\nIn these cases, use catmultGenes() rather than catfullGenes().\n\n\n\nExample when species are duplicated with multiple accessions",
+    "objectID": "articles/plot_phylogenetic_trees.html#basic-usage",
+    "href": "articles/plot_phylogenetic_trees.html#basic-usage",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Basic usage",
+    "text": "Basic usage\nA minimal example looks like this:\n\np &lt;- plotPhylo(tree = tree)\n\nThis returns a ggtree-based plot object that can be printed, modified, or saved.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -835,11 +835,11 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#genus-level-identifications-and-infraspecific-taxa",
-    "href": "articles/plot_phylogenetic_trees.html#genus-level-identifications-and-infraspecific-taxa",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "3. Genus-level identifications and infraspecific taxa",
-    "text": "3. Genus-level identifications and infraspecific taxa\nAccessions identified only to genus level can be formatted as:\n\nGenus_sp\nGenus_sp1\nGenus_sp2\nGenus_spA\nGenus_spB\n\nAbbreviated generic names can also be used if done consistently:\n\nG_sp\nG_sp1\nG_spA\n\nFor infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as var. or subsp. in the label. For example:\n\nGenus_species_variety_identifier\nGenus_species_subspecies_identifier\n\n\n\n\nExample with other label formatting",
+    "objectID": "articles/plot_phylogenetic_trees.html#choosing-the-tree-layout",
+    "href": "articles/plot_phylogenetic_trees.html#choosing-the-tree-layout",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Choosing the tree layout",
+    "text": "Choosing the tree layout\nThe layout argument controls how the tree is displayed. Supported layouts include:\n\n“rectangular”\n“dendrogram”\n“slanted”\n“ellipse”\n“roundrect”\n“fan”\n“circular”\n“inward_circular”\n“radial”\n“equal_angle”\n“daylight”\n“ape”\n\nA simple rectangular layout:\n\np &lt;- plotPhylo(\n  tree = tree,\n  layout = \"rectangular\"\n)\n\nA circular layout:\n\np &lt;- plotPhylo(\n  tree = tree,\n  layout = \"circular\"\n)\n\nThe best layout depends on the size of the tree and the intended figure style.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -847,11 +847,263 @@
     ]
   },
   {
-    "objectID": "articles/plot_phylogenetic_trees.html#naming-alignment-files",
-    "href": "articles/plot_phylogenetic_trees.html#naming-alignment-files",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "4. Naming alignment files",
-    "text": "4. Naming alignment files\nWe recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:\n\nITS.nex\nrbcL.nex\npsbAtrnH.nex\nCOX1.nex\n\nThis makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.",
+    "objectID": "articles/plot_phylogenetic_trees.html#controlling-branch-width",
+    "href": "articles/plot_phylogenetic_trees.html#controlling-branch-width",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Controlling branch width",
+    "text": "Controlling branch width\nThe branch.width argument sets the line width of tree branches.\n\np &lt;- plotPhylo(\n  tree = tree,\n  branch.width = 0.5\n)\n\nThicker branches can be helpful in large figures or presentations, whereas thinner branches are often preferable in complex or crowded trees.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#showing-or-hiding-branch-supports",
+    "href": "articles/plot_phylogenetic_trees.html#showing-or-hiding-branch-supports",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Showing or hiding branch supports",
+    "text": "Showing or hiding branch supports\nThe branch.supports argument controls whether node support values are displayed.\n\np &lt;- plotPhylo(\n  tree = tree,\n  branch.supports = TRUE\n)\n\nThis is useful when support values are stored in the tree object and you want them rendered automatically.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adding-support-from-alternative-trees",
+    "href": "articles/plot_phylogenetic_trees.html#adding-support-from-alternative-trees",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adding support from alternative trees",
+    "text": "Adding support from alternative trees\nplotPhylo() can also display support values from other phylogenetic analyses, using alternative tree objects.\nAdd support from a RAxML tree\n\np &lt;- plotPhylo(\n  tree = main_tree,\n  add.raxml.tree = raxml_tree\n)\n\nAdd support from a parsimony tree\n\np &lt;- plotPhylo(\n  tree = main_tree,\n  add.parsi.tree = parsimony_tree\n)\n\nThis allows support from different inference methods to be compared and visualized together on the same phylogeny.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#showing-or-hiding-tip-labels",
+    "href": "articles/plot_phylogenetic_trees.html#showing-or-hiding-tip-labels",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Showing or hiding tip labels",
+    "text": "Showing or hiding tip labels\nThe show.tip.label argument controls whether the tip labels are displayed.\n\np &lt;- plotPhylo(\n  tree = tree,\n  show.tip.label = TRUE\n)\n\nHiding tip labels may be useful when creating an overview figure or focusing on clade structure rather than taxon names.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adjusting-tip-label-size",
+    "href": "articles/plot_phylogenetic_trees.html#adjusting-tip-label-size",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adjusting tip label size",
+    "text": "Adjusting tip label size\nUse size.tip.label to change the font size of tip labels.\n\np &lt;- plotPhylo(\n  tree = tree,\n  size.tip.label = 2\n)\n\nSmaller values help when plotting large trees, while larger values can be useful for smaller trees or presentation figures.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#changing-the-font-face-of-tip-labels",
+    "href": "articles/plot_phylogenetic_trees.html#changing-the-font-face-of-tip-labels",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Changing the font face of tip labels",
+    "text": "Changing the font face of tip labels\nUse fontface.tip.label to control the text style of the tip labels. Common options include:\n\n\"plain\"\n\"bold\"\n\"italic\"\n\"bold.italic\"\n\nFor example:\n\np &lt;- plotPhylo(\n  tree = tree,\n  fontface.tip.label = \"italic\"\n)\n\nItalic labels are often appropriate for scientific names.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#abbreviating-tip-labels",
+    "href": "articles/plot_phylogenetic_trees.html#abbreviating-tip-labels",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Abbreviating tip labels",
+    "text": "Abbreviating tip labels\nThe abbrev.tip.label argument can be used when tip labels are long and you want a more compact display.\n\np &lt;- plotPhylo(\n  tree = tree,\n  abbrev.tip.label = TRUE\n)\n\nThis can make dense trees easier to read.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#highlighting-selected-taxa",
+    "href": "articles/plot_phylogenetic_trees.html#highlighting-selected-taxa",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Highlighting selected taxa",
+    "text": "Highlighting selected taxa\nYou can highlight specific taxa using highlight.taxa.\n\np &lt;- plotPhylo(\n  tree = tree,\n  highlight.taxa = c(\"Vatairea_fusca\", \"Vatairea_guianensis\")\n)\n\nYou can also specify colors explicitly with highlight.color:\n\np &lt;- plotPhylo(\n  tree = tree,\n  highlight.taxa = c(\"Vatairea_fusca\", \"Vatairea_guianensis\"),\n  highlight.color = c(\"red\", \"blue\")\n)\n\nThis is useful when emphasizing focal taxa in a large tree.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#understating-selected-taxa",
+    "href": "articles/plot_phylogenetic_trees.html#understating-selected-taxa",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Understating selected taxa",
+    "text": "Understating selected taxa\nThe understate.taxa argument can be used to make some taxa visually less prominent, usually by rendering them in gray.\n\np &lt;- plotPhylo(\n  tree = tree,\n  understate.taxa = c(\"Outgroup_species\", \"Outgroup_species_2\")\n)\n\nThis is helpful when you want to emphasize a focal clade while keeping the rest of the tree visible but less dominant.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#highlighting-clades",
+    "href": "articles/plot_phylogenetic_trees.html#highlighting-clades",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Highlighting clades",
+    "text": "Highlighting clades\nThe highlight.clade argument allows you to highlight the clade defined by two tip labels.\n\np &lt;- plotPhylo(\n  tree = tree,\n  highlight.clade = c(\"Species_A\", \"Species_B\")\n)\n\nYou can also highlight multiple clades by providing a list:\n\np &lt;- plotPhylo(\n  tree = tree,\n  highlight.clade = list(\n    c(\"Species_A\", \"Species_B\"),\n    c(\"Species_C\", \"Species_D\")\n  )\n)\n\nTo control the highlighting colors, use fill.gradient.\n\np &lt;- plotPhylo(\n  tree = tree,\n  highlight.clade = list(\n    c(\"Species_A\", \"Species_B\"),\n    c(\"Species_C\", \"Species_D\")\n  ),\n  fill.gradient = c(\"lightblue\", \"mistyrose\")\n)\n\nThis is useful when marking major groups or focal clades in a figure.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#renaming-tip-labels",
+    "href": "articles/plot_phylogenetic_trees.html#renaming-tip-labels",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Renaming tip labels",
+    "text": "Renaming tip labels\nThe replace.taxa argument lets you substitute specific tip labels with alternative names. For example:\n\np &lt;- plotPhylo(\n  tree = tree,\n  replace.taxa = c(\n    \"Harpalyce_formosa\" = \"Harpalyce_riparia\",\n    \"Harpalyce_cf_brasiliana\" = \"Harpalyce_magnibracteata\"\n  )\n)\n\nThis is useful when updating names, correcting labels, or standardizing terminology in the plotted figure without altering the original tree object.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#pruning-selected-taxa",
+    "href": "articles/plot_phylogenetic_trees.html#pruning-selected-taxa",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Pruning selected taxa",
+    "text": "Pruning selected taxa\nThe prune.taxa argument allows you to drop selected tips from the plotted tree.\n\np &lt;- plotPhylo(\n  tree = tree,\n  prune.taxa = c(\"Outgroup_species\", \"Taxon_to_remove\")\n)\n\nThis can be useful when producing a focused figure that excludes outgroups or taxa not relevant to the current presentation.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adding-a-gene-or-dataset-label",
+    "href": "articles/plot_phylogenetic_trees.html#adding-a-gene-or-dataset-label",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adding a gene or dataset label",
+    "text": "Adding a gene or dataset label\nThe gene.label argument adds a label or title associated with the plotted tree.\n\np &lt;- plotPhylo(\n  tree = tree,\n  gene.label = \"matK\"\n)\n\nThis is useful when comparing trees built from different loci or different datasets. You can also adjust its placement with ylim.gene.label.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adjusting-the-x-axis",
+    "href": "articles/plot_phylogenetic_trees.html#adjusting-the-x-axis",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adjusting the x-axis",
+    "text": "Adjusting the x-axis\nUse xlim.tree or hexpand to control horizontal spacing and tree extent. For example:\n\np &lt;- plotPhylo(\n  tree = tree,\n  xlim.tree = c(0, 1.5)\n)\n\nor\n\np &lt;- plotPhylo(\n  tree = tree,\n  hexpand = 0.1\n)\n\nThese options are especially useful when labels are long and need extra space.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adding-a-side-phylogram",
+    "href": "articles/plot_phylogenetic_trees.html#adding-a-side-phylogram",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adding a side phylogram",
+    "text": "Adding a side phylogram\n\nplotPhylo() can add a small side phylogram showing branch lengths.\np &lt;- plotPhylo(\n  tree = tree,\n  phylogram.side = TRUE\n)\n\nTo show support values in the side phylogram as well:\n\np &lt;- plotPhylo(\n  tree = tree,\n  phylogram.side = TRUE,\n  phylogram.supports = TRUE\n)\n\nYou can also adjust its size with phylogram.height. This is useful when the main edited tree emphasizes labels and clades, while the side phylogram preserves branch-length context.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#saving-the-figure",
+    "href": "articles/plot_phylogenetic_trees.html#saving-the-figure",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Saving the figure",
+    "text": "Saving the figure\nYou can save the plotted tree directly to disk using save = TRUE.\n\nplotPhylo(\n  tree = tree,\n  layout = \"rectangular\",\n  save = TRUE,\n  dir = \"RESULTS_edited_tree\",\n  filename = \"my_tree\",\n  format = \"pdf\"\n)\n\nSupported output formats include:\n\n“pdf”\n“jpg”\n“png”\n“tiff”\n\nFor example, to save as PNG:\n\nplotPhylo(\n  tree = tree,\n  save = TRUE,\n  filename = \"my_tree\",\n  format = \"png\"\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#adjusting-image-resolution",
+    "href": "articles/plot_phylogenetic_trees.html#adjusting-image-resolution",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Adjusting image resolution",
+    "text": "Adjusting image resolution\nUse the dpi argument to set output resolution.\n\nplotPhylo(\n  tree = tree,\n  save = TRUE,\n  filename = \"my_tree\",\n  format = \"tiff\",\n  dpi = 600\n)\n\nHigher resolution is useful for publication-quality raster outputs.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#a-complete-example",
+    "href": "articles/plot_phylogenetic_trees.html#a-complete-example",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "A complete example",
+    "text": "A complete example\nA typical tree-plotting workflow might look like this:\n\nlibrary(catGenes)\nlibrary(ape)\n\ntree &lt;- read.tree(\"my_tree.tre\")\n\np &lt;- plotPhylo(\n  tree = tree,\n  layout = \"rectangular\",\n  branch.supports = TRUE,\n  show.tip.label = TRUE,\n  size.tip.label = 2,\n  fontface.tip.label = \"italic\",\n  highlight.taxa = c(\"Vatairea_fusca\", \"Vatairea_guianensis\"),\n  highlight.color = c(\"red\", \"blue\"),\n  gene.label = \"Combined dataset\"\n)\n\nTo save the same tree:\n\nplotPhylo(\n  tree = tree,\n  layout = \"rectangular\",\n  branch.supports = TRUE,\n  show.tip.label = TRUE,\n  size.tip.label = 2,\n  fontface.tip.label = \"italic\",\n  gene.label = \"Combined dataset\",\n  save = TRUE,\n  filename = \"combined_dataset_tree\",\n  format = \"pdf\"\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#typical-use-cases",
+    "href": "articles/plot_phylogenetic_trees.html#typical-use-cases",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Typical use cases",
+    "text": "Typical use cases\nplotPhylo() is especially useful for:\n\nfinal figure preparation for manuscripts\nhighlighting focal taxa or clades\ncomparing support values from different inference methods\ncleaning labels before presentation\ngenerating multiple views of the same phylogeny with different layouts",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#common-issues",
+    "href": "articles/plot_phylogenetic_trees.html#common-issues",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Common issues",
+    "text": "Common issues\n\nTree object is not of class phylo\nplotPhylo() expects a tree object compatible with ape and ggtree. If the input is not a proper phylo object, convert or re-import the tree before plotting.\n\n\nTip labels are too long\nLong labels can crowd the plot. Consider: - reducing size.tip.label - using abbrev.tip.label = TRUE - using fancy.tip.label = TRUE - expanding the x-axis with xlim.tree or hexpand\n\n\nHighlighted taxa are not found\nIf a taxon name passed to highlight.taxa, replace.taxa, or prune.taxa does not match the exact tree label, it will not be applied. Always check the tree labels first.\n\n\nSupport values are missing\nIf branch.supports = TRUE but no support values appear, the support information may not be present in the tree object or may not be formatted in the expected way.\n\n\nSaved figure does not look as expected\nTry adjusting:\n\nlayout\nsize.tip.label\nxlim.tree\nhexpand\nformat\ndpi Tree figures often require some iteration to achieve the most readable final design.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#recommended-practice",
+    "href": "articles/plot_phylogenetic_trees.html#recommended-practice",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest use of plotPhylo():\n\nstart from a clean phylo object\ninspect tip labels before adding highlights or replacements\nuse rectangular layouts for readability and circular or fan layouts for dense trees\nkeep scientific names italicized when appropriate\nsave final figures in pdf for vector output or tiff/png for high-resolution raster output\nmake small adjustments iteratively until the visual balance is right",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Plot and edit phylogenetic trees"
+    ]
+  },
+  {
+    "objectID": "articles/plot_phylogenetic_trees.html#next-step",
+    "href": "articles/plot_phylogenetic_trees.html#next-step",
+    "title": "Plot and edit phylogenetic trees",
+    "section": "Next step",
+    "text": "Next step\nOnce your phylogeny has been plotted and edited with plotPhylo(), the figure can be used directly for manuscripts, presentations, reports, or supplementary materials as part of a reproducible phylogenetic workflow in R.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1043,31 +1295,7 @@
     "href": "articles/duplicated_taxa_and_accessions.html#common-mistakes",
     "title": "Working with duplicated taxa and multiple accessions",
     "section": "Common mistakes",
-    "text": "Common mistakes\n\nUsing catfullGenes() when taxa are duplicated\nIf one or more species are represented by multiple accessions, catfullGenes() may not match them correctly because it is intended for one-sequence-per-species datasets.\n\n\nInconsistent identifiers across loci\nIf the same accession is labeled differently in different alignments, catGenes will treat them as different accessions. For example, these may fail to match as intended: - Vatairea_fusca_Cardoso2939 - Vatairea_fusca_DCardoso2939 - Vatairea_fusca_RB2939",
-    "crumbs": [
-      "Articles",
-      "Input preparation",
-      "Working with duplicated taxa and multiple accessions"
-    ]
-  },
-  {
-    "objectID": "articles/duplicated_taxa_and_accessions.html#missing-identifiers-in-only-some-loci",
-    "href": "articles/duplicated_taxa_and_accessions.html#missing-identifiers-in-only-some-loci",
-    "title": "Working with duplicated taxa and multiple accessions",
-    "section": "Missing identifiers in only some loci",
-    "text": "Missing identifiers in only some loci\nIf duplicated taxa are identified with accession codes in one alignment but not in another, catGenes may not be able to resolve them correctly.",
-    "crumbs": [
-      "Articles",
-      "Input preparation",
-      "Working with duplicated taxa and multiple accessions"
-    ]
-  },
-  {
-    "objectID": "articles/duplicated_taxa_and_accessions.html#mixing-multiple-identification-schemes",
-    "href": "articles/duplicated_taxa_and_accessions.html#mixing-multiple-identification-schemes",
-    "title": "Working with duplicated taxa and multiple accessions",
-    "section": "Mixing multiple identification schemes",
-    "text": "Mixing multiple identification schemes\nUsing collector numbers in one alignment and GenBank accessions in another for the same accession can create mismatches unless the same identifier is carried consistently across loci.",
+    "text": "Common mistakes\n\nUsing catfullGenes() when taxa are duplicated\nIf one or more species are represented by multiple accessions, catfullGenes() may not match them correctly because it is intended for one-sequence-per-species datasets.\n\n\nInconsistent identifiers across loci\nIf the same accession is labeled differently in different alignments, catGenes will treat them as different accessions. For example, these may fail to match as intended:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_DCardoso2939\nVatairea_fusca_RB2939\n\n\n\nMissing identifiers in only some loci\nIf duplicated taxa are identified with accession codes in one alignment but not in another, catGenes may not be able to resolve them correctly.\n\n\nMixing multiple identification schemes\nUsing collector numbers in one alignment and GenBank accessions in another for the same accession can create mismatches unless the same identifier is carried consistently across loci.",
     "crumbs": [
       "Articles",
       "Input preparation",
@@ -1235,7 +1463,7 @@
     "href": "articles/concatenate_with_catfullGenes.html#typical-workflow-after-catfullgenes",
     "title": "Concatenate multilocus datasets",
     "section": "Typical workflow after catfullGenes()",
-    "text": "Typical workflow after catfullGenes()\nA common multilocus workflow is: - standardize sequence labels - align loci separately - load alignments into R - run catfullGenes() - export the result with writeNexus() or writePhylip() - perform downstream phylogenetic analyses - visualize resulting trees with plotPhylo()",
+    "text": "Typical workflow after catfullGenes()\nA common multilocus workflow is:\n\nstandardize sequence labels\nalign loci separately\nload alignments into R\nrun catfullGenes()\nexport the result with writeNexus() or writePhylip()\nperform downstream phylogenetic analyses\nvisualize resulting trees with plotPhylo()",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1271,7 +1499,7 @@
     "href": "articles/concatenate_with_catfullGenes.html#example-of-a-larger-genomic-workflow",
     "title": "Concatenate multilocus datasets",
     "section": "Example of a larger genomic workflow",
-    "text": "Example of a larger genomic workflow\nThe catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption.\nFor large projects, it is especially important to: - keep naming conventions fully standardized - inspect locus coverage before concatenation - use clear file and list names - document the export settings used for downstream analysis",
+    "text": "Example of a larger genomic workflow\nThe catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption.\nFor large projects, it is especially important to:\n\nkeep naming conventions fully standardized\ninspect locus coverage before concatenation\nuse clear file and list names\ndocument the export settings used for downstream analysis",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1319,11 +1547,11 @@
     "text": "The catGenes Developers\n\n\n  \n    \n    \n      Domingos Cardoso\n      \n        \n        \n        \n      \n      Taxonomist and bioinformatician leading the catGenes package, responsible for designing and coding functions as well as developing the project website\n    \n  \n  \n  \n    \n    \n      Quézia Cavalcante\n      \n        \n        \n        \n      \n      Geophysicist contributing to the catGenes package, with a focus on conceptualizing and implementing concatenation functions"
   },
   {
-    "objectID": "articles/run_mrbayes.html#why-standardization-matters",
-    "href": "articles/run_mrbayes.html#why-standardization-matters",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "Why standardization matters",
-    "text": "Why standardization matters\nBefore using the concatenation functions in catGenes, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.\nFor datasets without duplicated accessions, catGenes matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.",
+    "objectID": "articles/run_mrbayes.html#overview",
+    "href": "articles/run_mrbayes.html#overview",
+    "title": "Run MrBayes from R",
+    "section": "Overview",
+    "text": "Overview\nOnce a concatenated NEXUS dataset has been prepared and a valid MrBayes block has been added, catGenes allows you to launch the Bayesian analysis directly from R using mrbayesRun().\nThis function helps connect data preparation and phylogenetic inference in a single workflow. Rather than switching manually to a terminal session, you can start MrBayes from within R, direct the run to a dedicated analysis folder, and capture the program output.\nThis article explains how to prepare the required input, how to locate the MrBayes executable, how to run an analysis in foreground or background mode, and how mrbayesRun() fits into the broader catGenes workflow.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1331,11 +1559,11 @@
     ]
   },
   {
-    "objectID": "articles/run_mrbayes.html#general-principles",
-    "href": "articles/run_mrbayes.html#general-principles",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "General principles",
-    "text": "General principles\nWhen preparing alignments for catGenes:\n\nuse consistent taxon naming across all loci\nseparate all components of sequence labels with underscores\navoid spaces and hyphens in sequence names\nkeep identifiers stable across all alignments when the same accession is represented in multiple loci\nuse simple and consistent file names for each alignment",
+    "objectID": "articles/run_mrbayes.html#when-to-use-mrbayesrun",
+    "href": "articles/run_mrbayes.html#when-to-use-mrbayesrun",
+    "title": "Run MrBayes from R",
+    "section": "When to use mrbayesRun()",
+    "text": "When to use mrbayesRun()\nUse mrbayesRun() when:\n\nyou already have a NEXUS file with a complete and valid MrBayes block\nyou want to launch MrBayes directly from R or RStudio\nyou want analysis files written to a dedicated run directory\nyou want standard output and error logs captured automatically\nyou want a reproducible and scriptable Bayesian analysis workflow\n\nIf your NEXUS file does not yet contain a MrBayes block, first prepare it with writeNexus() and, if needed, evomodelTest().",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1343,11 +1571,11 @@
     ]
   },
   {
-    "objectID": "articles/run_mrbayes.html#datasets-with-a-single-sequence-per-species",
-    "href": "articles/run_mrbayes.html#datasets-with-a-single-sequence-per-species",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "1. Datasets with a single sequence per species",
-    "text": "1. Datasets with a single sequence per species\nWhen each species is represented by only one sequence per locus, taxon labels can be formatted simply as:\n\nGenus_species\nG_species\n\nLabels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:\n\nGenus_species_identifier\nGenus_species_identifier_accession\n\nExamples:\n\nVatairea_fusca\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\n\n\n\nExample with no identifiers in the sequences\n\n\n\n\n\nExample with identifiers in the sequences",
+    "objectID": "articles/run_mrbayes.html#what-mrbayesrun-requires",
+    "href": "articles/run_mrbayes.html#what-mrbayesrun-requires",
+    "title": "Run MrBayes from R",
+    "section": "What mrbayesRun() requires",
+    "text": "What mrbayesRun() requires\nThe function requires two essential inputs:\n\nnexus_file: a NEXUS file that already contains a valid MrBayes block\nmrbayes_dir: the path to the directory containing the MrBayes executable\n\nA minimal call looks like this:\n\nlibrary(catGenes)\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/path/to/mrbayes\"\n)",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1355,11 +1583,11 @@
     ]
   },
   {
-    "objectID": "articles/run_mrbayes.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "href": "articles/run_mrbayes.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "2. Datasets with duplicated species or multiple accessions",
-    "text": "2. Datasets with duplicated species or multiple accessions\nWhen one or more species are represented by multiple accessions, catGenes requires labels that include both:\n\nthe scientific name\na stable accession identifier\n\nThis identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.\nRecommended format:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\nIn these cases, use catmultGenes() rather than catfullGenes().\n\n\n\nExample when species are duplicated with multiple accessions",
+    "objectID": "articles/run_mrbayes.html#preparing-the-nexus-file",
+    "href": "articles/run_mrbayes.html#preparing-the-nexus-file",
+    "title": "Run MrBayes from R",
+    "section": "Preparing the NEXUS file",
+    "text": "Preparing the NEXUS file\nmrbayesRun() does not generate the MrBayes block itself. The input file must already contain a valid block such as:\n\nbegin mrbayes;\n  ...\nend;\n\nA common workflow is:\n\nconcatenate the dataset with catfullGenes() or catmultGenes()\nexport the matrix with writeNexus()\ngenerate or append the MrBayes block with evomodelTest()\nrun the resulting file with mrbayesRun()\n\nFor example:\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = FALSE\n)\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\",\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE\n)\n\nAfter that, the prepared file can be passed to mrbayesRun().",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1367,11 +1595,11 @@
     ]
   },
   {
-    "objectID": "articles/run_mrbayes.html#genus-level-identifications-and-infraspecific-taxa",
-    "href": "articles/run_mrbayes.html#genus-level-identifications-and-infraspecific-taxa",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "3. Genus-level identifications and infraspecific taxa",
-    "text": "3. Genus-level identifications and infraspecific taxa\nAccessions identified only to genus level can be formatted as:\n\nGenus_sp\nGenus_sp1\nGenus_sp2\nGenus_spA\nGenus_spB\n\nAbbreviated generic names can also be used if done consistently:\n\nG_sp\nG_sp1\nG_spA\n\nFor infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as var. or subsp. in the label. For example:\n\nGenus_species_variety_identifier\nGenus_species_subspecies_identifier\n\n\n\n\nExample with other label formatting",
+    "objectID": "articles/run_mrbayes.html#finding-the-mrbayes-executable",
+    "href": "articles/run_mrbayes.html#finding-the-mrbayes-executable",
+    "title": "Run MrBayes from R",
+    "section": "Finding the MrBayes executable",
+    "text": "Finding the MrBayes executable\nThe argument mrbayes_dir should point to the folder containing the MrBayes executable. Typical examples include:\n\nmacOS (Intel, Homebrew)\nmrbayes_dir = “/usr/local/bin”\nmacOS (Apple Silicon, Homebrew)\nmrbayes_dir = “/opt/homebrew/bin”\n\nLinux\n\nmrbayes_dir = path.expand(\"~/.local/bin\")\n\nWindows\n\nmrbayes_dir = \"C:/Program Files/MrBayes\"\n\nIf the executable is not found directly in mrbayes_dir, mrbayesRun() also checks a bin subdirectory.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1379,11 +1607,167 @@
     ]
   },
   {
-    "objectID": "articles/run_mrbayes.html#naming-alignment-files",
-    "href": "articles/run_mrbayes.html#naming-alignment-files",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "4. Naming alignment files",
-    "text": "4. Naming alignment files\nWe recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:\n\nITS.nex\nrbcL.nex\npsbAtrnH.nex\nCOX1.nex\n\nThis makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.",
+    "objectID": "articles/run_mrbayes.html#basic-usage",
+    "href": "articles/run_mrbayes.html#basic-usage",
+    "title": "Run MrBayes from R",
+    "section": "Basic usage",
+    "text": "Basic usage\nA standard foreground analysis looks like this:\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\"\n)\n\nThis:\n\ncopies or moves the NEXUS file into a run directory\nlaunches MrBayes\nwrites output files into the run directory\ncaptures standard output and standard error\nreturns a summary object in R",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-run_dir",
+    "href": "articles/run_mrbayes.html#understanding-run_dir",
+    "title": "Run MrBayes from R",
+    "section": "Understanding run_dir",
+    "text": "Understanding run_dir\nThe argument run_dir controls where the analysis is executed.\nIf left as NULL, mrbayesRun() creates a new folder in the current working directory with a timestamped name.\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  run_dir = NULL\n)\n\nYou can also specify a custom directory:\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  run_dir = \"RESULTS_mrbayes/my_analysis\"\n)\n\nUsing an explicit run directory can be helpful when organizing multiple analyses.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-copy_mode",
+    "href": "articles/run_mrbayes.html#understanding-copy_mode",
+    "title": "Run MrBayes from R",
+    "section": "Understanding copy_mode",
+    "text": "Understanding copy_mode\nThe argument copy_mode determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.\nCopy the file\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  copy_mode = \"copy\"\n)\n\nThis is the safest and most common option because the original file is preserved.\nMove the file\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  copy_mode = \"move\"\n)\n\nThis relocates the original file to the run directory, which may be useful in some fully automated workflows.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-quiet",
+    "href": "articles/run_mrbayes.html#understanding-quiet",
+    "title": "Run MrBayes from R",
+    "section": "Understanding quiet",
+    "text": "Understanding quiet\nThe argument quiet controls whether informational messages are printed.\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  quiet = FALSE\n)\n\nTo suppress most informational output:\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  quiet = TRUE\n)\n\nThis is useful when running analyses in scripts or batch workflows.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-live",
+    "href": "articles/run_mrbayes.html#understanding-live",
+    "title": "Run MrBayes from R",
+    "section": "Understanding live",
+    "text": "Understanding live\nThe argument live controls whether the MrBayes output is streamed to the R console while the analysis runs.\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  live = TRUE\n)\n\nThis is often useful for monitoring progress interactively.\nTo disable live console output:\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  live = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-use_processx",
+    "href": "articles/run_mrbayes.html#understanding-use_processx",
+    "title": "Run MrBayes from R",
+    "section": "Understanding use_processx",
+    "text": "Understanding use_processx\nWhen available, mrbayesRun() can use the processx package to improve output handling and support background execution.\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  use_processx = TRUE\n)\n\nThis is the default and generally the most robust option.\nIf processx is not installed or you do not want to use it:\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  use_processx = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#running-in-background-mode",
+    "href": "articles/run_mrbayes.html#running-in-background-mode",
+    "title": "Run MrBayes from R",
+    "section": "Running in background mode",
+    "text": "Running in background mode\nA particularly useful feature is background execution. When background = TRUE, MrBayes starts and returns control to R immediately.\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  background = TRUE\n)\n\nIn this mode, the returned object can include helper functions such as:\n\npoll() to check new output\nstop() to terminate the run\n\nThis is useful for long analyses.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#monitoring-a-background-run",
+    "href": "articles/run_mrbayes.html#monitoring-a-background-run",
+    "title": "Run MrBayes from R",
+    "section": "Monitoring a background run",
+    "text": "Monitoring a background run\nIf the analysis was launched with background = TRUE, you can inspect progress later. For example:\n\nres$poll()\n\nThis reads new output from the running process.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#understanding-the-output-files",
+    "href": "articles/run_mrbayes.html#understanding-the-output-files",
+    "title": "Run MrBayes from R",
+    "section": "Understanding the output files",
+    "text": "Understanding the output files\nBecause the analysis runs in the designated run directory, all standard MrBayes output files are written there. These may include files such as:\n\nparameter files\ntree files\nconsensus tree files\nstandard output logs\nerror logs\n\nFor example, the directory may contain files like:\n\nanalysis.nex\nanalysis.nex.p\nanalysis.nex.t\nanalysis.nex.con.tre\nstdout.log\nstderr.log\n\nThe exact file names depend on the original input file and the MrBayes settings in the block.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#a-complete-example-workflow",
+    "href": "articles/run_mrbayes.html#a-complete-example-workflow",
+    "title": "Run MrBayes from R",
+    "section": "A complete example workflow",
+    "text": "A complete example workflow\nA full workflow from concatenation to Bayesian analysis might look like this:\nStep 1. Export the concatenated dataset\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = FALSE\n)\n\nStep 2. Select models and append a MrBayes block\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\",\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE\n)\n\nStep 3. Run MrBayes\n\nres &lt;- mrbayesRun(\n  nexus_file = \"Vataireoids.nex\",\n  mrbayes_dir = \"/opt/homebrew/bin\",\n  copy_mode = \"copy\",\n  live = TRUE,\n  background = FALSE\n)\n\nThis creates a fully scriptable Bayesian workflow inside R.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#typical-workflow-after-the-run",
+    "href": "articles/run_mrbayes.html#typical-workflow-after-the-run",
+    "title": "Run MrBayes from R",
+    "section": "Typical workflow after the run",
+    "text": "Typical workflow after the run\nOnce the MrBayes analysis has finished, the next steps usually include:\n\nchecking the parameter and log files\nexamining the tree files and consensus tree\nimporting the resulting phylogeny into R\nplotting and editing the tree with plotPhylo()\n\nThis makes mrbayesRun() a natural transition from data preparation to phylogenetic interpretation.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#common-issues",
+    "href": "articles/run_mrbayes.html#common-issues",
+    "title": "Run MrBayes from R",
+    "section": "Common issues",
+    "text": "Common issues\n\nMrBayes executable is not found\nIf the run fails immediately, the path given in mrbayes_dir may be incorrect. Make sure the folder really contains the MrBayes executable.\n\n\nThe NEXUS file does not contain a valid MrBayes block\nmrbayesRun() expects a ready-to-run NEXUS file. If the block is absent or invalid, MrBayes will fail. Prepare the file first with writeNexus() and evomodelTest() as needed.\n\n\nThe analysis appears to hang\nLong Bayesian analyses can run for substantial time, especially with large datasets. If using background mode, check progress with poll().\n\n\nNo output is printed to the console\nIf live = FALSE, output is not streamed interactively. Check the log files or inspect the returned object to locate stdout and stderr.\n\n\nThe run directory is not where expected\nIf run_dir is left as NULL, a timestamped directory is created automatically in the working directory. If you want tighter control, specify run_dir explicitly.\n\n\nThe run cannot be stopped programmatically\nProgrammatic stopping is mainly available when processx is installed and background = TRUE. In foreground mode or without processx, stopping is typically interactive.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#recommended-practice",
+    "href": "articles/run_mrbayes.html#recommended-practice",
+    "title": "Run MrBayes from R",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest use of mrbayesRun():\n\nalways prepare and inspect the NEXUS file first\npreserve the original file by using copy_mode = \"copy\"\nuse an explicit run_dir for organized projects\nuse background = TRUE for long analyses\ninspect returned paths and logs after the run\nkeep the full workflow scripted for reproducibility",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Run MrBayes from R"
+    ]
+  },
+  {
+    "objectID": "articles/run_mrbayes.html#next-step",
+    "href": "articles/run_mrbayes.html#next-step",
+    "title": "Run MrBayes from R",
+    "section": "Next step",
+    "text": "Next step\nOnce the Bayesian analysis has completed, the next step is usually to import the resulting tree files and visualize them with plotPhylo() or related downstream tools.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1419,7 +1803,7 @@
     "href": "articles/write_concatenated_datasets.html#when-to-use-writenexus",
     "title": "Write concatenated datasets",
     "section": "When to use writeNexus()",
-    "text": "When to use writeNexus()\nUse writeNexus() when you want: - a concatenated dataset in NEXUS format - optional interleaved or non-interleaved output - partition definitions embedded in the matrix - a preliminary MrBayes block with character sets - a file structure convenient for Bayesian phylogenetic analysis and inspection\nThis is often the preferred output format when the next step involves MrBayes or when a richer, more descriptive matrix format is useful.",
+    "text": "When to use writeNexus()\nUse writeNexus() when you want:\n\na concatenated dataset in NEXUS format\noptional interleaved or non-interleaved output\npartition definitions embedded in the matrix\na preliminary MrBayes block with character sets\na file structure convenient for Bayesian phylogenetic analysis and inspection\n\nThis is often the preferred output format when the next step involves MrBayes or when a richer, more descriptive matrix format is useful.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1431,7 +1815,7 @@
     "href": "articles/write_concatenated_datasets.html#when-to-use-writephylip",
     "title": "Write concatenated datasets",
     "section": "When to use writePhylip()",
-    "text": "When to use writePhylip()\nUse writePhylip() when you want: - a concatenated dataset in PHYLIP format - a separate partition file describing locus boundaries - compatibility with downstream workflows that expect PHYLIP - a simpler matrix representation plus an external partition definition\nThis is especially useful when preparing datasets for software or pipelines that use PHYLIP together with a partition text file.",
+    "text": "When to use writePhylip()\nUse writePhylip() when you want:\n\na concatenated dataset in PHYLIP format\na separate partition file describing locus boundaries\ncompatibility with downstream workflows that expect PHYLIP\na simpler matrix representation plus an external partition definition\n\nThis is especially useful when preparing datasets for software or pipelines that use PHYLIP together with a partition text file.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1491,7 +1875,7 @@
     "href": "articles/write_concatenated_datasets.html#understanding-bayesblock-in-writenexus",
     "title": "Write concatenated datasets",
     "section": "Understanding bayesblock in writeNexus()",
-    "text": "Understanding bayesblock in writeNexus()\nThe argument bayesblock controls whether a preliminary MrBayes block is included in the output file. When bayesblock = TRUE, the output includes character sets for the partitions and a basic block structure useful for MrBayes workflows:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = TRUE\n)\n\nWhen bayesblock = FALSE, the dataset is written without this block:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = FALSE\n)\n\nThis option is useful when the NEXUS file is needed only as a matrix or when the MrBayes commands will be prepared separately.",
+    "text": "Understanding bayesblock in writeNexus()\nThe argument bayesblock controls whether a preliminary MrBayes block is included in the output file.\nWhen bayesblock = TRUE, the output includes character sets for the partitions and a basic block structure useful for MrBayes workflows:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = TRUE\n)\n\nWhen bayesblock = FALSE, the dataset is written without this block:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  bayesblock = FALSE\n)\n\nThis option is useful when the NEXUS file is needed only as a matrix or when the MrBayes commands will be prepared separately.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1503,7 +1887,7 @@
     "href": "articles/write_concatenated_datasets.html#understanding-endgaps.to.miss-in-writenexus",
     "title": "Write concatenated datasets",
     "section": "Understanding endgaps.to.miss in writeNexus()",
-    "text": "Understanding endgaps.to.miss in writeNexus()\nThe argument endgaps.to.miss controls whether terminal gaps are converted into missing characters (?) in the output matrix.\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = TRUE\n)\n\nThis is often desirable because terminal gaps may be more appropriately treated as missing data rather than explicit gaps in some phylogenetic workflows. If you want to preserve terminal gaps as they are:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = FALSE\n)",
+    "text": "Understanding endgaps.to.miss in writeNexus()\nThe argument endgaps.to.miss controls whether terminal gaps are converted into missing characters (?) in the output matrix.\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = TRUE\n)\n\nThis is often desirable because terminal gaps may be more appropriately treated as missing data rather than explicit gaps in some phylogenetic workflows.\nIf you want to preserve terminal gaps as they are:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  endgaps.to.miss = FALSE\n)",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1515,7 +1899,7 @@
     "href": "articles/write_concatenated_datasets.html#writing-a-concatenated-phylip-dataset",
     "title": "Write concatenated datasets",
     "section": "Writing a concatenated PHYLIP dataset",
-    "text": "Writing a concatenated PHYLIP dataset\nA basic writePhylip() workflow looks like this:\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis writes: - a concatenated PHYLIP matrix - a separate partition file describing the locus boundaries\nThis is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.",
+    "text": "Writing a concatenated PHYLIP dataset\nA basic writePhylip() workflow looks like this:\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis writes:\n\na concatenated PHYLIP matrix\na separate partition file describing the locus boundaries\n\nThis is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1539,7 +1923,7 @@
     "href": "articles/write_concatenated_datasets.html#understanding-partitionfile-in-writephylip",
     "title": "Write concatenated datasets",
     "section": "Understanding partitionfile in writePhylip()",
-    "text": "Understanding partitionfile in writePhylip()\nThe argument partitionfile controls whether a separate partition text file is written.\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = TRUE\n)\n\nThis partition file defines the coordinate ranges for each locus in the concatenated matrix and is important for partitioned phylogenetic analyses. If you do not need a separate partition file:\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = FALSE\n)",
+    "text": "Understanding partitionfile in writePhylip()\nThe argument partitionfile controls whether a separate partition text file is written.\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = TRUE\n)\n\nThis partition file defines the coordinate ranges for each locus in the concatenated matrix and is important for partitioned phylogenetic analyses.\nIf you do not need a separate partition file:\n\nwritePhylip(\n  catdf,\n  file = \"dataset.phy\",\n  partitionfile = FALSE\n)",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1563,7 +1947,7 @@
     "href": "articles/write_concatenated_datasets.html#example-nexus-workflow",
     "title": "Write concatenated datasets",
     "section": "Example NEXUS workflow",
-    "text": "Example NEXUS workflow\nA common NEXUS export workflow is: Step 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write `NEXUS``\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis produces a concatenated NEXUS matrix suitable for downstream Bayesian workflows.",
+    "text": "Example NEXUS workflow\nA common NEXUS export workflow is:\nStep 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write `NEXUS``\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis produces a concatenated NEXUS matrix suitable for downstream Bayesian workflows.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1575,7 +1959,7 @@
     "href": "articles/write_concatenated_datasets.html#example-phylip-workflow",
     "title": "Write concatenated datasets",
     "section": "Example PHYLIP workflow",
-    "text": "Example PHYLIP workflow\nThe corresponding PHYLIP workflow is: Step 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write PHYLIP\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis produces a concatenated PHYLIP matrix together with a partition file.",
+    "text": "Example PHYLIP workflow\nThe corresponding PHYLIP workflow is:\nStep 1. Load alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Concatenate\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 3. Write PHYLIP\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis produces a concatenated PHYLIP matrix together with a partition file.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1587,7 +1971,7 @@
     "href": "articles/write_concatenated_datasets.html#what-the-nexus-output-looks-like",
     "title": "Write concatenated datasets",
     "section": "What the NEXUS output looks like",
-    "text": "What the NEXUS output looks like\nWhen writeNexus() is used with interleaving and partition definitions, the file contains: - a concatenated NEXUS matrix - each partition defined by character ranges - optionally a preliminary MrBayes block - The beginning of the matrix may look similar to the screenshots below:\nAnd the end of the file may include the partition definitions:",
+    "text": "What the NEXUS output looks like\nWhen writeNexus() is used with interleaving and partition definitions, the file contains:\n\na concatenated NEXUS matrix\neach partition defined by character ranges\noptionally a preliminary MrBayes block\nThe beginning of the matrix may look similar to the screenshots below:\n\nAnd the end of the file may include the partition definitions:",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1611,7 +1995,7 @@
     "href": "articles/write_concatenated_datasets.html#what-the-phylip-output-looks-like",
     "title": "Write concatenated datasets",
     "section": "What the PHYLIP output looks like",
-    "text": "What the PHYLIP output looks like\nWhen writePhylip() is used, the result usually consists of: - a concatenated PHYLIP matrix - a separate partition file The matrix may resemble the example below:\nAnd the partition file may look like this:",
+    "text": "What the PHYLIP output looks like\nWhen writePhylip() is used, the result usually consists of:\n\na concatenated PHYLIP matrix\na separate partition file\n\nThe matrix may resemble the example below:\nAnd the partition file may look like this:",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1623,7 +2007,7 @@
     "href": "articles/write_concatenated_datasets.html#choosing-between-nexus-and-phylip",
     "title": "Write concatenated datasets",
     "section": "Choosing between NEXUS and PHYLIP",
-    "text": "Choosing between NEXUS and PHYLIP\nUse writeNexus() when you want: - a richer, self-contained matrix format - embedded partition information - optional MrBayes blocks - a file structure convenient for Bayesian analyses and inspection\nUse writePhylip() when you want: - a simpler matrix format - a separate partition file - compatibility with external workflows expecting PHYLIP In many catGenes projects, both exports are useful, depending on which downstream programs or analyses will be used.",
+    "text": "Choosing between NEXUS and PHYLIP\nUse writeNexus() when you want:\n\na richer, self-contained matrix format\nembedded partition information\noptional MrBayes blocks\na file structure convenient for Bayesian analyses and inspection\n\nUse writePhylip() when you want:\n\na simpler matrix format\na separate partition file\ncompatibility with external workflows expecting PHYLIP\n\nIn many catGenes projects, both exports are useful, depending on which downstream programs or analyses will be used.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1635,7 +2019,7 @@
     "href": "articles/write_concatenated_datasets.html#common-issues",
     "title": "Write concatenated datasets",
     "section": "Common issues",
-    "text": "Common issues\n\nOutput labels are not what you expected\nIf output labels seem too short or too detailed, check: whether shortaxlabel was set appropriately during concatenation whether genomics is set correctly during export\n\n\nPartition information is missing\nIn writeNexus(), make sure bayesblock = TRUE if you want embedded partition definitions and a preliminary MrBayes block. In writePhylip(), make sure partitionfile = TRUE if you want the separate partition file.\n\n\nTerminal gaps are treated unexpectedly\nCheck the setting of endgaps.to.miss, especially if you need terminal gaps preserved as gaps rather than converted to missing characters.\n\n\nFile names are unclear\nUse output file names that clearly identify the dataset, especially when writing multiple alternative matrices with different settings.",
+    "text": "Common issues\n\nOutput labels are not what you expected\nIf output labels seem too short or too detailed, check:\n\nwhether shortaxlabel was set appropriately during concatenation\nwhether genomics is set correctly during export\n\n\n\nPartition information is missing\nIn writeNexus(), make sure bayesblock = TRUE if you want embedded partition definitions and a preliminary MrBayes block. In writePhylip(), make sure partitionfile = TRUE if you want the separate partition file.\n\n\nTerminal gaps are treated unexpectedly\nCheck the setting of endgaps.to.miss, especially if you need terminal gaps preserved as gaps rather than converted to missing characters.\n\n\nFile names are unclear\nUse output file names that clearly identify the dataset, especially when writing multiple alternative matrices with different settings.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1647,7 +2031,7 @@
     "href": "articles/write_concatenated_datasets.html#recommended-practice",
     "title": "Write concatenated datasets",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest export workflow: - inspect the concatenated object before export - decide whether identifiers should be simplified or preserved - use writeNexus() for MrBayes-oriented or richly annotated outputs - use writePhylip() when a matrix plus partition file is the preferred downstream input - use clear file names for each exported dataset - keep track of export settings in project notes or analysis scripts",
+    "text": "Recommended practice\nFor the smoothest export workflow:\n\ninspect the concatenated object before export\ndecide whether identifiers should be simplified or preserved\nuse writeNexus() for MrBayes-oriented or richly annotated outputs\nuse writePhylip() when a matrix plus partition file is the preferred downstream input\nuse clear file names for each exported dataset\nkeep track of export settings in project notes or analysis scripts",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1659,7 +2043,7 @@
     "href": "articles/write_concatenated_datasets.html#next-step",
     "title": "Write concatenated datasets",
     "section": "Next step",
-    "text": "Next step\nOnce the concatenated dataset has been written to disk, the next step is usually to: - select evolutionary models with evomodelTest() - prepare or refine MrBayes blocks - run phylogenetic analyses - visualize resulting trees with plotPhylo()",
+    "text": "Next step\nOnce the concatenated dataset has been written to disk, the next step is usually to:\n\nselect evolutionary models with evomodelTest()\nprepare or refine MrBayes blocks\nrun phylogenetic analyses\nvisualize resulting trees with plotPhylo()",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1707,7 +2091,7 @@
     "href": "articles/convert_alignment_formats.html#choosing-the-output-format",
     "title": "Convert among FASTA, NEXUS, and PHYLIP",
     "section": "Choosing the output format",
-    "text": "Choosing the output format\nThe argument format defines the output format to be written. Supported values are: - NEXUS - FASTA - `PHYLIP``\nFor example, to convert a set of files to FASTA:\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"FASTA\"\n)",
+    "text": "Choosing the output format\nThe argument format defines the output format to be written. Supported values are:\n\nNEXUS\nFASTA\n`PHYLIP``\n\nFor example, to convert a set of files to FASTA:\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"FASTA\"\n)",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1875,7 +2259,7 @@
     "href": "articles/convert_alignment_formats.html#recommended-practice",
     "title": "Convert among FASTA, NEXUS, and PHYLIP",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest workflow: - keep one file per locus - use simple and consistent file names - convert alignments to NEXUS before loading them into catGenes - keep the original files unless you are sure the conversion results are correct - inspect converted outputs before moving to concatenation",
+    "text": "Recommended practice\nFor the smoothest workflow:\n\nkeep one file per locus\nuse simple and consistent file names\nconvert alignments to NEXUS before loading them into catGenes\nkeep the original files unless you are sure the conversion results are correct\ninspect converted outputs before moving to concatenation",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1887,7 +2271,7 @@
     "href": "articles/convert_alignment_formats.html#next-step",
     "title": "Convert among FASTA, NEXUS, and PHYLIP",
     "section": "Next step",
-    "text": "Next step\nOnce your alignments have been converted into the desired format, the next step is usually to: - load them into R - organize them as a named list - concatenate loci with catfullGenes() or catmultGenes()\nSee the next tutorials for concatenating multilocus datasets with catGenes.",
+    "text": "Next step\nOnce your alignments have been converted into the desired format, the next step is usually to:\n\nload them into R\norganize them as a named list\nconcatenate loci with catfullGenes() or catmultGenes()\n\nSee the next tutorials for concatenating multilocus datasets with catGenes.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1971,7 +2355,7 @@
     "href": "articles/combine_and_align_sequences.html#inspecting-the-result-of-combinefasta",
     "title": "Combine FASTA files and align sequences",
     "section": "Inspecting the result of combineFASTA()",
-    "text": "Inspecting the result of combineFASTA()\nThe result returned by combineFASTA() includes: - sequences: a DNAbin object containing all combined sequences - summary: a data frame with summary information - output_path: the output file path when saving is enabled",
+    "text": "Inspecting the result of combineFASTA()\nThe result returned by combineFASTA() includes:\n\nsequences: a DNAbin object containing all combined sequences\nsummary: a data frame with summary information\noutput_path: the output file path when saving is enabled",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1995,7 +2379,7 @@
     "href": "articles/combine_and_align_sequences.html#when-to-use-alignseqs",
     "title": "Combine FASTA files and align sequences",
     "section": "When to use alignSeqs()",
-    "text": "When to use alignSeqs()\nUse alignSeqs() when you have one or more FASTA files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.\nThe function uses the msa package and supports: - ClustalW - Muscle\nIt can write aligned results in: - NEXUS - FASTA - PHYLIP",
+    "text": "When to use alignSeqs()\nUse alignSeqs() when you have one or more FASTA files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.\nThe function uses the msa package and supports:\n\nClustalW\nMuscle\n\nIt can write aligned results in:\n\nNEXUS\nFASTA\nPHYLIP",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2019,7 +2403,7 @@
     "href": "articles/combine_and_align_sequences.html#choosing-an-alignment-method",
     "title": "Combine FASTA files and align sequences",
     "section": "Choosing an alignment method",
-    "text": "Choosing an alignment method\nCurrently, alignSeqs() supports two main alignment algorithms: - ClustalW - Muscle\nFor example, using ClustalW:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nOr using Muscle:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"NEXUS\"\n)\n\nBoth methods are widely used, and the best choice may depend on the characteristics of the dataset.",
+    "text": "Choosing an alignment method\nCurrently, alignSeqs() supports two main alignment algorithms:\n\nClustalW\nMuscle\n\nFor example, using ClustalW:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"NEXUS\"\n)\n\nOr using Muscle:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"NEXUS\"\n)\n\nBoth methods are widely used, and the best choice may depend on the characteristics of the dataset.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2031,7 +2415,7 @@
     "href": "articles/combine_and_align_sequences.html#choosing-the-output-format",
     "title": "Combine FASTA files and align sequences",
     "section": "Choosing the output format",
-    "text": "Choosing the output format\nThe argument format determines how the aligned files are written. Supported output formats are: - NEXUS - FASTA - PHYLIP\nFor example, to write aligned files in FASTA format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"FASTA\"\n)\n\nOr in PHYLIP format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"PHYLIP\"\n)\n\nIn most catGenes concatenation workflows, NEXUS is the most convenient format.",
+    "text": "Choosing the output format\nThe argument format determines how the aligned files are written. Supported output formats are:\n\nNEXUS\nFASTA\nPHYLIP\n\nFor example, to write aligned files in FASTA format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"ClustalW\",\n  format = \"FASTA\"\n)\n\nOr in PHYLIP format:\n\nalignSeqs(\n  filepath = \"path_to_fasta_files\",\n  method = \"Muscle\",\n  format = \"PHYLIP\"\n)\n\nIn most catGenes concatenation workflows, NEXUS is the most convenient format.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2103,7 +2487,7 @@
     "href": "articles/combine_and_align_sequences.html#inspecting-aligned-outputs",
     "title": "Combine FASTA files and align sequences",
     "section": "Inspecting aligned outputs",
-    "text": "Inspecting aligned outputs\nAfter running alignSeqs(), it is good practice to inspect the resulting alignment files before using them in downstream workflows.\nQuestions to check include: - are all expected sequences present? - do sequence labels look correct and consistent? - are the alignments the expected length? - were the files written in the intended format?\nOnce the outputs are confirmed, they can be loaded into R for concatenation.",
+    "text": "Inspecting aligned outputs\nAfter running alignSeqs(), it is good practice to inspect the resulting alignment files before using them in downstream workflows.\nQuestions to check include:\n\nare all expected sequences present?\ndo sequence labels look correct and consistent?\nare the alignments the expected length?\nwere the files written in the intended format?\n\nOnce the outputs are confirmed, they can be loaded into R for concatenation.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2127,7 +2511,7 @@
     "href": "articles/combine_and_align_sequences.html#typical-workflow-after-alignment",
     "title": "Combine FASTA files and align sequences",
     "section": "Typical workflow after alignment",
-    "text": "Typical workflow after alignment\nOnce the alignments are loaded into R, the next step is usually: - catfullGenes() for datasets with one sequence per species per locus - catmultGenes() for datasets containing duplicated taxa or multiple accessions\nFor example:\n\ncatdf &lt;- catfullGenes(\n  my_alignments,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nor\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)",
+    "text": "Typical workflow after alignment\nOnce the alignments are loaded into R, the next step is usually:\n\ncatfullGenes() for datasets with one sequence per species per locus\ncatmultGenes() for datasets containing duplicated taxa or multiple accessions\n\nFor example:\n\ncatdf &lt;- catfullGenes(\n  my_alignments,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nor\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2151,7 +2535,7 @@
     "href": "articles/combine_and_align_sequences.html#recommended-practice",
     "title": "Combine FASTA files and align sequences",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor a smooth workflow: - combine FASTA files only when merging sequence batches is necessary - align each locus as a separate dataset - use clear and stable file names - inspect combined and aligned outputs before concatenation - write alignments in NEXUS format if you plan to load them directly into catGenes",
+    "text": "Recommended practice\nFor a smooth workflow:\n\ncombine FASTA files only when merging sequence batches is necessary\nalign each locus as a separate dataset\nuse clear and stable file names\ninspect combined and aligned outputs before concatenation\nwrite alignments in NEXUS format if you plan to load them directly into catGenes",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2163,7 +2547,7 @@
     "href": "articles/combine_and_align_sequences.html#next-step",
     "title": "Combine FASTA files and align sequences",
     "section": "Next step",
-    "text": "Next step\nOnce your sequences have been combined and aligned, the next step is usually to: - load the alignments into R - choose catfullGenes() or catmultGenes() - concatenate loci for downstream phylogenetic analysis\nSee the next tutorials for loading alignments and concatenating multilocus datasets with catGenes.",
+    "text": "Next step\nOnce your sequences have been combined and aligned, the next step is usually to:\n\nload the alignments into R\nchoose catfullGenes() or catmultGenes()\nconcatenate loci for downstream phylogenetic analysis\n\nSee the next tutorials for loading alignments and concatenating multilocus datasets with catGenes.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2355,7 +2739,7 @@
     "href": "articles/model_selection_and_mrbayes.html#a-complete-example-workflow",
     "title": "Model selection and MrBayes preparation",
     "section": "A complete example workflow",
-    "text": "A complete example workflow\nA typical workflow might look like this:\nStep 1. Export a concatenated NEXUS dataset\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = FALSE\n)\n\nStep 2. Run model selection and append a MrBayes block\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\",\n  models_to_test = \"standard\",\n  include_G = TRUE,\n  include_I = TRUE,\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE,\n  dir = \"RESULTS_evomodelTest\"\n)\n\nAt this point, you have: - a model-selection report - a NEXUS file with a generated MrBayes block - a prepared input for downstream Bayesian analysis",
+    "text": "A complete example workflow\nA typical workflow might look like this:\nStep 1. Export a concatenated NEXUS dataset\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = FALSE\n)\n\nStep 2. Run model selection and append a MrBayes block\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\",\n  models_to_test = \"standard\",\n  include_G = TRUE,\n  include_I = TRUE,\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE,\n  dir = \"RESULTS_evomodelTest\"\n)\n\nAt this point, you have:\n\na model-selection report\na NEXUS file with a generated MrBayes block\na prepared input for downstream Bayesian analysis",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -2379,7 +2763,7 @@
     "href": "articles/model_selection_and_mrbayes.html#common-issues",
     "title": "Model selection and MrBayes preparation",
     "section": "Common issues",
-    "text": "Common issues\n\nInput file is not in NEXUS format\nevomodelTest() expects NEXUS alignment files. If your data are in another format, convert them first using convertAlign() or export them with writeNexus().\n\n\nModel comparison takes too long\nLarge alignments or many candidate models can increase runtime. To reduce computation time, you can: - reduce the number of models tested - lower retmax-style dataset size earlier in the workflow - increase mc.cores - use “standard” rather than “all”\n\n\nOriginal NEXUS file is overwritten unintentionally\nBe cautious when using overwrite_original_nexus = TRUE. If you want to preserve the original matrix, keep this option set to FALSE.\n\n\nThe MrBayes block is not appended where expected\nMake sure: - append_mrbayes_to_nexus = TRUE - the nexus_file_path is correct - combined_nexus_file_path is provided when working with a separate concatenated matrix\n\n\nThe selected model does not match expectations\nDifferent criteria (AIC vs BIC) or different choices for include_G and include_I can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.",
+    "text": "Common issues\n\nInput file is not in NEXUS format\nevomodelTest() expects NEXUS alignment files. If your data are in another format, convert them first using convertAlign() or export them with writeNexus().\n\n\nModel comparison takes too long\nLarge alignments or many candidate models can increase runtime. To reduce computation time, you can:\n\nreduce the number of models tested\nlower retmax-style dataset size earlier in the workflow\nincrease mc.cores\nuse “standard” rather than “all”\n\n\n\nOriginal NEXUS file is overwritten unintentionally\nBe cautious when using overwrite_original_nexus = TRUE. If you want to preserve the original matrix, keep this option set to FALSE.\n\n\nThe MrBayes block is not appended where expected\nMake sure:\n\nappend_mrbayes_to_nexus = TRUE\nthe nexus_file_path is correct\ncombined_nexus_file_path is provided when working with a separate concatenated matrix\n\n\n\nThe selected model does not match expectations\nDifferent criteria (AIC vs BIC) or different choices for include_G and include_I can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -2391,7 +2775,7 @@
     "href": "articles/model_selection_and_mrbayes.html#recommended-practice",
     "title": "Model selection and MrBayes preparation",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest model-selection workflow: - work from clean NEXUS alignments - decide in advance whether to use AIC or BIC - test a manageable but meaningful model set = - include +G and +I only when justified by the workflow - preserve original NEXUS files unless replacement is intentional - inspect the generated MrBayes block before starting the analysis",
+    "text": "Recommended practice\nFor the smoothest model-selection workflow:\n\nwork from clean NEXUS alignments\ndecide in advance whether to use AIC or BIC\ntest a manageable but meaningful model set\ninclude +G and +I only when justified by the workflow\npreserve original NEXUS files unless replacement is intentional\ninspect the generated MrBayes block before starting the analysis",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -2583,7 +2967,7 @@
     "href": "articles/concatenate_with_catmultGenes.html#what-catmultgenes-returns",
     "title": "Concatenate datasets with duplicated accessions",
     "section": "What catmultGenes() returns",
-    "text": "What catmultGenes() returns\nAs with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains: a species column with the matched accession-aware taxon labels a sequence column with the corresponding aligned DNA sequence",
+    "text": "What catmultGenes() returns\nAs with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains:\n\na species column with the matched accession-aware taxon labels\na sequence column with the corresponding aligned DNA sequence",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2739,7 +3123,7 @@
     "href": "articles/concatenate_with_catmultGenes.html#recommended-practice",
     "title": "Concatenate datasets with duplicated accessions",
     "section": "Recommended practice",
-    "text": "Recommended practice\nFor the smoothest use of catmultGenes(): - choose one stable identifier for each accession - use that identifier consistently across all loci - separate label components with underscores - load alignments into R as a named list - use maxspp = TRUE in most cases - inspect the resulting output before export - use dropSeq() when cleanup of redundant duplicated accessions is needed",
+    "text": "Recommended practice\nFor the smoothest use of catmultGenes():\n\nchoose one stable identifier for each accession\nuse that identifier consistently across all loci\nseparate label components with underscores\nload alignments into R as a named list\nuse maxspp = TRUE in most cases\ninspect the resulting output before export\nuse dropSeq() when cleanup of redundant duplicated accessions is needed",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",

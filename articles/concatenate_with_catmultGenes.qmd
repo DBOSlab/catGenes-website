@@ -104,8 +104,9 @@ This compares taxa across loci while taking duplicated accessions into account a
 
 ## What `catmultGenes()` returns
 As with `catfullGenes()`, the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
-a species column with the matched accession-aware taxon labels
-a sequence column with the corresponding aligned DNA sequence
+
+- a species column with the matched accession-aware taxon labels
+- a sequence column with the corresponding aligned DNA sequence
 
 ## Understanding `maxspp`
 The argument `maxspp` determines how species without duplicated accessions are handled in the final concatenated output.
@@ -216,7 +217,6 @@ catdf <- catmultGenes(
 ```
 
 To suppress the detailed output:
-
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
@@ -300,7 +300,6 @@ catdf <- catmultGenes(
 Then export using settings that preserve this level of identifier detail.
 
 For example:
-
 ```{r, eval=FALSE}
 writeNexus(
   catdf,
@@ -342,7 +341,6 @@ If taxa are duplicated in one or more loci, `catfullGenes()` is not the correct 
 ### Inconsistent accession identifiers across loci
 If the same accession is labeled differently in different alignments, catGenes will treat those labels as different accessions.
 For example, these may not be matched correctly:
-
 ```{r, eval=FALSE}
 Vatairea_fusca_Cardoso2939
 Vatairea_fusca_DCardoso2939
@@ -360,6 +358,7 @@ If fewer taxa appear than expected, inspect the settings of missdata and maxspp,
 
 ## Recommended practice
 For the smoothest use of `catmultGenes()`:
+
 - choose one stable identifier for each accession
 - use that identifier consistently across all loci
 - separate label components with underscores

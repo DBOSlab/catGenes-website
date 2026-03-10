@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Standardizing DNA alignments for catGenes – catGenes</title>
+<title>Run MrBayes from R – catGenes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -4337,12 +4337,36 @@ height: 400px;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-standardization-matters" id="toc-why-standardization-matters" class="nav-link active" data-scroll-target="#why-standardization-matters">Why standardization matters</a></li>
-  <li><a href="#general-principles" id="toc-general-principles" class="nav-link" data-scroll-target="#general-principles">General principles</a></li>
-  <li><a href="#datasets-with-a-single-sequence-per-species" id="toc-datasets-with-a-single-sequence-per-species" class="nav-link" data-scroll-target="#datasets-with-a-single-sequence-per-species">1. Datasets with a single sequence per species</a></li>
-  <li><a href="#datasets-with-duplicated-species-or-multiple-accessions" id="toc-datasets-with-duplicated-species-or-multiple-accessions" class="nav-link" data-scroll-target="#datasets-with-duplicated-species-or-multiple-accessions">2. Datasets with duplicated species or multiple accessions</a></li>
-  <li><a href="#genus-level-identifications-and-infraspecific-taxa" id="toc-genus-level-identifications-and-infraspecific-taxa" class="nav-link" data-scroll-target="#genus-level-identifications-and-infraspecific-taxa">3. Genus-level identifications and infraspecific taxa</a></li>
-  <li><a href="#naming-alignment-files" id="toc-naming-alignment-files" class="nav-link" data-scroll-target="#naming-alignment-files">4. Naming alignment files</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#when-to-use-mrbayesrun" id="toc-when-to-use-mrbayesrun" class="nav-link" data-scroll-target="#when-to-use-mrbayesrun">When to use <code>mrbayesRun()</code></a></li>
+  <li><a href="#what-mrbayesrun-requires" id="toc-what-mrbayesrun-requires" class="nav-link" data-scroll-target="#what-mrbayesrun-requires">What <code>mrbayesRun()</code> requires</a></li>
+  <li><a href="#preparing-the-nexus-file" id="toc-preparing-the-nexus-file" class="nav-link" data-scroll-target="#preparing-the-nexus-file">Preparing the NEXUS file</a></li>
+  <li><a href="#finding-the-mrbayes-executable" id="toc-finding-the-mrbayes-executable" class="nav-link" data-scroll-target="#finding-the-mrbayes-executable">Finding the MrBayes executable</a></li>
+  <li><a href="#basic-usage" id="toc-basic-usage" class="nav-link" data-scroll-target="#basic-usage">Basic usage</a></li>
+  <li><a href="#understanding-run_dir" id="toc-understanding-run_dir" class="nav-link" data-scroll-target="#understanding-run_dir">Understanding <code>run_dir</code></a></li>
+  <li><a href="#understanding-copy_mode" id="toc-understanding-copy_mode" class="nav-link" data-scroll-target="#understanding-copy_mode">Understanding copy_mode</a></li>
+  <li><a href="#understanding-quiet" id="toc-understanding-quiet" class="nav-link" data-scroll-target="#understanding-quiet">Understanding <code>quiet</code></a></li>
+  <li><a href="#understanding-live" id="toc-understanding-live" class="nav-link" data-scroll-target="#understanding-live">Understanding live</a></li>
+  <li><a href="#understanding-use_processx" id="toc-understanding-use_processx" class="nav-link" data-scroll-target="#understanding-use_processx">Understanding <code>use_processx</code></a></li>
+  <li><a href="#running-in-background-mode" id="toc-running-in-background-mode" class="nav-link" data-scroll-target="#running-in-background-mode">Running in background mode</a></li>
+  <li><a href="#monitoring-a-background-run" id="toc-monitoring-a-background-run" class="nav-link" data-scroll-target="#monitoring-a-background-run">Monitoring a background run</a></li>
+  <li><a href="#stopping-a-background-run" id="toc-stopping-a-background-run" class="nav-link" data-scroll-target="#stopping-a-background-run">Stopping a background run</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-output-files" id="toc-understanding-the-output-files" class="nav-link" data-scroll-target="#understanding-the-output-files">Understanding the output files</a></li>
+  <li><a href="#a-complete-example-workflow" id="toc-a-complete-example-workflow" class="nav-link" data-scroll-target="#a-complete-example-workflow">A complete example workflow</a></li>
+  <li><a href="#typical-workflow-after-the-run" id="toc-typical-workflow-after-the-run" class="nav-link" data-scroll-target="#typical-workflow-after-the-run">Typical workflow after the run</a></li>
+  <li><a href="#common-issues" id="toc-common-issues" class="nav-link" data-scroll-target="#common-issues">Common issues</a>
+  <ul class="collapse">
+  <li><a href="#mrbayes-executable-is-not-found" id="toc-mrbayes-executable-is-not-found" class="nav-link" data-scroll-target="#mrbayes-executable-is-not-found">MrBayes executable is not found</a></li>
+  <li><a href="#the-nexus-file-does-not-contain-a-valid-mrbayes-block" id="toc-the-nexus-file-does-not-contain-a-valid-mrbayes-block" class="nav-link" data-scroll-target="#the-nexus-file-does-not-contain-a-valid-mrbayes-block">The NEXUS file does not contain a valid MrBayes block</a></li>
+  <li><a href="#the-analysis-appears-to-hang" id="toc-the-analysis-appears-to-hang" class="nav-link" data-scroll-target="#the-analysis-appears-to-hang">The analysis appears to hang</a></li>
+  <li><a href="#no-output-is-printed-to-the-console" id="toc-no-output-is-printed-to-the-console" class="nav-link" data-scroll-target="#no-output-is-printed-to-the-console">No output is printed to the console</a></li>
+  <li><a href="#the-run-directory-is-not-where-expected" id="toc-the-run-directory-is-not-where-expected" class="nav-link" data-scroll-target="#the-run-directory-is-not-where-expected">The run directory is not where expected</a></li>
+  <li><a href="#the-run-cannot-be-stopped-programmatically" id="toc-the-run-cannot-be-stopped-programmatically" class="nav-link" data-scroll-target="#the-run-cannot-be-stopped-programmatically">The run cannot be stopped programmatically</a></li>
+  </ul></li>
+  <li><a href="#recommended-practice" id="toc-recommended-practice" class="nav-link" data-scroll-target="#recommended-practice">Recommended practice</a></li>
+  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step">Next step</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -4355,7 +4379,7 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../articles/write_concatenated_datasets.html">Export, analysis, and visualization</a></li><li class="breadcrumb-item"><a href="../articles/run_mrbayes.html">Run MrBayes from R</a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Standardizing DNA alignments for catGenes</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Run MrBayes from R</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -4372,121 +4396,360 @@ height: 400px;
 </header>
 
 
-<section id="why-standardization-matters" class="level2">
-<h2 class="anchored" data-anchor-id="why-standardization-matters">Why standardization matters</h2>
-<p>Before using the concatenation functions in <code>catGenes</code>, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.</p>
-<p>For datasets without duplicated accessions, <code>catGenes</code> matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Once a concatenated <code>NEXUS</code> dataset has been prepared and a valid <code>MrBayes</code> block has been added, <code>catGenes</code> allows you to launch the Bayesian analysis directly from R using <code>mrbayesRun()</code>.</p>
+<p>This function helps connect data preparation and phylogenetic inference in a single workflow. Rather than switching manually to a terminal session, you can start <code>MrBayes</code> from within R, direct the run to a dedicated analysis folder, and capture the program output.</p>
+<p>This article explains how to prepare the required input, how to locate the <code>MrBayes</code> executable, how to run an analysis in foreground or background mode, and how <code>mrbayesRun()</code> fits into the broader <code>catGenes</code> workflow.</p>
 </section>
-<section id="general-principles" class="level2">
-<h2 class="anchored" data-anchor-id="general-principles">General principles</h2>
-<p>When preparing alignments for <code>catGenes</code>:</p>
+<section id="when-to-use-mrbayesrun" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-mrbayesrun">When to use <code>mrbayesRun()</code></h2>
+<p>Use <code>mrbayesRun()</code> when:</p>
 <ul>
-<li>use consistent taxon naming across all loci</li>
-<li>separate all components of sequence labels with underscores</li>
-<li>avoid spaces and hyphens in sequence names</li>
-<li>keep identifiers stable across all alignments when the same accession is represented in multiple loci</li>
-<li>use simple and consistent file names for each alignment</li>
+<li>you already have a <code>NEXUS</code> file with a complete and valid <code>MrBayes</code> block</li>
+<li>you want to launch <code>MrBayes</code> directly from R or RStudio</li>
+<li>you want analysis files written to a dedicated run directory</li>
+<li>you want standard output and error logs captured automatically</li>
+<li>you want a reproducible and scriptable Bayesian analysis workflow</li>
 </ul>
+<p>If your <code>NEXUS</code> file does not yet contain a <code>MrBayes</code> block, first prepare it with <code>writeNexus()</code> and, if needed, <code>evomodelTest()</code>.</p>
 </section>
-<section id="datasets-with-a-single-sequence-per-species" class="level2">
-<h2 class="anchored" data-anchor-id="datasets-with-a-single-sequence-per-species">1. Datasets with a single sequence per species</h2>
-<p>When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:</p>
+<section id="what-mrbayesrun-requires" class="level2">
+<h2 class="anchored" data-anchor-id="what-mrbayesrun-requires">What <code>mrbayesRun()</code> requires</h2>
+<p>The function requires two essential inputs:</p>
 <ul>
-<li><code>Genus_species</code></li>
-<li><code>G_species</code></li>
+<li><code>nexus_file</code>: a <code>NEXUS</code> file that already contains a valid <code>MrBayes</code> block</li>
+<li><code>mrbayes_dir</code>: the path to the directory containing the <code>MrBayes</code> executable</li>
 </ul>
-<p>Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:</p>
-<ul>
-<li><code>Genus_species_identifier</code></li>
-<li><code>Genus_species_identifier_accession</code></li>
-</ul>
-<p>Examples:</p>
-<ul>
-<li><code>Vatairea_fusca</code></li>
-<li><code>Vatairea_fusca_Cardoso2939</code></li>
-<li><code>Vatairea_fusca_Cardoso2939_JX152598</code></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_no_identifiers.png" class="img-fluid figure-img"></p>
-<figcaption>Example with no identifiers in the sequences</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_with_identifiers_no_duplicated_species.png" class="img-fluid figure-img"></p>
-<figcaption>Example with identifiers in the sequences</figcaption>
-</figure>
+<p>A minimal call looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/path/to/mrbayes&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="datasets-with-duplicated-species-or-multiple-accessions" class="level2">
-<h2 class="anchored" data-anchor-id="datasets-with-duplicated-species-or-multiple-accessions">2. Datasets with duplicated species or multiple accessions</h2>
-<p>When one or more species are represented by multiple accessions, <code>catGenes</code> requires labels that include both:</p>
+<section id="preparing-the-nexus-file" class="level2">
+<h2 class="anchored" data-anchor-id="preparing-the-nexus-file">Preparing the NEXUS file</h2>
+<p><code>mrbayesRun()</code> does not generate the <code>MrBayes</code> block itself. The input file must already contain a valid block such as:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>begin mrbayes;</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>end;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A common workflow is:</p>
 <ul>
-<li>the scientific name</li>
-<li>a stable accession identifier</li>
+<li>concatenate the dataset with <code>catfullGenes()</code> or <code>catmultGenes()</code></li>
+<li>export the matrix with <code>writeNexus()</code></li>
+<li>generate or append the <code>MrBayes</code> block with <code>evomodelTest()</code></li>
+<li>run the resulting file with <code>mrbayesRun()</code></li>
 </ul>
-<p>This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.</p>
-<p>Recommended format:</p>
+<p>For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeNexus</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">genomics =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">interleave =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">bayesblock =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">evomodelTest</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file_path =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_criteria =</span> <span class="st">&quot;BIC&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">append_mrbayes_to_nexus =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite_original_nexus =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After that, the prepared file can be passed to <code>mrbayesRun()</code>.</p>
+</section>
+<section id="finding-the-mrbayes-executable" class="level2">
+<h2 class="anchored" data-anchor-id="finding-the-mrbayes-executable">Finding the MrBayes executable</h2>
+<p>The argument <code>mrbayes_dir</code> should point to the folder containing the <code>MrBayes</code> executable. Typical examples include:</p>
 <ul>
-<li><code>Genus_species_identifier</code></li>
-<li><code>Genus_species_identifier_everythingelse</code></li>
+<li>macOS (Intel, Homebrew)</li>
+<li>mrbayes_dir = “/usr/local/bin”</li>
+<li>macOS (Apple Silicon, Homebrew)</li>
+<li>mrbayes_dir = “/opt/homebrew/bin”</li>
 </ul>
-<p>Examples:</p>
+<p>Linux</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mrbayes_dir <span class="ot">=</span> <span class="fu">path.expand</span>(<span class="st">&quot;~/.local/bin&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Windows</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mrbayes_dir <span class="ot">=</span> <span class="st">&quot;C:/Program Files/MrBayes&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If the executable is not found directly in mrbayes_dir, mrbayesRun() also checks a bin subdirectory.</p>
+</section>
+<section id="basic-usage" class="level2">
+<h2 class="anchored" data-anchor-id="basic-usage">Basic usage</h2>
+<p>A standard foreground analysis looks like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This:</p>
 <ul>
-<li><code>Vatairea_fusca_Cardoso2939</code></li>
-<li><code>Vatairea_fusca_Cardoso2939_JX152598</code></li>
+<li>copies or moves the <code>NEXUS</code> file into a run directory</li>
+<li>launches <code>MrBayes</code></li>
+<li>writes output files into the run directory</li>
+<li>captures standard output and standard error</li>
+<li>returns a summary object in R</li>
 </ul>
-<p>In these cases, use <code>catmultGenes()</code> rather than <code>catfullGenes()</code>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/labelling_with_identifiers_and_duplicated_species.png" class="img-fluid figure-img"></p>
-<figcaption>Example when species are duplicated with multiple accessions</figcaption>
-</figure>
+</section>
+<section id="understanding-run_dir" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-run_dir">Understanding <code>run_dir</code></h2>
+<p>The argument <code>run_dir</code> controls where the analysis is executed.</p>
+<p>If left as <code>NULL</code>, <code>mrbayesRun()</code> creates a new folder in the current working directory with a timestamped name.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">run_dir =</span> <span class="cn">NULL</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can also specify a custom directory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">run_dir =</span> <span class="st">&quot;RESULTS_mrbayes/my_analysis&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using an explicit run directory can be helpful when organizing multiple analyses.</p>
+</section>
+<section id="understanding-copy_mode" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-copy_mode">Understanding copy_mode</h2>
+<p>The argument <code>copy_mode</code> determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.</p>
+<p>Copy the file</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;copy&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is the safest and most common option because the original file is preserved.</p>
+<p>Move the file</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;move&quot;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This relocates the original file to the run directory, which may be useful in some fully automated workflows.</p>
+</section>
+<section id="understanding-quiet" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-quiet">Understanding <code>quiet</code></h2>
+<p>The argument <code>quiet</code> controls whether informational messages are printed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To suppress most informational output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">TRUE</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is useful when running analyses in scripts or batch workflows.</p>
+</section>
+<section id="understanding-live" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-live">Understanding live</h2>
+<p>The argument <code>live</code> controls whether the MrBayes output is streamed to the R console while the analysis runs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">TRUE</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is often useful for monitoring progress interactively.</p>
+<p>To disable live console output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="genus-level-identifications-and-infraspecific-taxa" class="level2">
-<h2 class="anchored" data-anchor-id="genus-level-identifications-and-infraspecific-taxa">3. Genus-level identifications and infraspecific taxa</h2>
-<p>Accessions identified only to genus level can be formatted as:</p>
-<ul>
-<li><code>Genus_sp</code></li>
-<li><code>Genus_sp1</code></li>
-<li><code>Genus_sp2</code></li>
-<li><code>Genus_spA</code></li>
-<li><code>Genus_spB</code></li>
-</ul>
-<p>Abbreviated generic names can also be used if done consistently:</p>
-<ul>
-<li><code>G_sp</code></li>
-<li><code>G_sp1</code></li>
-<li><code>G_spA</code></li>
-</ul>
-<p>For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as <code>var.</code> or <code>subsp.</code> in the label. For example:</p>
-<ul>
-<li><code>Genus_species_variety_identifier</code></li>
-<li><code>Genus_species_subspecies_identifier</code></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img role="img" src="figures/other_label_fformatting.png" class="img-fluid figure-img"></p>
-<figcaption>Example with other label formatting</figcaption>
-</figure>
+<section id="understanding-use_processx" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-use_processx">Understanding <code>use_processx</code></h2>
+<p>When available, <code>mrbayesRun()</code> can use the processx package to improve output handling and support background execution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_processx =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is the default and generally the most robust option.</p>
+<p>If processx is not installed or you do not want to use it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_processx =</span> <span class="cn">FALSE</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="naming-alignment-files" class="level2">
-<h2 class="anchored" data-anchor-id="naming-alignment-files">4. Naming alignment files</h2>
-<p>We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:</p>
+<section id="running-in-background-mode" class="level2">
+<h2 class="anchored" data-anchor-id="running-in-background-mode">Running in background mode</h2>
+<p>A particularly useful feature is background execution. When <code>background = TRUE</code>, <code>MrBayes</code> starts and returns control to R immediately.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">background =</span> <span class="cn">TRUE</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this mode, the returned object can include helper functions such as:</p>
 <ul>
-<li><code>ITS.nex</code></li>
-<li><code>rbcL.nex</code></li>
-<li><code>psbAtrnH.nex</code></li>
-<li><code>COX1.nex</code></li>
+<li>poll() to check new output</li>
+<li>stop() to terminate the run</li>
 </ul>
-<p>This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.</p>
+<p>This is useful for long analyses.</p>
+</section>
+<section id="monitoring-a-background-run" class="level2">
+<h2 class="anchored" data-anchor-id="monitoring-a-background-run">Monitoring a background run</h2>
+<p>If the analysis was launched with <code>background = TRUE</code>, you can inspect progress later. For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">poll</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This reads new output from the running process.</p>
+</section>
+<section id="stopping-a-background-run" class="level1">
+<h1>Stopping a background run</h1>
+<p>If the returned object includes a stop handle, you can terminate the run programmatically.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">stop</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is only relevant when using background execution with <code>processx</code>.</p>
+<section id="understanding-the-output-files" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-the-output-files">Understanding the output files</h2>
+<p>Because the analysis runs in the designated run directory, all standard <code>MrBayes</code> output files are written there. These may include files such as:</p>
+<ul>
+<li>parameter files</li>
+<li>tree files</li>
+<li>consensus tree files</li>
+<li>standard output logs</li>
+<li>error logs</li>
+</ul>
+<p>For example, the directory may contain files like:</p>
+<ul>
+<li>analysis.nex</li>
+<li>analysis.nex.p</li>
+<li>analysis.nex.t</li>
+<li>analysis.nex.con.tre</li>
+<li>stdout.log</li>
+<li>stderr.log</li>
+</ul>
+<p>The exact file names depend on the original input file and the <code>MrBayes</code> settings in the block.</p>
+</section>
+<section id="a-complete-example-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="a-complete-example-workflow">A complete example workflow</h2>
+<p>A full workflow from concatenation to Bayesian analysis might look like this:</p>
+<p>Step 1. Export the concatenated dataset</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeNexus</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">genomics =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">interleave =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">bayesblock =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Step 2. Select models and append a <code>MrBayes</code> block</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">evomodelTest</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file_path =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_criteria =</span> <span class="st">&quot;BIC&quot;</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">append_mrbayes_to_nexus =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite_original_nexus =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Step 3. Run <code>MrBayes</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;copy&quot;</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">background =</span> <span class="cn">FALSE</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This creates a fully scriptable Bayesian workflow inside R.</p>
+</section>
+<section id="typical-workflow-after-the-run" class="level2">
+<h2 class="anchored" data-anchor-id="typical-workflow-after-the-run">Typical workflow after the run</h2>
+<p>Once the <code>MrBayes</code> analysis has finished, the next steps usually include:</p>
+<ul>
+<li>checking the parameter and log files</li>
+<li>examining the tree files and consensus tree</li>
+<li>importing the resulting phylogeny into R</li>
+<li>plotting and editing the tree with <code>plotPhylo()</code></li>
+</ul>
+<p>This makes <code>mrbayesRun()</code> a natural transition from data preparation to phylogenetic interpretation.</p>
+</section>
+<section id="common-issues" class="level2">
+<h2 class="anchored" data-anchor-id="common-issues">Common issues</h2>
+<section id="mrbayes-executable-is-not-found" class="level3">
+<h3 class="anchored" data-anchor-id="mrbayes-executable-is-not-found">MrBayes executable is not found</h3>
+<p>If the run fails immediately, the path given in <code>mrbayes_dir</code> may be incorrect. Make sure the folder really contains the <code>MrBayes</code> executable.</p>
+</section>
+<section id="the-nexus-file-does-not-contain-a-valid-mrbayes-block" class="level3">
+<h3 class="anchored" data-anchor-id="the-nexus-file-does-not-contain-a-valid-mrbayes-block">The NEXUS file does not contain a valid MrBayes block</h3>
+<p><code>mrbayesRun()</code> expects a ready-to-run NEXUS file. If the block is absent or invalid, <code>MrBayes</code> will fail. Prepare the file first with <code>writeNexus()</code> and <code>evomodelTest()</code> as needed.</p>
+</section>
+<section id="the-analysis-appears-to-hang" class="level3">
+<h3 class="anchored" data-anchor-id="the-analysis-appears-to-hang">The analysis appears to hang</h3>
+<p>Long Bayesian analyses can run for substantial time, especially with large datasets. If using background mode, check progress with <code>poll()</code>.</p>
+</section>
+<section id="no-output-is-printed-to-the-console" class="level3">
+<h3 class="anchored" data-anchor-id="no-output-is-printed-to-the-console">No output is printed to the console</h3>
+<p>If <code>live = FALSE</code>, output is not streamed interactively. Check the log files or inspect the returned object to locate stdout and stderr.</p>
+</section>
+<section id="the-run-directory-is-not-where-expected" class="level3">
+<h3 class="anchored" data-anchor-id="the-run-directory-is-not-where-expected">The run directory is not where expected</h3>
+<p>If run_dir is left as <code>NULL</code>, a timestamped directory is created automatically in the working directory. If you want tighter control, specify run_dir explicitly.</p>
+</section>
+<section id="the-run-cannot-be-stopped-programmatically" class="level3">
+<h3 class="anchored" data-anchor-id="the-run-cannot-be-stopped-programmatically">The run cannot be stopped programmatically</h3>
+<p>Programmatic stopping is mainly available when processx is installed and <code>background = TRUE</code>. In foreground mode or without processx, stopping is typically interactive.</p>
+</section>
+</section>
+<section id="recommended-practice" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-practice">Recommended practice</h2>
+<p>For the smoothest use of <code>mrbayesRun()</code>:</p>
+<ul>
+<li>always prepare and inspect the <code>NEXUS</code> file first</li>
+<li>preserve the original file by using <code>copy_mode = &quot;copy&quot;</code></li>
+<li>use an explicit run_dir for organized projects</li>
+<li>use background = TRUE for long analyses</li>
+<li>inspect returned paths and logs after the run</li>
+<li>keep the full workflow scripted for reproducibility</li>
+</ul>
+</section>
+<section id="next-step" class="level2">
+<h2 class="anchored" data-anchor-id="next-step">Next step</h2>
+<p>Once the Bayesian analysis has completed, the next step is usually to import the resulting tree files and visualize them with <code>plotPhylo()</code> or related downstream tools.</p>
 
 
 <!-- -->
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -4965,108 +5228,362 @@ height: 400px;
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Standardizing DNA alignments for catGenes&quot;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why standardization matters</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Before using the concatenation functions in <span class="in">`catGenes`</span>, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>For datasets without duplicated accessions, <span class="in">`catGenes`</span> matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## General principles</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>When preparing alignments for <span class="in">`catGenes`</span>:</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use consistent taxon naming across all loci</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>separate all components of sequence labels with underscores</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>avoid spaces and hyphens in sequence names</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>keep identifiers stable across all alignments when the same accession is represented in multiple loci</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use simple and consistent file names for each alignment</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Datasets with a single sequence per species</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species`</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_species`</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier`</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier_accession`</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>Examples:</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca`</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939`</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939_JX152598`</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)</span></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Datasets with duplicated species or multiple accessions</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>When one or more species are represented by multiple accessions, <span class="in">`catGenes`</span> requires labels that include both:</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the scientific name</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a stable accession identifier</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>Recommended format:</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier`</span></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_identifier_everythingelse`</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>Examples:</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939`</span></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Vatairea_fusca_Cardoso2939_JX152598`</span></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>In these cases, use <span class="in">`catmultGenes()`</span> rather than <span class="in">`catfullGenes()`</span>.</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="al">![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)</span></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Genus-level identifications and infraspecific taxa</span></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>Accessions identified only to genus level can be formatted as:</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp`</span></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp1`</span></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_sp2`</span></span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_spA`</span></span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_spB`</span></span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Abbreviated generic names can also be used if done consistently:</span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_sp`</span></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_sp1`</span></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`G_spA`</span></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as <span class="in">`var.`</span> or <span class="in">`subsp.`</span> in the label. For example:</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_variety_identifier`</span></span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Genus_species_subspecies_identifier`</span></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="al">![Example with other label formatting](figures/other_label_fformatting.png)</span></span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Naming alignment files</span></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:</span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`ITS.nex`</span></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`rbcL.nex`</span></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`psbAtrnH.nex`</span></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`COX1.nex`</span></span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Run MrBayes from R&quot;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>Once a concatenated <span class="in">`NEXUS`</span> dataset has been prepared and a valid <span class="in">`MrBayes`</span> block has been added, <span class="in">`catGenes`</span> allows you to launch the Bayesian analysis directly from R using <span class="in">`mrbayesRun()`</span>.</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>This function helps connect data preparation and phylogenetic inference in a single workflow. Rather than switching manually to a terminal session, you can start <span class="in">`MrBayes`</span> from within R, direct the run to a dedicated analysis folder, and capture the program output.</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>This article explains how to prepare the required input, how to locate the <span class="in">`MrBayes`</span> executable, how to run an analysis in foreground or background mode, and how <span class="in">`mrbayesRun()`</span> fits into the broader <span class="in">`catGenes`</span> workflow.</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## When to use `mrbayesRun()`</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`mrbayesRun()`</span> when:</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you already have a <span class="in">`NEXUS`</span> file with a complete and valid <span class="in">`MrBayes`</span> block</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you want to launch <span class="in">`MrBayes`</span> directly from R or RStudio</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you want analysis files written to a dedicated run directory</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you want standard output and error logs captured automatically</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>you want a reproducible and scriptable Bayesian analysis workflow</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>If your <span class="in">`NEXUS`</span> file does not yet contain a <span class="in">`MrBayes`</span> block, first prepare it with <span class="in">`writeNexus()`</span> and, if needed, <span class="in">`evomodelTest()`</span>.</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## What `mrbayesRun()` requires</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>The function requires two essential inputs:</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`nexus_file`</span>: a <span class="in">`NEXUS`</span> file that already contains a valid <span class="in">`MrBayes`</span> block</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mrbayes_dir`</span>: the path to the directory containing the <span class="in">`MrBayes`</span> executable</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>A minimal call looks like this:</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/path/to/mrbayes&quot;</span></span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparing the NEXUS file</span></span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a><span class="in">`mrbayesRun()`</span> does not generate the <span class="in">`MrBayes`</span> block itself. The input file must already contain a valid block such as:</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>begin mrbayes;</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>end;</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>A common workflow is:</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>concatenate the dataset with <span class="in">`catfullGenes()`</span> or <span class="in">`catmultGenes()`</span></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>export the matrix with <span class="in">`writeNexus()`</span></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>generate or append the <span class="in">`MrBayes`</span> block with <span class="in">`evomodelTest()`</span></span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>run the resulting file with <span class="in">`mrbayesRun()`</span></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>For example:</span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a><span class="fu">writeNexus</span>(</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>  <span class="at">genomics =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a>  <span class="at">interleave =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">bayesblock =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a><span class="fu">evomodelTest</span>(</span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file_path =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_criteria =</span> <span class="st">&quot;BIC&quot;</span>,</span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">append_mrbayes_to_nexus =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite_original_nexus =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a>After that, the prepared file can be passed to <span class="in">`mrbayesRun()`</span>.</span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Finding the MrBayes executable</span></span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`mrbayes_dir`</span> should point to the folder containing the <span class="in">`MrBayes`</span> executable.</span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a>Typical examples include:</span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>macOS (Intel, Homebrew)</span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>mrbayes_dir = &quot;/usr/local/bin&quot;</span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>macOS (Apple Silicon, Homebrew)</span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>mrbayes_dir = &quot;/opt/homebrew/bin&quot;</span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a>Linux</span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a>mrbayes_dir <span class="ot">=</span> <span class="fu">path.expand</span>(<span class="st">&quot;~/.local/bin&quot;</span>)</span>
+<span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a>Windows</span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a>mrbayes_dir <span class="ot">=</span> <span class="st">&quot;C:/Program Files/MrBayes&quot;</span></span>
+<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a>If the executable is not found directly in mrbayes_dir, mrbayesRun() also checks a bin subdirectory.</span>
+<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Basic usage</span></span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a>A standard foreground analysis looks like this:</span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span></span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>This:</span>
+<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>copies or moves the <span class="in">`NEXUS`</span> file into a run directory</span>
+<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>launches <span class="in">`MrBayes`</span></span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>writes output files into the run directory</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>captures standard output and standard error</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>returns a summary object in R</span>
+<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding `run_dir`</span></span>
+<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`run_dir`</span> controls where the analysis is executed.</span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>If left as <span class="in">`NULL`</span>, <span class="in">`mrbayesRun()`</span> creates a new folder in the current working directory with a timestamped name.</span>
+<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">run_dir =</span> <span class="cn">NULL</span></span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a>You can also specify a custom directory:</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a>  <span class="at">run_dir =</span> <span class="st">&quot;RESULTS_mrbayes/my_analysis&quot;</span></span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a>Using an explicit run directory can be helpful when organizing multiple analyses.</span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding copy_mode</span></span>
+<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`copy_mode`</span> determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.</span>
+<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a>Copy the file</span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;copy&quot;</span></span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>This is the safest and most common option because the original file is preserved.</span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a>Move the file</span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;move&quot;</span></span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>This relocates the original file to the run directory, which may be useful in some fully automated workflows.</span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding `quiet`</span></span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`quiet`</span> controls whether informational messages are printed.</span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a>To suppress most informational output:</span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a>This is useful when running analyses in scripts or batch workflows.</span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding live</span></span>
+<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a>The argument <span class="in">`live`</span> controls whether the MrBayes output is streamed to the R console while the analysis runs.</span>
+<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>This is often useful for monitoring progress interactively.</span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a>To disable live console output:</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding `use_processx`</span></span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a>When available, <span class="in">`mrbayesRun()`</span> can use the processx package to improve output handling and support background execution.</span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_processx =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a>This is the default and generally the most robust option.</span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>If processx is not installed or you do not want to use it:</span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_processx =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## Running in background mode</span></span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>A particularly useful feature is background execution. When <span class="in">`background = TRUE`</span>, <span class="in">`MrBayes`</span> starts and returns control to R immediately.</span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">background =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a>In this mode, the returned object can include helper functions such as:</span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>poll() to check new output</span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>stop() to terminate the run</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>This is useful for long analyses.</span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a><span class="fu">## Monitoring a background run</span></span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>If the analysis was launched with <span class="in">`background = TRUE`</span>, you can inspect progress later.</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>For example:</span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">poll</span>()</span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>This reads new output from the running process.</span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a><span class="fu"># Stopping a background run</span></span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>If the returned object includes a stop handle, you can terminate the run programmatically.</span>
+<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span><span class="fu">stop</span>()</span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>This is only relevant when using background execution with <span class="in">`processx`</span>.</span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding the output files</span></span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>Because the analysis runs in the designated run directory, all standard <span class="in">`MrBayes`</span> output files are written there. These may include files such as:</span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>parameter files</span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>tree files</span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>consensus tree files</span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>standard output logs</span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>error logs</span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a>For example, the directory may contain files like:</span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>analysis.nex</span>
+<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>analysis.nex.p</span>
+<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>analysis.nex.t</span>
+<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>analysis.nex.con.tre</span>
+<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>stdout.log</span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>stderr.log</span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a>The exact file names depend on the original input file and the <span class="in">`MrBayes`</span> settings in the block.</span>
+<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a><span class="fu">## A complete example workflow</span></span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>A full workflow from concatenation to Bayesian analysis might look like this:</span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>Step 1. Export the concatenated dataset</span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a><span class="fu">writeNexus</span>(</span>
+<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a>  catdf,</span>
+<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a>  <span class="at">genomics =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a>  <span class="at">interleave =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a>  <span class="at">bayesblock =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a>Step 2. Select models and append a <span class="in">`MrBayes`</span> block</span>
+<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a><span class="fu">evomodelTest</span>(</span>
+<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file_path =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_criteria =</span> <span class="st">&quot;BIC&quot;</span>,</span>
+<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a>  <span class="at">append_mrbayes_to_nexus =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite_original_nexus =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a>Step 3. Run <span class="in">`MrBayes`</span></span>
+<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrbayesRun</span>(</span>
+<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a>  <span class="at">nexus_file =</span> <span class="st">&quot;Vataireoids.nex&quot;</span>,</span>
+<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a>  <span class="at">mrbayes_dir =</span> <span class="st">&quot;/opt/homebrew/bin&quot;</span>,</span>
+<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a>  <span class="at">copy_mode =</span> <span class="st">&quot;copy&quot;</span>,</span>
+<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">live =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a>  <span class="at">background =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a>This creates a fully scriptable Bayesian workflow inside R.</span>
+<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a><span class="fu">## Typical workflow after the run</span></span>
+<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a>Once the <span class="in">`MrBayes`</span> analysis has finished, the next steps usually include:</span>
+<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>checking the parameter and log files</span>
+<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>examining the tree files and consensus tree</span>
+<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>importing the resulting phylogeny into R</span>
+<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>plotting and editing the tree with <span class="in">`plotPhylo()`</span></span>
+<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a>This makes <span class="in">`mrbayesRun()`</span> a natural transition from data preparation to phylogenetic interpretation.</span>
+<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## Common issues</span></span>
+<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a><span class="fu">### MrBayes executable is not found</span></span>
+<span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a>If the run fails immediately, the path given in <span class="in">`mrbayes_dir`</span> may be incorrect. Make sure the folder really contains the <span class="in">`MrBayes`</span> executable.</span>
+<span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### The NEXUS file does not contain a valid MrBayes block</span></span>
+<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a><span class="in">`mrbayesRun()`</span> expects a ready-to-run NEXUS file. If the block is absent or invalid, <span class="in">`MrBayes`</span> will fail. Prepare the file first with <span class="in">`writeNexus()`</span> and <span class="in">`evomodelTest()`</span> as needed.</span>
+<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a><span class="fu">### The analysis appears to hang</span></span>
+<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a>Long Bayesian analyses can run for substantial time, especially with large datasets. If using background mode, check progress with <span class="in">`poll()`</span>.</span>
+<span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a><span class="fu">### No output is printed to the console</span></span>
+<span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a>If <span class="in">`live = FALSE`</span>, output is not streamed interactively. Check the log files or inspect the returned object to locate stdout and stderr.</span>
+<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a><span class="fu">### The run directory is not where expected</span></span>
+<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>If run_dir is left as <span class="in">`NULL`</span>, a timestamped directory is created automatically in the working directory. If you want tighter control, specify run_dir explicitly.</span>
+<span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a><span class="fu">### The run cannot be stopped programmatically</span></span>
+<span id="cb23-343"><a href="#cb23-343" aria-hidden="true" tabindex="-1"></a>Programmatic stopping is mainly available when processx is installed and <span class="in">`background = TRUE`</span>. In foreground mode or without processx, stopping is typically interactive.</span>
+<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommended practice</span></span>
+<span id="cb23-346"><a href="#cb23-346" aria-hidden="true" tabindex="-1"></a>For the smoothest use of <span class="in">`mrbayesRun()`</span>:</span>
+<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-348"><a href="#cb23-348" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>always prepare and inspect the <span class="in">`NEXUS`</span> file first</span>
+<span id="cb23-349"><a href="#cb23-349" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>preserve the original file by using <span class="in">`copy_mode = &quot;copy&quot;`</span></span>
+<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use an explicit run_dir for organized projects</span>
+<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>use background = TRUE for long analyses</span>
+<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>inspect returned paths and logs after the run</span>
+<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>keep the full workflow scripted for reproducibility</span>
+<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next step</span></span>
+<span id="cb23-356"><a href="#cb23-356" aria-hidden="true" tabindex="-1"></a>Once the Bayesian analysis has completed, the next step is usually to import the resulting tree files and visualize them with <span class="in">`plotPhylo()`</span> or related downstream tools.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

@@ -1,102 +1,462 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Plot and edit phylogenetic trees"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+The function `plotPhylo()` provides a flexible workflow for plotting and editing phylogenetic trees in `catGenes` using `ggtree`. It was designed to help users move from a raw phylogeny to a more informative and publication-ready figure, with options for changing layouts, displaying support values, highlighting clades or taxa, modifying labels, pruning tips, and exporting the final result.
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+This article explains how to use `plotPhylo()` in a range of common situations, from simple tree plotting to more customized phylogenetic figures.
 
-## General principles
+## When to use `plotPhylo()`
 
-When preparing alignments for `catGenes`:
+Use `plotPhylo()` when you want to:
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+- visualize a phylogenetic tree in R
+- add node support information
+- highlight particular clades or taxa
+- rename or prune selected tips
+- adjust tip label formatting
+- create more presentation-ready or publication-ready figures
+- save the resulting tree as an image file
 
-## 1. Datasets with a single sequence per species
+The function is especially useful after a phylogenetic analysis has already been completed and the resulting tree is available as a `phylo` object.
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+## Required input
 
-- `Genus_species`
-- `G_species`
+The main required input is a tree of class `phylo`.
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+For example:
+```{r, eval=FALSE}
+library(catGenes)
+library(ape)
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+tree <- read.tree("my_tree.tre")
+```
 
-Examples:
+Once the tree has been imported, it can be passed to `plotPhylo()`.
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+## Basic usage
+A minimal example looks like this:
+```{r, eval=FALSE}
+p <- plotPhylo(tree = tree)
+```
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+This returns a ggtree-based plot object that can be printed, modified, or saved.
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+## Choosing the tree layout
 
-## 2. Datasets with duplicated species or multiple accessions
+The `layout` argument controls how the tree is displayed. Supported layouts include:
 
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+- "rectangular"
+- "dendrogram"
+- "slanted"
+- "ellipse"
+- "roundrect"
+- "fan"
+- "circular"
+- "inward_circular"
+- "radial"
+- "equal_angle"
+- "daylight"
+- "ape"
 
-- the scientific name
-- a stable accession identifier
+A simple rectangular layout:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  layout = "rectangular"
+)
+```
 
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
+A circular layout:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  layout = "circular"
+)
+```
 
-Recommended format:
+The best layout depends on the size of the tree and the intended figure style.
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
+## Controlling branch width
+The `branch.width` argument sets the line width of tree branches.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  branch.width = 0.5
+)
+```
 
-Examples:
+Thicker branches can be helpful in large figures or presentations, whereas thinner branches are often preferable in complex or crowded trees.
 
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+## Showing or hiding branch supports
+The `branch.supports` argument controls whether node support values are displayed.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  branch.supports = TRUE
+)
+```
 
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
+This is useful when support values are stored in the tree object and you want them rendered automatically.
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+## Adding support from alternative trees
+`plotPhylo()` can also display support values from other phylogenetic analyses, using alternative tree objects.
 
-## 3. Genus-level identifications and infraspecific taxa
+Add support from a RAxML tree
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = main_tree,
+  add.raxml.tree = raxml_tree
+)
+```
 
-Accessions identified only to genus level can be formatted as:
+Add support from a parsimony tree
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = main_tree,
+  add.parsi.tree = parsimony_tree
+)
+```
+This allows support from different inference methods to be compared and visualized together on the same phylogeny.
 
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
+## Showing or hiding tip labels
+The `show.tip.label` argument controls whether the tip labels are displayed.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  show.tip.label = TRUE
+)
+```
 
-Abbreviated generic names can also be used if done consistently:
+Hiding tip labels may be useful when creating an overview figure or focusing on clade structure rather than taxon names.
 
-- `G_sp`
-- `G_sp1`
-- `G_spA`
+## Adjusting tip label size
+Use `size.tip.label` to change the font size of tip labels.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  size.tip.label = 2
+)
+```
 
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
+Smaller values help when plotting large trees, while larger values can be useful for smaller trees or presentation figures.
 
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
+## Changing the font face of tip labels
+Use fontface.tip.label to control the text style of the tip labels.
+Common options include:
+```{r, eval=FALSE}
+"plain"
+"bold"
+"italic"
+"bold.italic"
+```
 
-![Example with other label formatting](figures/other_label_fformatting.png)
+For example:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  fontface.tip.label = "italic"
+)
+```
 
-## 4. Naming alignment files
+Italic labels are often appropriate for scientific names.
 
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
+# Using fancy tip labels
+The `fancy.tip.label` argument allows distinct formatting for taxon names and associated identifiers such as voucher codes or accession numbers.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  fancy.tip.label = TRUE
+)
+```
 
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
+This is especially useful when the tree labels contain both taxonomic and accession-level information and you want a more informative presentation.
 
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+## Abbreviating tip labels
+The `abbrev.tip.label` argument can be used when tip labels are long and you want a more compact display.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  abbrev.tip.label = TRUE
+)
+```
+This can make dense trees easier to read.
+
+## Highlighting selected taxa
+You can highlight specific taxa using highlight.taxa.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  highlight.taxa = c("Vatairea_fusca", "Vatairea_guianensis")
+)
+```
+
+You can also specify colors explicitly with highlight.color:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  highlight.taxa = c("Vatairea_fusca", "Vatairea_guianensis"),
+  highlight.color = c("red", "blue")
+)
+```
+
+This is useful when emphasizing focal taxa in a large tree.
+
+## Understating selected taxa
+The `understate.taxa` argument can be used to make some taxa visually less prominent, usually by rendering them in gray.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  understate.taxa = c("Outgroup_species", "Outgroup_species_2")
+)
+```
+
+This is helpful when you want to emphasize a focal clade while keeping the rest of the tree visible but less dominant.
+
+## Highlighting clades
+The `highlight.clade` argument allows you to highlight the clade defined by two tip labels.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  highlight.clade = c("Species_A", "Species_B")
+)
+```
+
+You can also highlight multiple clades by providing a list:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  highlight.clade = list(
+    c("Species_A", "Species_B"),
+    c("Species_C", "Species_D")
+  )
+)
+```
+
+To control the highlighting colors, use fill.gradient.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  highlight.clade = list(
+    c("Species_A", "Species_B"),
+    c("Species_C", "Species_D")
+  ),
+  fill.gradient = c("lightblue", "mistyrose")
+)
+```
+
+This is useful when marking major groups or focal clades in a figure.
+
+## Renaming tip labels
+The `replace.taxa` argument lets you substitute specific tip labels with alternative names.
+For example:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  replace.taxa = c(
+    "Harpalyce_formosa" = "Harpalyce_riparia",
+    "Harpalyce_cf_brasiliana" = "Harpalyce_magnibracteata"
+  )
+)
+```
+
+This is useful when updating names, correcting labels, or standardizing terminology in the plotted figure without altering the original tree object.
+
+## Pruning selected taxa
+The `prune.taxa` argument allows you to drop selected tips from the plotted tree.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  prune.taxa = c("Outgroup_species", "Taxon_to_remove")
+)
+```
+This can be useful when producing a focused figure that excludes outgroups or taxa not relevant to the current presentation.
+
+## Adding a gene or dataset label
+The `gene.label` argument adds a label or title associated with the plotted tree.
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  gene.label = "matK"
+)
+```
+
+This is useful when comparing trees built from different loci or different datasets.
+You can also adjust its placement with ylim.gene.label.
+
+## Adjusting the x-axis
+Use `xlim.tree` or `hexpand` to control horizontal spacing and tree extent.
+For example:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  xlim.tree = c(0, 1.5)
+)
+```
+
+or
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  hexpand = 0.1
+)
+```
+
+These options are especially useful when labels are long and need extra space.
+
+## Adding a side phylogram
+```{r, eval=FALSE}
+plotPhylo() can add a small side phylogram showing branch lengths.
+p <- plotPhylo(
+  tree = tree,
+  phylogram.side = TRUE
+)
+```
+
+To show support values in the side phylogram as well:
+```{r, eval=FALSE}
+p <- plotPhylo(
+  tree = tree,
+  phylogram.side = TRUE,
+  phylogram.supports = TRUE
+)
+```
+You can also adjust its size with phylogram.height.
+This is useful when the main edited tree emphasizes labels and clades, while the side phylogram preserves branch-length context.
+
+## Saving the figure
+You can save the plotted tree directly to disk using `save = TRUE`.
+```{r, eval=FALSE}
+plotPhylo(
+  tree = tree,
+  layout = "rectangular",
+  save = TRUE,
+  dir = "RESULTS_edited_tree",
+  filename = "my_tree",
+  format = "pdf"
+)
+```
+
+Supported output formats include:
+
+- "pdf"
+- "jpg"
+- "png"
+- "tiff"
+
+For example, to save as PNG:
+```{r, eval=FALSE}
+plotPhylo(
+  tree = tree,
+  save = TRUE,
+  filename = "my_tree",
+  format = "png"
+)
+```
+
+## Adjusting image resolution
+Use the dpi argument to set output resolution.
+```{r, eval=FALSE}
+plotPhylo(
+  tree = tree,
+  save = TRUE,
+  filename = "my_tree",
+  format = "tiff",
+  dpi = 600
+)
+```
+
+Higher resolution is useful for publication-quality raster outputs.
+
+## A complete example
+A typical tree-plotting workflow might look like this:
+```{r, eval=FALSE}
+library(catGenes)
+library(ape)
+
+tree <- read.tree("my_tree.tre")
+
+p <- plotPhylo(
+  tree = tree,
+  layout = "rectangular",
+  branch.supports = TRUE,
+  show.tip.label = TRUE,
+  size.tip.label = 2,
+  fontface.tip.label = "italic",
+  highlight.taxa = c("Vatairea_fusca", "Vatairea_guianensis"),
+  highlight.color = c("red", "blue"),
+  gene.label = "Combined dataset"
+)
+```
+
+To save the same tree:
+```{r, eval=FALSE}
+plotPhylo(
+  tree = tree,
+  layout = "rectangular",
+  branch.supports = TRUE,
+  show.tip.label = TRUE,
+  size.tip.label = 2,
+  fontface.tip.label = "italic",
+  gene.label = "Combined dataset",
+  save = TRUE,
+  filename = "combined_dataset_tree",
+  format = "pdf"
+)
+```
+
+## Typical use cases
+`plotPhylo()` is especially useful for:
+
+- final figure preparation for manuscripts
+- highlighting focal taxa or clades
+- comparing support values from different inference methods
+- cleaning labels before presentation
+- generating multiple views of the same phylogeny with different layouts
+
+## Common issues
+### Tree object is not of class phylo
+`plotPhylo()` expects a tree object compatible with ape and ggtree. If the input is not a proper phylo object, convert or re-import the tree before plotting.
+
+### Tip labels are too long
+Long labels can crowd the plot. Consider:
+- reducing `size.tip.label`
+- using `abbrev.tip.label = TRUE`
+- using `fancy.tip.label = TRUE`
+- expanding the `x-axis` with `xlim.tree` or `hexpand`
+
+### Highlighted taxa are not found
+If a taxon name passed to highlight.taxa, replace.taxa, or prune.taxa does not match the exact tree label, it will not be applied. Always check the tree labels first.
+
+### Support values are missing
+If `branch.supports = TRUE` but no support values appear, the support information may not be present in the tree object or may not be formatted in the expected way.
+
+### Saved figure does not look as expected
+Try adjusting:
+
+- layout
+- size.tip.label
+- xlim.tree
+- hexpand
+- format
+- dpi
+Tree figures often require some iteration to achieve the most readable final design.
+
+## Recommended practice
+For the smoothest use of `plotPhylo()`:
+
+- start from a clean phylo object
+- inspect tip labels before adding highlights or replacements
+- use rectangular layouts for readability and circular or fan layouts for dense trees
+- keep scientific names italicized when appropriate
+- save final figures in pdf for vector output or tiff/png for high-resolution raster output
+- make small adjustments iteratively until the visual balance is right
+
+## Next step
+Once your phylogeny has been plotted and edited with `plotPhylo()`, the figure can be used directly for manuscripts, presentations, reports, or supplementary materials as part of a reproducible phylogenetic workflow in R.

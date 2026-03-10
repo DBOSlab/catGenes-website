@@ -30,7 +30,6 @@ If one or more species are represented by multiple accessions across one or more
 Each element of the list should correspond to one locus, and the list names should correspond to gene names or alignment names.
 
 For example:
-
 ```{r eval=FALSE}
 library(catGenes)
 
@@ -71,7 +70,6 @@ Because the taxa have been standardized across loci, these data frames can be co
 ## Understanding shortaxlabel
 The argument `shortaxlabel` controls how sequence labels are represented in the concatenated output.
 When `shortaxlabel = TRUE`, labels are simplified and standardized:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -83,7 +81,6 @@ catdf <- catfullGenes(
 This is usually the most convenient setting for downstream phylogenetic analysis.
 
 When `shortaxlabel = FALSE`, more of the original identifying information present in the sequence labels is retained:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -97,7 +94,6 @@ This can be useful when accession identifiers or other annotations need to be pr
 ## Understanding `missdata`
 The argument `missdata` controls whether taxa that lack one or more loci are retained in the concatenated dataset.
 When `missdata = TRUE`, incomplete taxa are retained and missing loci are filled with missing data:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -109,7 +105,6 @@ catdf <- catfullGenes(
 This is often useful when maximizing taxon coverage is more important than complete locus coverage.
 
 When `missdata = FALSE`, taxa lacking any locus are excluded:
-
 ```{r eval=FALSE}
 catdf_complete <- catfullGenes(
   Vataireoids,
@@ -124,7 +119,6 @@ This produces a more conservative dataset with complete data only.
 The `outgroup` argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output.
 
 For example:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -135,7 +129,6 @@ catdf <- catfullGenes(
 ```
 
 You can also provide multiple outgroups:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -149,7 +142,6 @@ This is especially relevant in concatenated datasets where some loci are missing
 
 ## Understanding `verbose`
 The argument `verbose` controls whether the function prints progress messages during the matching and concatenation process.
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -160,7 +152,6 @@ catdf <- catfullGenes(
 ```
 
 To suppress detailed progress output:
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -177,7 +168,6 @@ This can be useful when running large datasets or preparing rendered tutorials.
 A typical small-scale workflow looks like this:
 
 Step 1. Load the alignments
-
 ```{r eval=FALSE}
 library(catGenes)
 
@@ -196,7 +186,6 @@ names(Vataireoids) <- gsub("[.].*", "", names(Vataireoids))
 ```
 
 Step 2. Run the concatenation
-
 ```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
@@ -205,14 +194,13 @@ catdf <- catfullGenes(
 )
 ```
 
-At this point, the dataset is ready for export with writeNexus() or writePhylip().
+At this point, the dataset is ready for export with `writeNexus()` or `writePhylip()`.
 
 ## Exporting the concatenated output
 
 After running `catfullGenes()`, the most common next step is to write the concatenated dataset to disk.
 
 Export as `NEXUS`
-
 ```{r eval=FALSE}
 writeNexus(
   catdf,
@@ -224,7 +212,6 @@ writeNexus(
 ```
 
 Export as `PHYLIP`
-
 ```{r eval=FALSE}
 writePhylip(
   catdf,
@@ -254,6 +241,7 @@ Then export with an appropriate setting in `writeNexus()` or `writePhylip()` to 
 
 ## Typical workflow after `catfullGenes()`
 A common multilocus workflow is:
+
 - standardize sequence labels
 - align loci separately
 - load alignments into R
@@ -292,6 +280,7 @@ For the smoothest use of `catfullGenes()`:
 The `catGenes` concatenation functions are also designed to work with larger phylogenomic datasets. For example, `catmultGenes()` has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to `catfullGenes()` workflows when the data structure matches the one-sequence-per-species assumption.
 
 For large projects, it is especially important to:
+
 - keep naming conventions fully standardized
 - inspect locus coverage before concatenation
 - use clear file and list names

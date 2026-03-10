@@ -52,7 +52,6 @@ accessions <- c("NC_000932", "NC_026462")
 
 ## Mining loci from plastomes
 A basic `minePlastome()` workflow looks like this:
-
 ```{r, eval=FALSE}
 library(catGenes)
 
@@ -66,7 +65,6 @@ This downloads the specified plastomes, extracts the requested genes when presen
 
 ## Mining loci from mitochondrial genomes
 The corresponding mitochondrial workflow is:
-
 ```{r, eval=FALSE}
 library(catGenes)
 
@@ -80,8 +78,8 @@ This performs the same general process, but for mitochondrial genomes.
 
 ## Providing taxon names
 If you want the output labels to use your preferred taxon naming rather than relying only on GenBank metadata, you can supply a vector of taxon names.
-For example:
 
+For example:
 ```{r, eval=FALSE}
 minePlastome(
   genbank = c("NC_000932", "NC_026462"),
@@ -159,6 +157,7 @@ minePlastome(
 ```
 
 This:
+
 - downloads the plastome GenBank files
 - extracts the target coding genes
 - labels sequences with taxon and voucher information
@@ -183,6 +182,7 @@ mineMitochondrion(
 ## Understanding the output
 Both functions write the mined loci as `FASTA` files in the specified output directory.
 Typical outputs include:
+
 - one or more `FASTA` files containing the extracted target loci
 - optionally the original downloaded GenBank files, if `rm_gb_files = FALSE`
 
@@ -203,7 +203,6 @@ These `FASTA` outputs can then be aligned and incorporated into later concatenat
 By default, downloaded `.gb` files can be kept or removed depending on the setting of `rm_gb_files`.
 
 To remove them after locus extraction:
-
 ```{r, eval=FALSE}
 minePlastome(
   genbank = plastome_accessions,
@@ -213,7 +212,6 @@ minePlastome(
 ```
 
 To retain them for inspection or reuse:
-
 ```{r, eval=FALSE}
 minePlastome(
   genbank = plastome_accessions,
@@ -238,6 +236,7 @@ This step helps catch problems before alignment and concatenation.
 
 ## Typical workflow after locus mining
 A common organellar-locus workflow is:
+
 - compile accession numbers for complete plastomes or mitochondrial genomes
 - mine target loci with `minePlastome()` or `mineMitochondrion()`
 - save the extracted loci as `FASTA`
@@ -267,7 +266,7 @@ Not all plastomes or mitochondrial genomes have exactly the same annotation comp
 ### Taxon or voucher vectors have the wrong length
 If you provide taxon or voucher, make sure those vectors have the same length and order as the genbank accession vector.
 
-###Internet connection is unavailable
+### Internet connection is unavailable
 Both functions connect to GenBank and require internet access.
 
 ### Non-coding regions are not extracted as expected
@@ -275,6 +274,7 @@ If you are targeting introns or intergenic spacers, make sure `CDS = FALSE`. Oth
 
 ## Recommended practice
 For smooth organellar mining workflows:
+
 - start from curated accession lists of complete genomes
 - verify the exact gene names used in GenBank annotations
 - provide taxon and voucher information when you want standardized downstream labels
@@ -284,6 +284,7 @@ For smooth organellar mining workflows:
 
 ## Next step
 Once loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:
+
 - align the extracted sequences with `alignSeqs()`
 - convert alignment formats if necessary
 - load the alignments into R

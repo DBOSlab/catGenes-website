@@ -1,102 +1,356 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Run MrBayes from R"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+Once a concatenated `NEXUS` dataset has been prepared and a valid `MrBayes` block has been added, `catGenes` allows you to launch the Bayesian analysis directly from R using `mrbayesRun()`.
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+This function helps connect data preparation and phylogenetic inference in a single workflow. Rather than switching manually to a terminal session, you can start `MrBayes` from within R, direct the run to a dedicated analysis folder, and capture the program output.
 
-## General principles
+This article explains how to prepare the required input, how to locate the `MrBayes` executable, how to run an analysis in foreground or background mode, and how `mrbayesRun()` fits into the broader `catGenes` workflow.
 
-When preparing alignments for `catGenes`:
+## When to use `mrbayesRun()`
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+Use `mrbayesRun()` when:
 
-## 1. Datasets with a single sequence per species
+- you already have a `NEXUS` file with a complete and valid `MrBayes` block
+- you want to launch `MrBayes` directly from R or RStudio
+- you want analysis files written to a dedicated run directory
+- you want standard output and error logs captured automatically
+- you want a reproducible and scriptable Bayesian analysis workflow
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+If your `NEXUS` file does not yet contain a `MrBayes` block, first prepare it with `writeNexus()` and, if needed, `evomodelTest()`.
 
-- `Genus_species`
-- `G_species`
+## What `mrbayesRun()` requires
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+The function requires two essential inputs:
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+- `nexus_file`: a `NEXUS` file that already contains a valid `MrBayes` block
+- `mrbayes_dir`: the path to the directory containing the `MrBayes` executable
 
-Examples:
+A minimal call looks like this:
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+```{r, eval=FALSE}
+library(catGenes)
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/path/to/mrbayes"
+)
+```
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
 
-## 2. Datasets with duplicated species or multiple accessions
+## Preparing the NEXUS file
+`mrbayesRun()` does not generate the `MrBayes` block itself. The input file must already contain a valid block such as:
+```{r, eval=FALSE}
+begin mrbayes;
+  ...
+end;
+```
 
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+A common workflow is:
 
-- the scientific name
-- a stable accession identifier
+- concatenate the dataset with `catfullGenes()` or `catmultGenes()`
+- export the matrix with `writeNexus()`
+- generate or append the `MrBayes` block with `evomodelTest()`
+- run the resulting file with `mrbayesRun()`
 
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
+For example:
+```{r, eval=FALSE}
+writeNexus(
+  catdf,
+  file = "Vataireoids.nex",
+  genomics = FALSE,
+  interleave = TRUE,
+  bayesblock = FALSE
+)
 
-Recommended format:
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  model_criteria = "BIC",
+  append_mrbayes_to_nexus = TRUE,
+  overwrite_original_nexus = FALSE
+)
+```
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
+After that, the prepared file can be passed to `mrbayesRun()`.
 
-Examples:
+## Finding the MrBayes executable
+The argument `mrbayes_dir` should point to the folder containing the `MrBayes` executable.
+Typical examples include:
 
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+- macOS (Intel, Homebrew)
+- mrbayes_dir = "/usr/local/bin"
+- macOS (Apple Silicon, Homebrew)
+- mrbayes_dir = "/opt/homebrew/bin"
 
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
+Linux
+```{r, eval=FALSE}
+mrbayes_dir = path.expand("~/.local/bin")
+```
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+Windows
+```{r, eval=FALSE}
+mrbayes_dir = "C:/Program Files/MrBayes"
+```
 
-## 3. Genus-level identifications and infraspecific taxa
+If the executable is not found directly in mrbayes_dir, mrbayesRun() also checks a bin subdirectory.
 
-Accessions identified only to genus level can be formatted as:
+## Basic usage
+A standard foreground analysis looks like this:
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin"
+)
+```
 
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
+This:
 
-Abbreviated generic names can also be used if done consistently:
+- copies or moves the `NEXUS` file into a run directory
+- launches `MrBayes`
+- writes output files into the run directory
+- captures standard output and standard error
+- returns a summary object in R
 
-- `G_sp`
-- `G_sp1`
-- `G_spA`
+## Understanding `run_dir`
+The argument `run_dir` controls where the analysis is executed.
 
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
+If left as `NULL`, `mrbayesRun()` creates a new folder in the current working directory with a timestamped name.
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  run_dir = NULL
+)
+```
 
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
+You can also specify a custom directory:
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  run_dir = "RESULTS_mrbayes/my_analysis"
+)
+```
+Using an explicit run directory can be helpful when organizing multiple analyses.
 
-![Example with other label formatting](figures/other_label_fformatting.png)
+## Understanding copy_mode
+The argument `copy_mode` determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.
 
-## 4. Naming alignment files
+Copy the file
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  copy_mode = "copy"
+)
+```
+This is the safest and most common option because the original file is preserved.
 
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
+Move the file
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  copy_mode = "move"
+)
+```
+This relocates the original file to the run directory, which may be useful in some fully automated workflows.
 
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
+## Understanding `quiet`
+The argument `quiet` controls whether informational messages are printed.
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  quiet = FALSE
+)
+```
 
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+To suppress most informational output:
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  quiet = TRUE
+)
+```
+This is useful when running analyses in scripts or batch workflows.
+
+## Understanding live
+The argument `live` controls whether the MrBayes output is streamed to the R console while the analysis runs.
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  live = TRUE
+)
+```
+
+This is often useful for monitoring progress interactively.
+
+To disable live console output:
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  live = FALSE
+)
+```
+
+## Understanding `use_processx`
+When available, `mrbayesRun()` can use the processx package to improve output handling and support background execution.
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  use_processx = TRUE
+)
+```
+
+This is the default and generally the most robust option.
+
+If processx is not installed or you do not want to use it:
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  use_processx = FALSE
+)
+```
+
+## Running in background mode
+A particularly useful feature is background execution. When `background = TRUE`, `MrBayes` starts and returns control to R immediately.
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  background = TRUE
+)
+```
+
+In this mode, the returned object can include helper functions such as:
+
+- poll() to check new output
+- stop() to terminate the run
+
+This is useful for long analyses.
+
+## Monitoring a background run
+If the analysis was launched with `background = TRUE`, you can inspect progress later.
+For example:
+```{r, eval=FALSE}
+res$poll()
+```
+This reads new output from the running process.
+
+# Stopping a background run
+If the returned object includes a stop handle, you can terminate the run programmatically.
+```{r, eval=FALSE}
+res$stop()
+```
+This is only relevant when using background execution with `processx`.
+
+## Understanding the output files
+Because the analysis runs in the designated run directory, all standard `MrBayes` output files are written there. These may include files such as:
+
+- parameter files
+- tree files
+- consensus tree files
+- standard output logs
+- error logs
+
+For example, the directory may contain files like:
+
+- analysis.nex
+- analysis.nex.p
+- analysis.nex.t
+- analysis.nex.con.tre
+- stdout.log
+- stderr.log
+
+The exact file names depend on the original input file and the `MrBayes` settings in the block.
+
+## A complete example workflow
+A full workflow from concatenation to Bayesian analysis might look like this:
+
+Step 1. Export the concatenated dataset
+```{r, eval=FALSE}
+writeNexus(
+  catdf,
+  file = "Vataireoids.nex",
+  genomics = FALSE,
+  interleave = TRUE,
+  bayesblock = FALSE
+)
+```
+
+Step 2. Select models and append a `MrBayes` block
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  model_criteria = "BIC",
+  append_mrbayes_to_nexus = TRUE,
+  overwrite_original_nexus = FALSE
+)
+```
+
+Step 3. Run `MrBayes`
+```{r, eval=FALSE}
+res <- mrbayesRun(
+  nexus_file = "Vataireoids.nex",
+  mrbayes_dir = "/opt/homebrew/bin",
+  copy_mode = "copy",
+  live = TRUE,
+  background = FALSE
+)
+```
+This creates a fully scriptable Bayesian workflow inside R.
+
+## Typical workflow after the run
+Once the `MrBayes` analysis has finished, the next steps usually include:
+
+- checking the parameter and log files
+- examining the tree files and consensus tree
+- importing the resulting phylogeny into R
+- plotting and editing the tree with `plotPhylo()`
+
+This makes `mrbayesRun()` a natural transition from data preparation to phylogenetic interpretation.
+
+## Common issues
+### MrBayes executable is not found
+If the run fails immediately, the path given in `mrbayes_dir` may be incorrect. Make sure the folder really contains the `MrBayes` executable.
+
+### The NEXUS file does not contain a valid MrBayes block
+`mrbayesRun()` expects a ready-to-run NEXUS file. If the block is absent or invalid, `MrBayes` will fail. Prepare the file first with `writeNexus()` and `evomodelTest()` as needed.
+
+### The analysis appears to hang
+Long Bayesian analyses can run for substantial time, especially with large datasets. If using background mode, check progress with `poll()`.
+
+### No output is printed to the console
+If `live = FALSE`, output is not streamed interactively. Check the log files or inspect the returned object to locate stdout and stderr.
+
+### The run directory is not where expected
+If run_dir is left as `NULL`, a timestamped directory is created automatically in the working directory. If you want tighter control, specify run_dir explicitly.
+
+### The run cannot be stopped programmatically
+Programmatic stopping is mainly available when processx is installed and `background = TRUE`. In foreground mode or without processx, stopping is typically interactive.
+
+## Recommended practice
+For the smoothest use of `mrbayesRun()`:
+
+- always prepare and inspect the `NEXUS` file first
+- preserve the original file by using `copy_mode = "copy"`
+- use an explicit run_dir for organized projects
+- use background = TRUE for long analyses
+- inspect returned paths and logs after the run
+- keep the full workflow scripted for reproducibility
+
+## Next step
+Once the Bayesian analysis has completed, the next step is usually to import the resulting tree files and visualize them with `plotPhylo()` or related downstream tools.

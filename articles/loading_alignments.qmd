@@ -138,16 +138,16 @@ This approach is practical for small datasets or when you want more explicit con
 
 ## Common issues
 
-# File paths are incorrect
+### File paths are incorrect
 If R cannot find your files, check that the path provided to `list.files()` or `ape::read.nexus.data()` is correct.
 
-# Files are not in NEXUS format
+### Files are not in NEXUS format
 The examples in this article assume NEXUS input. If your files are in another format, you may need to convert them first using `convertAlign()`.
 
-# List names are not informative
+### List names are not informative
 If you do not remove file extensions or prefixes, the resulting list names may be difficult to interpret in downstream analyses. Clean list names as early as possible.
 
-# Taxa do not match across loci
+### Taxa do not match across loci
 If concatenation behaves unexpectedly, the problem is often due to inconsistent taxon labels rather than the import step itself. In that case, revisit the alignment standardization tutorial.
 
 ## Next step
