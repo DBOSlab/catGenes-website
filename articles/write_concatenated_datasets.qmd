@@ -51,7 +51,7 @@ catdf <- catfullGenes(
 
 The object catdf is now ready to be exported with either `writeNexus()` or `writePhylip()`.
 
-## When to use writeNexus()
+## When to use `writeNexus()`
 Use `writeNexus()` when you want:
 - a concatenated dataset in `NEXUS` format
 - optional interleaved or non-interleaved output
@@ -61,7 +61,7 @@ Use `writeNexus()` when you want:
 
 This is often the preferred output format when the next step involves `MrBayes` or when a richer, more descriptive matrix format is useful.
 
-## When to use writePhylip()
+## When to use `writePhylip()`
 Use writePhylip() when you want:
 a concatenated dataset in `PHYLIP` format
 a separate partition file describing locus boundaries
@@ -70,7 +70,7 @@ a simpler matrix representation plus an external partition definition
 
 This is especially useful when preparing datasets for software or pipelines that use `PHYLIP` together with a partition text file.
 
-## Writing a concatenated NEXUS dataset
+## Writing a concatenated `NEXUS` dataset
 A basic writeNexus() workflow looks like this:
 ```{r eval=FALSE}
 writeNexus(
@@ -175,7 +175,7 @@ writeNexus(
 
 This option is useful when the `NEXUS` file is needed only as a matrix or when the `MrBayes` commands will be prepared separately.
 
-## Understanding endgaps.to.miss in writeNexus()
+## Understanding endgaps.to.miss in `writeNexus()`
 The argument `endgaps.to.miss` controls whether terminal gaps are converted into missing characters `(?)` in the output matrix.
 ```{r eval=FALSE}
 writeNexus(
@@ -195,7 +195,7 @@ writeNexus(
 )
 ```
 
-## Writing a concatenated PHYLIP dataset
+## Writing a concatenated `PHYLIP` dataset
 A basic `writePhylip()` workflow looks like this:
 ```{r eval=FALSE}
 writePhylip(
@@ -244,8 +244,8 @@ writePhylip(
 )
 ```
 
-## Understanding endgaps.to.miss in writePhylip()
-As in writeNexus(), the writePhylip() function can also convert terminal gaps to missing characters.
+## Understanding endgaps.to.miss in `writePhylip()`
+As in `writeNexus()`, the `writePhylip()` function can also convert terminal gaps to missing characters.
 ```{r eval=FALSE}
 writePhylip(
   catdf,
@@ -362,7 +362,7 @@ This is particularly useful when accession labels differ among loci but still ne
 The output may appear as shown below:
 
 
-## What the PHYLIP output looks like
+## What the `PHYLIP` output looks like
 When `writePhylip()` is used, the result usually consists of:
 - a concatenated `PHYLIP` matrix
 - a separate partition file

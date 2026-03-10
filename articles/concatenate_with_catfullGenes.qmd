@@ -31,7 +31,7 @@ Each element of the list should correspond to one locus, and the list names shou
 
 For example:
 
-```{r}
+```{r eval=FALSE}
 library(catGenes)
 
 genes <- list.files(system.file("DNAlignments/Vataireoids",

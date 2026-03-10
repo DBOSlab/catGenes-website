@@ -67,8 +67,7 @@ for (i in genes) {
 names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
 ```
 
-
-Label formatting for duplicated taxa
+## Label formatting for duplicated taxa
 When using catmultGenes(), labels should include both taxon name and identifier, for example:
 Genus_species_identifier
 Genus_species_identifier_everythingelse
@@ -78,83 +77,102 @@ Vatairea_fusca_Cardoso2939_JX152598
 Vatairea_fusca_Silva1820
 Vatairea_fusca_RB123456
 The key requirement is that the identifying component be used consistently across loci for the same accession.
-Example of accession-aware labels
+
+## Example of accession-aware labels
 The figure below illustrates the kind of sequence labels expected when species are duplicated with multiple accessions.
 
-Basic usage
+## Basic usage
 A typical concatenation workflow with duplicated accessions looks like this:
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
+```
+
 This compares taxa across loci while taking duplicated accessions into account and returns a list of equalized data frames ready for export.
-What catmultGenes() returns
+
+## What catmultGenes() returns
 As with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
 a species column with the matched accession-aware taxon labels
 a sequence column with the corresponding aligned DNA sequence
-You can inspect the result with:
-str(catdf, max.level = 1)
-And inspect one locus:
-head(catdf[[1]])
-Understanding maxspp
+
+## Understanding `maxspp`
 The argument maxspp determines how species without duplicated accessions are handled in the final concatenated output.
 A typical call is:
-
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
+```
+
 When maxspp = TRUE, species that are not duplicated in any alignment are retained in the final concatenated dataset. This helps maximize taxon coverage, which is usually desirable.
 When maxspp = FALSE, taxa that are never duplicated may end up being removed or duplicated depending on the interaction with the missdata setting and the structure of the dataset.
 
-In most cases, maxspp = TRUE is the recommended setting.
+In most cases, `maxspp = TRUE` is the recommended setting.
 
-Understanding shortaxlabel
+## Understanding `shortaxlabel`
 The argument shortaxlabel controls how much of the original label is retained in the output.
-When shortaxlabel = TRUE, output labels are kept shorter and more standardized:
+When `shortaxlabel = TRUE`, output labels are kept shorter and more standardized:
 
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-When shortaxlabel = FALSE, more of the original accession label is retained:
+```
+
+When `shortaxlabel = FALSE`, more of the original accession label is retained:
+
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = FALSE,
   missdata = TRUE
 )
-Retaining the full original label is often useful in genomic, voucher-rich, or accession-traceable workflows where the exact identity of each accession must be preserved throughout downstream analyses.
-Understanding missdata
-The argument missdata controls whether taxa lacking one or more loci are retained in the final concatenated dataset.
-When missdata = TRUE, incomplete taxa are retained and missing partitions are filled with missing data:
+```
 
+Retaining the full original label is often useful in genomic, voucher-rich, or accession-traceable workflows where the exact identity of each accession must be preserved throughout downstream analyses.
+
+## Understanding `missdata`
+The argument missdata controls whether taxa lacking one or more loci are retained in the final concatenated dataset.
+
+When `missdata = TRUE`, incomplete taxa are retained and missing partitions are filled with missing data:
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-This is often the most useful setting when trying to maximize taxon representation.
-When missdata = FALSE, taxa lacking any locus are excluded:
+```
 
+This is often the most useful setting when trying to maximize taxon representation.
+
+When `missdata = FALSE`, taxa lacking any locus are excluded:
+```{r, eval=FALSE}
 catdf_complete <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = FALSE
 )
+```
+
 This produces a more conservative matrix containing only accessions with complete locus coverage.
-Understanding outgroup
+
+## Understanding `outgroup`
 As in other concatenation workflows, outgroup can be used to indicate one or more taxa that should be treated as outgroups in incomplete datasets.
 For example:
-
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
@@ -162,7 +180,10 @@ catdf <- catmultGenes(
   missdata = TRUE,
   outgroup = "Outgroup_species_identifier"
 )
+```
+
 Or with multiple outgroups:
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
@@ -170,9 +191,13 @@ catdf <- catmultGenes(
   missdata = TRUE,
   outgroup = c("Outgroup_1", "Outgroup_2")
 )
+```
+
 This can be useful when maintaining incomplete taxa and ensuring that critical outgroup accessions remain in the concatenated dataset.
-Understanding verbose
+
+## Understanding `verbose`
 The argument verbose controls how much progress information is printed during matching and concatenation.
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
@@ -180,7 +205,11 @@ catdf <- catmultGenes(
   missdata = TRUE,
   verbose = TRUE
 )
+```
+
 To suppress the detailed output:
+
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
@@ -188,10 +217,16 @@ catdf <- catmultGenes(
   missdata = TRUE,
   verbose = FALSE
 )
+```
+
 This can be useful for large datasets or rendered tutorials.
-A typical workflow
+
+## A typical workflow
+
 A common duplicated-accession workflow is:
+
 Step 1. Load the alignments
+```{r, eval=FALSE}
 library(catGenes)
 
 genes <- list.files("path_to_DNA_alignments_folder")
@@ -204,20 +239,24 @@ for (i in genes) {
 }
 
 names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
-Step 2. Run catmultGenes()
+```
+
+Step 2. Run `catmultGenes()`
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-Step 3. Inspect the output
-names(catdf)
-head(catdf[[1]])
+```
 At this point, the dataset is ready for export.
-Exporting the concatenated output
-After running catmultGenes(), the most common next step is to export the result with writeNexus() or writePhylip().
-Export as NEXUS
+
+## Exporting the concatenated output
+After running `catmultGenes()`, the most common next step is to export the result with `writeNexus()` or `writePhylip()`.
+
+Export as `NEXUS`
+```{r, eval=FALSE}
 writeNexus(
   catdf,
   file = "duplicated_accessions_dataset.nex",
@@ -225,7 +264,10 @@ writeNexus(
   interleave = TRUE,
   bayesblock = TRUE
 )
-Export as PHYLIP
+```
+
+Export as `PHYLIP`
+```{r, eval=FALSE}
 writePhylip(
   catdf,
   file = "duplicated_accessions_dataset.phy",
@@ -233,18 +275,25 @@ writePhylip(
   catalignments = TRUE,
   partitionfile = TRUE
 )
+```
+
 These exports produce final concatenated datasets that can be used in downstream phylogenetic analyses.
-Preserving full accession labels in exported datasets
-When the full original accession labels need to be preserved, use shortaxlabel = FALSE during concatenation.
+
+## Preserving full accession labels in exported datasets
+When the full original accession labels need to be preserved, use `shortaxlabel = FALSE` during concatenation.
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = FALSE,
   missdata = TRUE
 )
+```
 Then export using settings that preserve this level of identifier detail.
+
 For example:
 
+```{r, eval=FALSE}
 writeNexus(
   catdf,
   file = "full_labels_dataset.nex",
@@ -252,59 +301,64 @@ writeNexus(
   interleave = TRUE,
   bayesblock = TRUE
 )
+```
+
 This is particularly useful in phylogenomic datasets where accession identity needs to remain explicit in the final matrix.
-Handling differing identifiers across partitions
-When full labels are retained, writeNexus() can preserve differing identifiers across partitions by representing them in a structured way in the output. This helps maintain traceability between the concatenated dataset and the original accessions.
+
+## Handling differing identifiers across partitions
+When full labels are retained, `writeNexus()` can preserve differing identifiers across partitions by representing them in a structured way in the output. This helps maintain traceability between the concatenated dataset and the original accessions.
 The examples below illustrate how these labels can appear in exported matrices.
 
+## Removing redundant duplicated accessions after concatenation
+In some cases, after concatenation you may decide that duplicated accessions of the same species should be reduced to the best or most complete representative. The function `dropSeq()` was designed for this purpose.
 
-
-Removing redundant duplicated accessions after concatenation
-In some cases, after concatenation you may decide that duplicated accessions of the same species should be reduced to the best or most complete representative. The function dropSeq() was designed for this purpose.
+```{r, eval=FALSE}
 clean_catdf <- dropSeq(catdf)
+```
+
 This function removes smaller or less informative duplicated sequences, typically favoring accessions with better completeness.
 The screenshots below illustrate this type of cleanup.
 
 
-
-Relationship with large genomic datasets
-catmultGenes() is particularly useful in larger phylogenomic workflows where many loci are available and one or more taxa may be represented by multiple genome-derived accessions.
+## Relationship with large genomic datasets
+`catmultGenes()` is particularly useful in larger phylogenomic workflows where many loci are available and one or more taxa may be represented by multiple genome-derived accessions.
 The function has been used efficiently with larger multilocus organellar datasets. In such contexts, careful label standardization and accession consistency are especially important.
 
 The example below illustrates a larger concatenated genomic matrix.
 
 
+## Common mistakes
+Using `catfullGenes()` on duplicated-accession datasets
+If taxa are duplicated in one or more loci, `catfullGenes()` is not the correct workflow. In that case, use `catmultGenes()`.
 
-
-Common mistakes
-Using catfullGenes() on duplicated-accession datasets
-If taxa are duplicated in one or more loci, catfullGenes() is not the correct workflow. In that case, use catmultGenes().
-Inconsistent accession identifiers across loci
+### Inconsistent accession identifiers across loci
 If the same accession is labeled differently in different alignments, catGenes will treat those labels as different accessions.
 For example, these may not be matched correctly:
 
+```{r, eval=FALSE}
 Vatairea_fusca_Cardoso2939
 Vatairea_fusca_DCardoso2939
 Vatairea_fusca_RB2939
-Missing accession identifiers in some loci
+```
+
+### Missing accession identifiers in some loci
 If duplicated taxa are identified with accession-aware labels in one alignment but not in another, the function may not be able to resolve them correctly.
-Mixing label schemes across loci
+
+### Mixing label schemes across loci
 Using collector numbers in one locus and GenBank accession numbers in another for the same accession can create mismatches unless the same stable identifier is carried across all loci.
-Unexpected loss of taxa
+
+### Unexpected loss of taxa
 If fewer taxa appear than expected, inspect the settings of missdata and maxspp, and make sure the input labels are truly consistent across loci.
-Recommended practice
-For the smoothest use of catmultGenes():
-choose one stable identifier for each accession
-use that identifier consistently across all loci
-separate label components with underscores
-load alignments into R as a named list
-use maxspp = TRUE in most cases
-inspect the resulting output before export
-use dropSeq() when cleanup of redundant duplicated accessions is needed
-Next step
-Once a duplicated-accession dataset has been concatenated with catmultGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), then proceed to downstream phylogenetic analyses and tree visualization.
 
+## Recommended practice
+For the smoothest use of `catmultGenes()`:
+- choose one stable identifier for each accession
+- use that identifier consistently across all loci
+- separate label components with underscores
+- load alignments into R as a named list
+- use `maxspp = TRUE` in most cases
+- inspect the resulting output before export
+- use `dropSeq()` when cleanup of redundant duplicated accessions is needed
 
-
-
-
+## Next step
+Once a duplicated-accession dataset has been concatenated with `catmultGenes()`, the next step is usually to export the result with `writeNexus()` or `writePhylip()`, then proceed to downstream phylogenetic analyses and tree visualization.

@@ -49,7 +49,7 @@ These tutorials provide step-by-step guidance for common `catGenes` workflows, f
 - [Remove redundant accessions with `dropSeq()`](/articles/remove_redundant_accessions.qmd)
 
 ### Export, analysis, and visualization
-- [Export concatenated datasets](/articles/write_concatenated_datasets.qmd)
+- [Write concatenated datasets](/articles/write_concatenated_datasets.qmd)
 - [Model selection and MrBayes preparation with `evomodelTest()`](/articles/model_selection_and_mrbayes.qmd)
 - [Run MrBayes from R](/articles/run_mrbayes.qmd)
 - [Plot and edit phylogenetic trees with `plotPhylo()`](/articles/plot_phylogenetic_trees.qmd)
