@@ -1,102 +1,330 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Model selection and MrBayes preparation"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+After concatenating multilocus alignments and exporting the final dataset, a common next step is to determine suitable substitution models for each partition and prepare the dataset for Bayesian phylogenetic analysis. In `catGenes`, this workflow is supported by `evomodelTest()`.
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+The function `evomodelTest()` performs evolutionary model selection using `phangorn::modelTest()`, identifies the best-fitting model according to an information criterion, and can generate `MrBayes` command blocks for downstream analysis. When desired, it can also append these commands directly to `NEXUS` files.
 
-## General principles
+This article explains how to use `evomodelTest()` for model selection and `MrBayes` preparation, how its main arguments affect the output, and how it fits into a broader `catGenes` phylogenetic workflow.
 
-When preparing alignments for `catGenes`:
+## When to use `evomodelTest()`
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+Use `evomodelTest()` when:
 
-## 1. Datasets with a single sequence per species
+- you already have one or more aligned `NEXUS` files
+- you want to compare nucleotide substitution models for each locus
+- you want to select models according to `AIC` or `BIC`
+- you want to generate a `MrBayes` block automatically
+- you want to prepare a combined partitioned dataset for Bayesian analysis
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+A typical point to use this function is after:
 
-- `Genus_species`
-- `G_species`
+1. aligning loci
+2. loading them into R
+3. concatenating the dataset
+4. exporting the aligned partitions or final concatenated matrix as `NEXUS`
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+## Relationship with the broader workflow
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+A common `catGenes` workflow is:
 
-Examples:
+1. retrieve or mine sequences
+2. align loci
+3. concatenate the dataset with `catfullGenes()` or `catmultGenes()`
+4. export the final matrix with `writeNexus()`
+5. use `evomodelTest()` to select models and prepare a `MrBayes` block
+6. run `MrBayes` with `mrbayesRun()`
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+This means `evomodelTest()` serves as the bridge between dataset preparation and Bayesian phylogenetic inference.
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+## Basic usage
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+A simple model-selection workflow looks like this:
 
-## 2. Datasets with duplicated species or multiple accessions
+```{r, eval=FALSE}
+library(catGenes)
 
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  model_criteria = "BIC"
+)
+```
 
-- the scientific name
-- a stable accession identifier
 
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
+This evaluates substitution models for the provided NEXUS alignment and generates a report of model-selection results.
 
-Recommended format:
+## Required input
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
+The main input is nexus_file_path, which points to one or more NEXUS alignment files.
 
-Examples:
+For example:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "path/to/ITS.nex"
+)
+```
 
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+or, for multiple locus files:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = c("path/to/ITS.nex",
+                      "path/to/matK.nex",
+                      "path/to/rbcL.nex")
+)
+```
 
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
+These can be individual alignments that you later want to use in a partitioned Bayesian analysis.
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+## Choosing the information criterion
+The argument model_criteria controls how the best model is chosen.
+Supported options include:
+- "AIC"
+- "BIC"
 
-## 3. Genus-level identifications and infraspecific taxa
+For example, using AIC:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  model_criteria = "AIC"
+)
+```
 
-Accessions identified only to genus level can be formatted as:
+In many phylogenetic workflows, BIC is a conservative and commonly preferred criterion, but both are useful depending on analytical preference.
 
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
+## Choosing which models to test
+The argument models_to_test controls the set of substitution models included in the comparison.
+You can test all available models:
 
-Abbreviated generic names can also be used if done consistently:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  models_to_test = "all"
+)
+```
 
-- `G_sp`
-- `G_sp1`
-- `G_spA`
+Or a standard subset:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  models_to_test = "standard"
+)
+```
 
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
+You can also specify a custom vector of models:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  models_to_test = c("JC", "HKY", "GTR")
+)
+```
+This is useful when you want to restrict testing to a smaller, interpretable set of candidate models.
 
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
+## Including gamma rate heterogeneity
+The argument `include_G` controls whether among-site rate variation modeled with gamma-distributed rates should be evaluated.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  include_G = TRUE
+)
+```
 
-![Example with other label formatting](figures/other_label_fformatting.png)
+Including gamma-distributed rate heterogeneity is often appropriate for empirical DNA datasets.
 
-## 4. Naming alignment files
+## Including invariant sites
+The argument `include_I` controls whether models including a proportion of invariant sites are tested.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  include_I = TRUE
+)
+```
 
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
+The combination of +G and +I options can have a substantial effect on model choice, so it is useful to make these decisions explicitly.
 
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
+## Parallel computation
+The argument mc.cores controls the number of cores used during model testing.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  mc.cores = 4
+)
+```
 
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+Using multiple cores can speed up model testing, especially when working with multiple loci or larger alignments.
+
+## Appending a MrBayes block to NEXUS files
+One of the main strengths of `evomodelTest()` is that it can automatically generate and append MrBayes commands to the input `NEXUS` file.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  append_mrbayes_to_nexus = TRUE
+)
+```
+
+This is convenient because it prepares the alignment for direct downstream use with `MrBayes`.
+If you do not want to append the block:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  append_mrbayes_to_nexus = FALSE
+)
+```
+
+## Overwriting the original NEXUS file
+The argument overwrite_original_nexus controls whether the original `NEXUS` file should be replaced when the `MrBayes` block is appended.
+To overwrite the original file:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  append_mrbayes_to_nexus = TRUE,
+  overwrite_original_nexus = TRUE
+)
+```
+
+To preserve the original file and write a modified copy instead:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  append_mrbayes_to_nexus = TRUE,
+  overwrite_original_nexus = FALSE
+)
+```
+
+Keeping the original file unchanged is often safer, especially when testing alternative model-selection settings.
+
+## Preparing a combined partitioned MrBayes block
+If you already have a concatenated `NEXUS` matrix and want to append a complete partitioned `MrBayes` block to it, use `combined_nexus_file_path`.
+For example:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = c("ITS.nex", "matK.nex", "rbcL.nex"),
+  combined_nexus_file_path = "combined_dataset.nex",
+  append_mrbayes_to_nexus = TRUE
+)
+```
+This allows model selection to be performed on the individual loci while the final combined `MrBayes` block is added to the concatenated partitioned matrix.
+
+This is one of the most useful workflows when moving from locus-specific alignments to a partitioned Bayesian analysis.
+
+## Choosing the output directory
+The argument `dir` controls where model-selection results are written.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  dir = "RESULTS_evomodelTest"
+)
+```
+By default, the function creates a results folder with a date-stamped subdirectory. This helps keep multiple model-selection runs organized.
+
+## Verbose output
+The argument `verbose` controls whether progress messages are printed during execution.
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  verbose = TRUE
+)
+```
+
+To suppress progress messages:
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  verbose = FALSE
+)
+```
+
+This can be useful when rendering tutorials or running batch workflows.
+
+## A complete example workflow
+A typical workflow might look like this:
+
+Step 1. Export a concatenated NEXUS dataset
+```{r, eval=FALSE}
+writeNexus(
+  catdf,
+  file = "Vataireoids.nex",
+  genomics = FALSE,
+  interleave = TRUE,
+  bayesblock = FALSE
+)
+```
+
+Step 2. Run model selection and append a `MrBayes` block
+```{r, eval=FALSE}
+evomodelTest(
+  nexus_file_path = "Vataireoids.nex",
+  model_criteria = "BIC",
+  models_to_test = "standard",
+  include_G = TRUE,
+  include_I = TRUE,
+  append_mrbayes_to_nexus = TRUE,
+  overwrite_original_nexus = FALSE,
+  dir = "RESULTS_evomodelTest"
+)
+```
+
+At this point, you have:
+- a model-selection report
+- a `NEXUS` file with a generated `MrBayes` block
+- a prepared input for downstream Bayesian analysis
+
+## Typical workflow for partitioned multilocus analyses
+A particularly useful workflow is:
+- align loci separately
+- export each locus as `NEXUS`
+- export a concatenated partitioned matrix with `writeNexus()`
+- run `evomodelTest()` on the separate loci
+- append the partitioned MrBayes block to the concatenated `NEXUS` file
+- run the resulting file with `mrbayesRun()`
+
+This keeps model choice tied to each locus while preparing a combined Bayesian analysis.
+
+The results directory may also contain:
+- a detailed text report
+- modified `NEXUS` files with appended MrBayes blocks
+- summaries of the selected models
+
+Inspecting these outputs is useful before proceeding to Bayesian inference.
+
+## Common issues
+### Input file is not in NEXUS format
+`evomodelTest()` expects `NEXUS` alignment files. If your data are in another format, convert them first using convertAlign() or export them with w`riteNexus()`.
+
+### Model comparison takes too long
+Large alignments or many candidate models can increase runtime. To reduce computation time, you can:
+- reduce the number of models tested
+- lower retmax-style dataset size earlier in the workflow
+- increase mc.cores
+- use "standard" rather than "all"
+
+### Original `NEXUS` file is overwritten unintentionally
+Be cautious when using `overwrite_original_nexus = TRUE`. If you want to preserve the original matrix, keep this option set to `FALSE`.
+
+### The `MrBayes` block is not appended where expected
+Make sure:
+- `append_mrbayes_to_nexus = TRUE`
+- the `nexus_file_path` is correct
+- `combined_nexus_file_path` is provided when working with a separate concatenated matrix
+
+### The selected model does not match expectations
+Different criteria (AIC vs BIC) or different choices for `include_G` and `include_I` can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.
+
+## Recommended practice
+For the smoothest model-selection workflow:
+- work from clean `NEXUS` alignments
+- decide in advance whether to use AIC or BIC
+- test a manageable but meaningful model set
+=
+- include +G and +I only when justified by the workflow
+- preserve original `NEXUS` files unless replacement is intentional
+- inspect the generated `MrBayes` block before starting the analysis
+
+## Next step
+Once model selection has been completed and the `MrBayes` block has been prepared, the next step is to run the Bayesian analysis itself using `mrbayesRun()` or an external `MrBayes` workflow.

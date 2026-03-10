@@ -1,5 +1,5 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Standardizing DNA alignments"
 format:
   html:
     toc: true

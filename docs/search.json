@@ -140,75 +140,195 @@
     "text": "Acknowledgements\nDevelopment of catGenes takes place within the research environment of the Rio de Janeiro Botanical Garden (JBRJ). We gratefully acknowledge support from CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico. These initiatives support the development of open computational tools that facilitate biodiversity research, phylogenetics, and reproducible scientific workflows."
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#why-standardization-matters",
-    "href": "articles/remove_redundant_accessions.html#why-standardization-matters",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "Why standardization matters",
-    "text": "Why standardization matters\nBefore using the concatenation functions in catGenes, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.\nFor datasets without duplicated accessions, catGenes matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.",
+    "objectID": "articles/remove_redundant_accessions.html#overview",
+    "href": "articles/remove_redundant_accessions.html#overview",
+    "title": "Remove redundant accessions",
+    "section": "Overview",
+    "text": "Overview\nIn multilocus datasets that include duplicated taxa or multiple accessions per species, it is often useful to simplify the final matrix by retaining only the best or most informative accession for each species. In catGenes, this cleanup step is performed with dropSeq().\nThe function dropSeq() removes smaller or less informative duplicated accessions from a concatenated dataset, typically favoring the accession with the greatest sequence completeness. This is especially helpful after running catmultGenes() and before exporting the final dataset with writeNexus() or writePhylip().\nThis article explains when to use dropSeq(), how it fits into the broader workflow, and how to inspect the cleaned result before export.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
     ]
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#general-principles",
-    "href": "articles/remove_redundant_accessions.html#general-principles",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "General principles",
-    "text": "General principles\nWhen preparing alignments for catGenes:\n\nuse consistent taxon naming across all loci\nseparate all components of sequence labels with underscores\navoid spaces and hyphens in sequence names\nkeep identifiers stable across all alignments when the same accession is represented in multiple loci\nuse simple and consistent file names for each alignment",
+    "objectID": "articles/remove_redundant_accessions.html#when-to-use-dropseq",
+    "href": "articles/remove_redundant_accessions.html#when-to-use-dropseq",
+    "title": "Remove redundant accessions",
+    "section": "When to use dropSeq()",
+    "text": "When to use dropSeq()\nUse dropSeq() when:\n\none or more species are represented by multiple accessions in the concatenated dataset\nyou want to reduce redundancy before export\nyou want to keep the accession with the most complete sequence information\nyou want a simplified final matrix for downstream phylogenetic analysis\n\nThis function is especially relevant after workflows based on catmultGenes().\nIf your input dataset already contains only one sequence per species per locus, dropSeq() is usually not needed.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
     ]
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#datasets-with-a-single-sequence-per-species",
-    "href": "articles/remove_redundant_accessions.html#datasets-with-a-single-sequence-per-species",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "1. Datasets with a single sequence per species",
-    "text": "1. Datasets with a single sequence per species\nWhen each species is represented by only one sequence per locus, taxon labels can be formatted simply as:\n\nGenus_species\nG_species\n\nLabels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:\n\nGenus_species_identifier\nGenus_species_identifier_accession\n\nExamples:\n\nVatairea_fusca\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\n\n\n\nExample with no identifiers in the sequences\n\n\n\n\n\nExample with identifiers in the sequences",
+    "objectID": "articles/remove_redundant_accessions.html#why-redundant-accessions-may-remain-after-concatenation",
+    "href": "articles/remove_redundant_accessions.html#why-redundant-accessions-may-remain-after-concatenation",
+    "title": "Remove redundant accessions",
+    "section": "Why redundant accessions may remain after concatenation",
+    "text": "Why redundant accessions may remain after concatenation\nThe purpose of catmultGenes() is to correctly match duplicated accessions across loci. This is often the right strategy during dataset assembly, because it preserves accession identity and avoids premature loss of information.\nHowever, after concatenation you may decide that:\n\nduplicated accessions of the same species are unnecessary in the final matrix\nonly one accession per species should be retained\nthe accession with the best data coverage is preferable for downstream analyses\n\ndropSeq() performs this reduction after concatenation, when the full matrix can be evaluated more directly.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
     ]
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "href": "articles/remove_redundant_accessions.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "2. Datasets with duplicated species or multiple accessions",
-    "text": "2. Datasets with duplicated species or multiple accessions\nWhen one or more species are represented by multiple accessions, catGenes requires labels that include both:\n\nthe scientific name\na stable accession identifier\n\nThis identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.\nRecommended format:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\nIn these cases, use catmultGenes() rather than catfullGenes().\n\n\n\nExample when species are duplicated with multiple accessions",
+    "objectID": "articles/remove_redundant_accessions.html#input-required-by-dropseq",
+    "href": "articles/remove_redundant_accessions.html#input-required-by-dropseq",
+    "title": "Remove redundant accessions",
+    "section": "Input required by dropSeq()",
+    "text": "Input required by dropSeq()\nThe function dropSeq() expects a concatenated object, typically the result of catmultGenes().\nFor example:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
     ]
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#genus-level-identifications-and-infraspecific-taxa",
-    "href": "articles/remove_redundant_accessions.html#genus-level-identifications-and-infraspecific-taxa",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "3. Genus-level identifications and infraspecific taxa",
-    "text": "3. Genus-level identifications and infraspecific taxa\nAccessions identified only to genus level can be formatted as:\n\nGenus_sp\nGenus_sp1\nGenus_sp2\nGenus_spA\nGenus_spB\n\nAbbreviated generic names can also be used if done consistently:\n\nG_sp\nG_sp1\nG_spA\n\nFor infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as var. or subsp. in the label. For example:\n\nGenus_species_variety_identifier\nGenus_species_subspecies_identifier\n\n\n\n\nExample with other label formatting",
+    "objectID": "articles/remove_redundant_accessions.html#basic-usage",
+    "href": "articles/remove_redundant_accessions.html#basic-usage",
+    "title": "Remove redundant accessions",
+    "section": "Basic usage",
+    "text": "Basic usage\nA minimal workflow is:\n\nclean_catdf &lt;- dropSeq(catdf)\n\nThis returns a new concatenated object in which redundant duplicated accessions have been removed.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
     ]
   },
   {
-    "objectID": "articles/remove_redundant_accessions.html#naming-alignment-files",
-    "href": "articles/remove_redundant_accessions.html#naming-alignment-files",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "4. Naming alignment files",
-    "text": "4. Naming alignment files\nWe recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:\n\nITS.nex\nrbcL.nex\npsbAtrnH.nex\nCOX1.nex\n\nThis makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.",
+    "objectID": "articles/remove_redundant_accessions.html#how-dropseq-decides-which-accession-to-keep",
+    "href": "articles/remove_redundant_accessions.html#how-dropseq-decides-which-accession-to-keep",
+    "title": "Remove redundant accessions",
+    "section": "How dropSeq() decides which accession to keep",
+    "text": "How dropSeq() decides which accession to keep\nThe general purpose of dropSeq() is to retain the most informative accession when a species is duplicated. In practice, this typically means favoring the accession with: - fewer missing characters - greater sequence completeness - more informative data across the concatenated matrix\nThe function is especially useful when duplicated accessions differ mainly in how complete their sequences are.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Remove redundant accessions with `dropSeq()`"
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#typical-workflow-with-dropseq",
+    "href": "articles/remove_redundant_accessions.html#typical-workflow-with-dropseq",
+    "title": "Remove redundant accessions",
+    "section": "Typical workflow with dropSeq()",
+    "text": "Typical workflow with dropSeq()\nA common duplicated-accession workflow is: - load the aligned loci into R - concatenate the dataset with catmultGenes() - inspect the concatenated output - run dropSeq() to reduce redundancy - export the cleaned result with writeNexus() or writePhylip()\nThis allows accession-aware matching to happen first, followed by a deliberate cleanup of the final matrix.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#example-workflow",
+    "href": "articles/remove_redundant_accessions.html#example-workflow",
+    "title": "Remove redundant accessions",
+    "section": "Example workflow",
+    "text": "Example workflow\nStep 1. Run catmultGenes()\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nStep 2. Remove redundant duplicated accessions\n\nclean_catdf &lt;- dropSeq(catdf)\n\nStep 3. Export the cleaned dataset\n\nwriteNexus(\n  clean_catdf,\n  file = \"cleaned_dataset.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nOr:\n\nwritePhylip(\n  clean_catdf,\n  file = \"cleaned_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#visual-example-of-the-cleanup-step",
+    "href": "articles/remove_redundant_accessions.html#visual-example-of-the-cleanup-step",
+    "title": "Remove redundant accessions",
+    "section": "Visual example of the cleanup step",
+    "text": "Visual example of the cleanup step\nThe screenshots below illustrate a concatenated dataset before and after applying dropSeq(). The first screenshot shows a concatenated dataset in which some species are still represented by multiple accessions:\nAfter running dropSeq(), redundant accessions are removed and the dataset becomes simpler:",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#relationship-with-shortaxlabel",
+    "href": "articles/remove_redundant_accessions.html#relationship-with-shortaxlabel",
+    "title": "Remove redundant accessions",
+    "section": "Relationship with shortaxlabel",
+    "text": "Relationship with shortaxlabel\nThe behavior of dropSeq() is easiest to interpret when the concatenated object already has consistent and informative labels. Whether the labels are shorter or more complete depends on how catmultGenes() was run.\nFor example:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = FALSE,\n  missdata = TRUE\n)\n\nIf full labels are retained, the cleaned output may preserve more accession detail. If short labels were used, the cleaned output will be correspondingly simplified.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#relationship-with-missdata",
+    "href": "articles/remove_redundant_accessions.html#relationship-with-missdata",
+    "title": "Remove redundant accessions",
+    "section": "Relationship with missdata",
+    "text": "Relationship with missdata\ndropSeq() is often most useful when catmultGenes() was run with missdata = TRUE, because incomplete accessions are retained during concatenation and can then be evaluated for removal afterward.\nFor example:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nclean_catdf &lt;- dropSeq(catdf)\n\nThis workflow first maximizes taxon representation and then reduces redundancy in a more informed way.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#when-not-to-use-dropseq",
+    "href": "articles/remove_redundant_accessions.html#when-not-to-use-dropseq",
+    "title": "Remove redundant accessions",
+    "section": "When not to use dropSeq()",
+    "text": "When not to use dropSeq()\nYou may not want to use dropSeq() when: - accession-level representation is biologically important - multiple accessions per species are intentionally being retained for downstream analyses - the goal is to preserve voucher-level or population-level diversity - no duplicated taxa remain after concatenation\nIn such cases, the full accession-aware output from catmultGenes() may already be the appropriate final dataset.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#typical-use-cases",
+    "href": "articles/remove_redundant_accessions.html#typical-use-cases",
+    "title": "Remove redundant accessions",
+    "section": "Typical use cases",
+    "text": "Typical use cases\ndropSeq() is especially useful when: - building a species-level phylogeny from accession-rich input data - simplifying a matrix after accession-aware matching - selecting the best accession of each species for final export - reducing noise before downstream model selection or phylogenetic inference\nIt is less relevant in workflows focused explicitly on within-species sampling or accession-level phylogenetic structure.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#common-issues",
+    "href": "articles/remove_redundant_accessions.html#common-issues",
+    "title": "Remove redundant accessions",
+    "section": "Common issues",
+    "text": "Common issues\n\nNo duplicated accessions are removed\nIf dropSeq() does not appear to change the dataset, this may mean: - no duplicated species remained after concatenation - the labels are not formatted in a way that allows duplicated taxa to be recognized - the input object did not contain the expected accession-level redundancy\n\n\nLabels are inconsistent\nIf the same species is labeled inconsistently across loci or across accessions, the cleanup step may not behave as intended. Always standardize labels before concatenation.\n\n\nImportant accessions were removed unintentionally\nBecause dropSeq() is designed to simplify the dataset, always inspect the cleaned result before export, especially if some accessions are biologically important.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#recommended-practice",
+    "href": "articles/remove_redundant_accessions.html#recommended-practice",
+    "title": "Remove redundant accessions",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest use of dropSeq(): - use it after catmultGenes(), not before concatenation - inspect the concatenated output before deciding to simplify it - verify that labels are standardized and accession-aware - compare the cleaned and original outputs before export - use dropSeq() only when species-level simplification is the intended goal",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
+    ]
+  },
+  {
+    "objectID": "articles/remove_redundant_accessions.html#next-step",
+    "href": "articles/remove_redundant_accessions.html#next-step",
+    "title": "Remove redundant accessions",
+    "section": "Next step",
+    "text": "Next step\nOnce redundant accessions have been removed with dropSeq(), the next step is usually to export the cleaned dataset with writeNexus() or writePhylip(), then proceed to downstream phylogenetic analyses.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Remove redundant accessions"
     ]
   },
   {
@@ -660,7 +780,7 @@
     "href": "articles/index.html",
     "title": "Articles",
     "section": "",
-    "text": "These tutorials provide step-by-step guidance for common catGenes workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.\n\n\n\n\nInput preparation\n\nStandardizing DNA alignments for catGenes\nLoading multiple alignments into R\nWorking with duplicated taxa and multiple accessions\n\n\n\nSequence retrieval and preprocessing\n\nRetrieve sequences from GenBank with accession numbers\nRetrieve sequences from GenBank with taxonomic queries\nMine loci from plastomes and mitochondrial genomes\n\n\n\n\n\nAlignment and concatenation workflows\n\nCombine FASTA files and align sequences\nConvert among FASTA, NEXUS, and PHYLIP\nConcatenate multilocus datasets with catfullGenes()\nConcatenate datasets with duplicated accessions using catmultGenes()\nRemove redundant accessions with dropSeq()\n\n\n\nExport, analysis, and visualization\n\nWrite concatenated datasets\nModel selection and MrBayes preparation with evomodelTest()\nRun MrBayes from R\nPlot and edit phylogenetic trees with plotPhylo()",
+    "text": "These tutorials provide step-by-step guidance for common catGenes workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.\n\n\n\n\nInput preparation\n\nStandardizing DNA alignments\nLoading multiple alignments into R\nWorking with duplicated taxa and multiple accessions\n\n\n\nSequence retrieval and preprocessing\n\nRetrieve sequences from GenBank with accession numbers\nRetrieve sequences from GenBank with taxonomic queries\nMine loci from plastomes and mitochondrial genomes\n\n\n\n\n\nAlignment and concatenation workflows\n\nCombine FASTA files and align sequences\nConvert among FASTA, NEXUS, and PHYLIP\nConcatenate multilocus datasets\nConcatenate datasets with duplicated accessions\nRemove redundant accessions\n\n\n\nExport, analysis, and visualization\n\nWrite concatenated datasets\nModel selection and MrBayes preparation\nRun MrBayes from R\nPlot and edit phylogenetic trees",
     "crumbs": [
       "Articles",
       "Overview"
@@ -675,7 +795,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -687,7 +807,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -699,7 +819,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -711,7 +831,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -723,7 +843,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -735,7 +855,7 @@
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Plot and edit phylogenetic trees with `plotPhylo()`"
+      "Plot and edit phylogenetic trees"
     ]
   },
   {
@@ -969,37 +1089,205 @@
   {
     "objectID": "articles/concatenate_with_catfullGenes.html#overview",
     "href": "articles/concatenate_with_catfullGenes.html#overview",
-    "title": "Concatenate multilocus datasets with catfullGenes()",
+    "title": "Concatenate multilocus datasets",
     "section": "Overview",
     "text": "Overview\nThe function catfullGenes() is the main catGenes workflow for concatenating multilocus DNA datasets when each species is represented by a single sequence per locus. It compares taxa across individual alignments, standardizes the set of taxa across loci, and returns a list of equalized alignments ready for export with writeNexus() or writePhylip().\nThis article explains when to use catfullGenes(), how the input data should be organized, how the main arguments affect the output, and how to proceed from concatenation to downstream phylogenetic analysis.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate multilocus datasets with `catfullGenes()`"
+      "Concatenate multilocus datasets"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catfullGenes.html#when-to-use-catfullgenes",
     "href": "articles/concatenate_with_catfullGenes.html#when-to-use-catfullgenes",
-    "title": "Concatenate multilocus datasets with catfullGenes()",
+    "title": "Concatenate multilocus datasets",
     "section": "When to use catfullGenes()",
     "text": "When to use catfullGenes()\nUse catfullGenes() when:\n\neach species is represented by only one sequence per locus\ntaxa can be matched across loci using the scientific name alone\nalignments have already been standardized and loaded into R as a named list\nyou want to generate a concatenated multilocus dataset for phylogenetic analysis\n\nIf one or more species are represented by multiple accessions across one or more loci, use catmultGenes() instead.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate multilocus datasets with `catfullGenes()`"
+      "Concatenate multilocus datasets"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catfullGenes.html#input-structure",
     "href": "articles/concatenate_with_catfullGenes.html#input-structure",
-    "title": "Concatenate multilocus datasets with catfullGenes()",
+    "title": "Concatenate multilocus datasets",
     "section": "Input structure",
-    "text": "Input structure\ncatfullGenes() expects a named list of individual DNA alignments, usually read from NEXUS files with ape::read.nexus.data().\nEach element of the list should correspond to one locus, and the list names should correspond to gene names or alignment names.\nFor example:\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nYou can inspect the loaded loci: names(Vataireoids) This creates the standard input structure expected by catfullGenes(). Basic usage A basic concatenation workflow looks like this: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This compares taxa across the input alignments and returns a list of equalized data frames that can be exported later as a concatenated dataset. What catfullGenes() returns The output of catfullGenes() is a list of data frames of equal size. Each data frame corresponds to one locus and contains: a species column with the matched taxon names a sequence column with the corresponding aligned DNA sequence Because the taxa have been standardized across loci, these data frames can be combined directly by the export functions. You can inspect the output structure with:\nstr(catdf, max.level = 1) And inspect the first locus: head(catdf[[1]]) Understanding shortaxlabel The argument shortaxlabel controls how sequence labels are represented in the concatenated output. When shortaxlabel = TRUE, labels are simplified and standardized:\ncatdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This is usually the most convenient setting for downstream phylogenetic analysis. When shortaxlabel = FALSE, more of the original identifying information present in the sequence labels is retained:\ncatdf &lt;- catfullGenes( Vataireoids, shortaxlabel = FALSE, missdata = TRUE ) This can be useful when accession identifiers or other annotations need to be preserved throughout the workflow. Understanding missdata The argument missdata controls whether taxa that lack one or more loci are retained in the concatenated dataset. When missdata = TRUE, incomplete taxa are retained and missing loci are filled with missing data:\ncatdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) This is often useful when maximizing taxon coverage is more important than complete locus coverage. When missdata = FALSE, taxa lacking any locus are excluded:\ncatdf_complete &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = FALSE ) This produces a more conservative dataset with complete data only. Understanding outgroup The outgroup argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output. For example:\ncatdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, outgroup = “Outgroup_species” ) You can also provide multiple outgroups: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, outgroup = c(“Outgroup_species1”, “Outgroup_species2”) ) This is especially relevant in concatenated datasets where some loci are missing for some taxa and outgroup retention matters for downstream tree rooting. Understanding verbose The argument verbose controls whether the function prints progress messages during the matching and concatenation process. catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, verbose = TRUE ) To suppress detailed progress output: catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE, verbose = FALSE ) This can be useful when running large datasets or preparing rendered tutorials. A complete example A typical small-scale workflow looks like this: Step 1. Load the alignments library(catGenes)\ngenes &lt;- list.files(system.file(“DNAlignments/Vataireoids”, package = “catGenes”))\nVataireoids &lt;- list()\nfor (i in genes[1:3]) { Vataireoids[[i]] &lt;- ape::read.nexus.data( system.file(“DNAlignments/Vataireoids”, i, package = “catGenes”) ) }\nnames(Vataireoids) &lt;- gsub(“[.].*“,”“, names(Vataireoids)) Step 2. Run the concatenation catdf &lt;- catfullGenes( Vataireoids, shortaxlabel = TRUE, missdata = TRUE ) Step 3. Inspect the output names(catdf) head(catdf[[1]]) At this point, the dataset is ready for export with writeNexus() or writePhylip(). Exporting the concatenated output After running catfullGenes(), the most common next step is to write the concatenated dataset to disk. Export as NEXUS writeNexus( catdf, file =”Vataireoids.nex”, genomics = FALSE, interleave = TRUE, bayesblock = TRUE ) Export as PHYLIP writePhylip( catdf, file = “Vataireoids_dataset.phy”, genomics = FALSE, catalignments = TRUE, partitionfile = TRUE ) This moves the workflow from equalized alignments to a final concatenated dataset suitable for phylogenetic analysis. Preserving original identifiers In some datasets, even when each species is represented by only one sequence per locus, the original labels may contain voucher numbers or GenBank accessions that you want to preserve. In that case, use:\ncatdf &lt;- catfullGenes( Vataireoids, shortaxlabel = FALSE, missdata = TRUE ) Then export with an appropriate setting in writeNexus() or writePhylip() to preserve those identifiers in the output. Typical workflow after catfullGenes() A common multilocus workflow is: standardize sequence labels align loci separately load alignments into R run catfullGenes() export the result with writeNexus() or writePhylip() perform downstream phylogenetic analyses visualize resulting trees with plotPhylo() Common issues Taxa do not match across loci If catfullGenes() produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments. Before concatenation, confirm that:\ntaxon names follow the same formatting scheme genus abbreviations are used consistently labels do not differ in unexpected ways across loci Species are duplicated in one or more alignments If one or more loci contain multiple accessions for the same species, catfullGenes() is not the correct function. In that case, use catmultGenes(). File names are unclear The list names of the input alignments usually become the locus names carried forward into downstream workflows. Using clear file names from the beginning helps avoid confusion. Too many taxa are removed If you expected more taxa in the final dataset, check whether missdata = FALSE is excluding incomplete taxa. Recommended practice For the smoothest use of catfullGenes(): make sure each species is represented by only one sequence per locus standardize taxon labels across all alignments use simple and consistent locus names decide in advance whether incomplete taxa should be retained inspect the resulting list before export Example of a larger genomic workflow The catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption. For large projects, it is especially important to:\nkeep naming conventions fully standardized inspect locus coverage before concatenation use clear file and list names document the export settings used for downstream analysis Next step Once a dataset has been concatenated with catfullGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), select evolutionary models if needed, and proceed to downstream phylogenetic analyses.",
+    "text": "Input structure\ncatfullGenes() expects a named list of individual DNA alignments, usually read from NEXUS files with ape::read.nexus.data().\nEach element of the list should correspond to one locus, and the list names should correspond to gene names or alignment names.\nFor example:\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate multilocus datasets with `catfullGenes()`"
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#basic-usage",
+    "href": "articles/concatenate_with_catfullGenes.html#basic-usage",
+    "title": "Concatenate multilocus datasets",
+    "section": "Basic usage",
+    "text": "Basic usage\nA basic concatenation workflow looks like this:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThis compares taxa across the input alignments and returns a list of equalized data frames that can be exported later as a concatenated dataset.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#what-catfullgenes-returns",
+    "href": "articles/concatenate_with_catfullGenes.html#what-catfullgenes-returns",
+    "title": "Concatenate multilocus datasets",
+    "section": "What catfullGenes() returns",
+    "text": "What catfullGenes() returns\nThe output of catfullGenes() is a list of data frames of equal size. Each data frame corresponds to one locus and contains:\n\na species column with the matched taxon names\na sequence column with the corresponding aligned DNA sequence\n\nBecause the taxa have been standardized across loci, these data frames can be combined directly by the export functions.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#understanding-shortaxlabel",
+    "href": "articles/concatenate_with_catfullGenes.html#understanding-shortaxlabel",
+    "title": "Concatenate multilocus datasets",
+    "section": "Understanding shortaxlabel",
+    "text": "Understanding shortaxlabel\nThe argument shortaxlabel controls how sequence labels are represented in the concatenated output. When shortaxlabel = TRUE, labels are simplified and standardized:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThis is usually the most convenient setting for downstream phylogenetic analysis.\nWhen shortaxlabel = FALSE, more of the original identifying information present in the sequence labels is retained:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = FALSE,\n  missdata = TRUE\n)\n\nThis can be useful when accession identifiers or other annotations need to be preserved throughout the workflow.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#understanding-missdata",
+    "href": "articles/concatenate_with_catfullGenes.html#understanding-missdata",
+    "title": "Concatenate multilocus datasets",
+    "section": "Understanding missdata",
+    "text": "Understanding missdata\nThe argument missdata controls whether taxa that lack one or more loci are retained in the concatenated dataset. When missdata = TRUE, incomplete taxa are retained and missing loci are filled with missing data:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThis is often useful when maximizing taxon coverage is more important than complete locus coverage.\nWhen missdata = FALSE, taxa lacking any locus are excluded:\n\ncatdf_complete &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = FALSE\n)\n\nThis produces a more conservative dataset with complete data only.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#understanding-outgroup",
+    "href": "articles/concatenate_with_catfullGenes.html#understanding-outgroup",
+    "title": "Concatenate multilocus datasets",
+    "section": "Understanding outgroup",
+    "text": "Understanding outgroup\nThe outgroup argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output.\nFor example:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  outgroup = \"Outgroup_species\"\n)\n\nYou can also provide multiple outgroups:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  outgroup = c(\"Outgroup_species1\", \"Outgroup_species2\")\n)\n\nThis is especially relevant in concatenated datasets where some loci are missing for some taxa and outgroup retention matters for downstream tree rooting.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#understanding-verbose",
+    "href": "articles/concatenate_with_catfullGenes.html#understanding-verbose",
+    "title": "Concatenate multilocus datasets",
+    "section": "Understanding verbose",
+    "text": "Understanding verbose\nThe argument verbose controls whether the function prints progress messages during the matching and concatenation process.\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  verbose = TRUE\n)\n\nTo suppress detailed progress output:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  verbose = FALSE\n)\n\nThis can be useful when running large datasets or preparing rendered tutorials.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#a-complete-example",
+    "href": "articles/concatenate_with_catfullGenes.html#a-complete-example",
+    "title": "Concatenate multilocus datasets",
+    "section": "A complete example",
+    "text": "A complete example\nA typical small-scale workflow looks like this:\nStep 1. Load the alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\n\nfor (i in genes[1:3]) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\n\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))\n\nStep 2. Run the concatenation\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nAt this point, the dataset is ready for export with writeNexus() or writePhylip().",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#exporting-the-concatenated-output",
+    "href": "articles/concatenate_with_catfullGenes.html#exporting-the-concatenated-output",
+    "title": "Concatenate multilocus datasets",
+    "section": "Exporting the concatenated output",
+    "text": "Exporting the concatenated output\nAfter running catfullGenes(), the most common next step is to write the concatenated dataset to disk.\nExport as NEXUS\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nExport as PHYLIP\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis moves the workflow from equalized alignments to a final concatenated dataset suitable for phylogenetic analysis.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#preserving-original-identifiers",
+    "href": "articles/concatenate_with_catfullGenes.html#preserving-original-identifiers",
+    "title": "Concatenate multilocus datasets",
+    "section": "Preserving original identifiers",
+    "text": "Preserving original identifiers\nIn some datasets, even when each species is represented by only one sequence per locus, the original labels may contain voucher numbers or GenBank accessions that you want to preserve.\nIn that case, use:\n\ncatdf &lt;- catfullGenes(\n  Vataireoids,\n  shortaxlabel = FALSE,\n  missdata = TRUE\n)\n\nThen export with an appropriate setting in writeNexus() or writePhylip() to preserve those identifiers in the output.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#typical-workflow-after-catfullgenes",
+    "href": "articles/concatenate_with_catfullGenes.html#typical-workflow-after-catfullgenes",
+    "title": "Concatenate multilocus datasets",
+    "section": "Typical workflow after catfullGenes()",
+    "text": "Typical workflow after catfullGenes()\nA common multilocus workflow is: - standardize sequence labels - align loci separately - load alignments into R - run catfullGenes() - export the result with writeNexus() or writePhylip() - perform downstream phylogenetic analyses - visualize resulting trees with plotPhylo()",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#common-issues",
+    "href": "articles/concatenate_with_catfullGenes.html#common-issues",
+    "title": "Concatenate multilocus datasets",
+    "section": "Common issues",
+    "text": "Common issues\n\nTaxa do not match across loci\nIf catfullGenes() produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments.\nBefore concatenation, confirm that: - taxon names follow the same formatting scheme - genus abbreviations are used consistently - labels do not differ in unexpected ways across loci\n\n\nSpecies are duplicated in one or more alignments\nIf one or more loci contain multiple accessions for the same species, catfullGenes() is not the correct function. In that case, use catmultGenes().\n\n\nFile names are unclear\nThe list names of the input alignments usually become the locus names carried forward into downstream workflows. Using clear file names from the beginning helps avoid confusion.\n\n\nToo many taxa are removed\nIf you expected more taxa in the final dataset, check whether missdata = FALSE is excluding incomplete taxa.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#recommended-practice",
+    "href": "articles/concatenate_with_catfullGenes.html#recommended-practice",
+    "title": "Concatenate multilocus datasets",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest use of catfullGenes(): - make sure each species is represented by only one sequence per locus - standardize taxon labels across all alignments - use simple and consistent locus names - decide in advance whether incomplete taxa should be retained - inspect the resulting list before export",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#example-of-a-larger-genomic-workflow",
+    "href": "articles/concatenate_with_catfullGenes.html#example-of-a-larger-genomic-workflow",
+    "title": "Concatenate multilocus datasets",
+    "section": "Example of a larger genomic workflow",
+    "text": "Example of a larger genomic workflow\nThe catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption.\nFor large projects, it is especially important to: - keep naming conventions fully standardized - inspect locus coverage before concatenation - use clear file and list names - document the export settings used for downstream analysis",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
+    ]
+  },
+  {
+    "objectID": "articles/concatenate_with_catfullGenes.html#next-step",
+    "href": "articles/concatenate_with_catfullGenes.html#next-step",
+    "title": "Concatenate multilocus datasets",
+    "section": "Next step",
+    "text": "Next step\nOnce a dataset has been concatenated with catfullGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), select evolutionary models if needed, and proceed to downstream phylogenetic analyses.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Concatenate multilocus datasets"
     ]
   },
   {
@@ -1143,7 +1431,7 @@
     "href": "articles/write_concatenated_datasets.html#when-to-use-writephylip",
     "title": "Write concatenated datasets",
     "section": "When to use writePhylip()",
-    "text": "When to use writePhylip()\nUse writePhylip() when you want: a concatenated dataset in PHYLIP format a separate partition file describing locus boundaries compatibility with downstream workflows that expect PHYLIP a simpler matrix representation plus an external partition definition\nThis is especially useful when preparing datasets for software or pipelines that use PHYLIP together with a partition text file.",
+    "text": "When to use writePhylip()\nUse writePhylip() when you want: - a concatenated dataset in PHYLIP format - a separate partition file describing locus boundaries - compatibility with downstream workflows that expect PHYLIP - a simpler matrix representation plus an external partition definition\nThis is especially useful when preparing datasets for software or pipelines that use PHYLIP together with a partition text file.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1155,7 +1443,7 @@
     "href": "articles/write_concatenated_datasets.html#writing-a-concatenated-nexus-dataset",
     "title": "Write concatenated datasets",
     "section": "Writing a concatenated NEXUS dataset",
-    "text": "Writing a concatenated NEXUS dataset\nA basic writeNexus() workflow looks like this:\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis writes a concatenated NEXUS file in which: - each locus is included in the final matrix - the matrix is interleaved - a preliminary MrBayes block is added - character sets are included to define the partitions",
+    "text": "Writing a concatenated NEXUS dataset\nA basic writeNexus() workflow looks like this:\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis writes a concatenated NEXUS file in which:\n\neach locus is included in the final matrix\nthe matrix is interleaved\na preliminary MrBayes block is added\ncharacter sets are included to define the partitions",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1179,7 +1467,7 @@
     "href": "articles/write_concatenated_datasets.html#understanding-genomics",
     "title": "Write concatenated datasets",
     "section": "Understanding genomics",
-    "text": "Understanding genomics\nBoth export functions include a genomics argument, which controls how accession identifiers are preserved in the final dataset. When genomics = FALSE, the output is usually more simplified and species-oriented:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = FALSE\n)\n\nWhen genomics = TRUE, accession or identifier information is retained more explicitly:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = TRUE\n)\n\nThis is especially useful when: - the original labels contain voucher information - the dataset is accession-rich - the goal is to preserve traceability between the concatenated matrix and the original sequences In phylogenomic workflows or datasets with detailed accession information, genomics = TRUE is often preferable.",
+    "text": "Understanding genomics\nBoth export functions include a genomics argument, which controls how accession identifiers are preserved in the final dataset. When genomics = FALSE, the output is usually more simplified and species-oriented:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = FALSE\n)\n\nWhen genomics = TRUE, accession or identifier information is retained more explicitly:\n\nwriteNexus(\n  catdf,\n  file = \"dataset.nex\",\n  genomics = TRUE\n)\n\nThis is especially useful when:\n\nthe original labels contain voucher information\nthe dataset is accession-rich\nthe goal is to preserve traceability between the concatenated matrix and the original sequences\n\nIn phylogenomic workflows or datasets with detailed accession information, genomics = TRUE is often preferable.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1227,7 +1515,7 @@
     "href": "articles/write_concatenated_datasets.html#writing-a-concatenated-phylip-dataset",
     "title": "Write concatenated datasets",
     "section": "Writing a concatenated PHYLIP dataset",
-    "text": "Writing a concatenated PHYLIP dataset\nA basic writePhylip() workflow looks like this:\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis writes: - a concatenated PHYLIP matrix - a separate partition file describing the locus boundaries This is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.",
+    "text": "Writing a concatenated PHYLIP dataset\nA basic writePhylip() workflow looks like this:\n\nwritePhylip(\n  catdf,\n  file = \"Vataireoids_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThis writes: - a concatenated PHYLIP matrix - a separate partition file describing the locus boundaries\nThis is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
@@ -1407,7 +1695,199 @@
     "href": "articles/convert_alignment_formats.html#basic-usage",
     "title": "Convert among FASTA, NEXUS, and PHYLIP",
     "section": "Basic usage",
-    "text": "Basic usage\nA typical conversion workflow looks like this:\n\nlibrary(catGenes)\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"NEXUS\"\n)\n\nThis reads one or more alignment files from the specified directory and writes the converted files in NEXUS format. Choosing the output format The argument format defines the output format to be written. Supported values are: “NEXUS” “FASTA” “PHYLIP” For example, to convert a set of files to FASTA: convertAlign( filepath = “path_to_alignments”, format = “FASTA” ) To convert to PHYLIP: convertAlign( filepath = “path_to_alignments”, format = “PHYLIP” ) Converting alignments to NEXUS This is a particularly common step when preparing alignments for concatenation with catGenes. convertAlign( filepath = “RESULTS_alignSeqs/09Mar2026”, format = “NEXUS” ) After conversion, the resulting files can be imported into R with ape::read.nexus.data() and organized into a named list for concatenation. Converting alignments to FASTA You may also want to export alignments to FASTA, for example when preparing files for manual inspection or downstream tools that accept FASTA more readily. convertAlign( filepath = “path_to_alignments”, format = “FASTA” ) Converting alignments to PHYLIP Some phylogenetic programs and external workflows require PHYLIP format. convertAlign( filepath = “path_to_alignments”, format = “PHYLIP” ) This can be useful when preparing alignment files for software outside the immediate catGenes workflow. Working with a folder of alignments convertAlign() is designed to work on a directory of input files. This is especially useful when several loci need to be converted in one step. For example: convertAlign( filepath = “RESULTS_alignSeqs/09Mar2026”, format = “NEXUS” ) or convertAlign( filepath = “RESULTS_mineSeq/09Mar2026”, format = “FASTA” ) This batch-conversion approach helps standardize a workflow quickly. Saving converted files in a custom directory By default, convertAlign() creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument. convertAlign( filepath = “path_to_alignments”, format = “NEXUS”, dir = “RESULTS_convertAlign” ) This is useful when you want all converted outputs written to a specific project folder. Removing original files If you want the converted files to replace the original inputs, you can use rmfiles = TRUE. convertAlign( filepath = “path_to_alignments”, format = “NEXUS”, rmfiles = TRUE ) This removes the original input files after conversion. Because deleting original files can be risky, it is usually safer to keep rmfiles = FALSE unless you are sure the converted outputs are correct. Example workflow after sequence alignment A common use case is to convert aligned files into NEXUS format after a previous alignment step. For example: Step 1. Align sequences alignSeqs( filepath = “RESULTS_mineSeq/09Mar2026”, method = “ClustalW”, format = “FASTA”, dir = “RESULTS_alignSeqs” ) Step 2. Convert the aligned outputs to NEXUS convertAlign( filepath = “RESULTS_alignSeqs/09Mar2026”, format = “NEXUS”, dir = “RESULTS_convertAlign” ) Step 3. Load the NEXUS files into R genes &lt;- list.files(“RESULTS_convertAlign/09Mar2026”) my_alignments &lt;- list()\nfor (i in genes) { my_alignments[[i]] &lt;- ape::read.nexus.data( paste0(“RESULTS_convertAlign/09Mar2026/”, i) ) }\nnames(my_alignments) &lt;- gsub(“[.].*“,”“, names(my_alignments)) This produces a named list ready for concatenation with catGenes. Understanding the output directory When converted files are written to disk, they are typically saved in a directory such as: RESULTS_convertAlign/09Mar2026/ This date-based structure helps keep conversion results organized across runs. Recommended file naming Before conversion, it is helpful if files are already named clearly by locus, for example: ITS.fasta matK.fasta rbcL.fasta After conversion, these names usually remain easy to interpret and help keep downstream list names and partition labels clear. Loading converted files into R If you convert files to NEXUS, they can then be loaded into R with ape::read.nexus.data(). genes &lt;- list.files(”RESULTS_convertAlign/09Mar2026”) my_alignments &lt;- list()\nfor (i in genes) { my_alignments[[i]] &lt;- ape::read.nexus.data( paste0(“RESULTS_convertAlign/09Mar2026/”, i) ) }\nnames(my_alignments) &lt;- gsub(“[.].*“,”“, names(my_alignments)) This creates the standard input structure for catGenes concatenation functions. Typical workflow after conversion Once files are converted and loaded into R, the next step is usually to concatenate the loci. For datasets with one sequence per species per locus: catdf &lt;- catfullGenes( my_alignments, shortaxlabel = TRUE, missdata = TRUE ) For datasets containing duplicated taxa or multiple accessions: catdf &lt;- catmultGenes( my_alignments, maxspp = TRUE, shortaxlabel = TRUE, missdata = TRUE ) Common issues Input files are not in a recognizable alignment format convertAlign() expects standard alignment files in formats that can be interpreted correctly. If the input files are malformed, conversion may fail. The wrong output format is chosen Different downstream tools expect different formats. If your next step is concatenation with catGenes, NEXUS is usually the best choice. Original files are deleted unintentionally If rmfiles = TRUE, the input files are removed after conversion. Use this option carefully and only when you are confident the converted files are correct. File names remain difficult to interpret Conversion changes file format, not naming conventions. If file names are unclear before conversion, they may still be unclear afterward. Rename files when needed so that each locus remains easy to identify. Recommended practice For the smoothest workflow: keep one file per locus use simple and consistent file names convert alignments to NEXUS before loading them into catGenes keep the original files unless you are sure the conversion results are correct inspect converted outputs before moving to concatenation Next step Once your alignments have been converted into the desired format, the next step is usually to: load them into R organize them as a named list concatenate loci with catfullGenes() or catmultGenes() See the next tutorials for concatenating multilocus datasets with catGenes.",
+    "text": "Basic usage\nA typical conversion workflow looks like this:\n\nlibrary(catGenes)\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"NEXUS\"\n)\n\nThis reads one or more alignment files from the specified directory and writes the converted files in NEXUS format.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#choosing-the-output-format",
+    "href": "articles/convert_alignment_formats.html#choosing-the-output-format",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Choosing the output format",
+    "text": "Choosing the output format\nThe argument format defines the output format to be written. Supported values are: - NEXUS - FASTA - `PHYLIP``\nFor example, to convert a set of files to FASTA:\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"FASTA\"\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#to-convert-to-phylip",
+    "href": "articles/convert_alignment_formats.html#to-convert-to-phylip",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "To convert to PHYLIP:",
+    "text": "To convert to PHYLIP:\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"PHYLIP\"\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#converting-alignments-to-nexus",
+    "href": "articles/convert_alignment_formats.html#converting-alignments-to-nexus",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Converting alignments to NEXUS",
+    "text": "Converting alignments to NEXUS\nThis is a particularly common step when preparing alignments for concatenation with catGenes.\n\nconvertAlign(\n  filepath = \"RESULTS_alignSeqs/09Mar2026\",\n  format = \"NEXUS\"\n)\n\nAfter conversion, the resulting files can be imported into R with ape::read.nexus.data() and organized into a named list for concatenation.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#converting-alignments-to-fasta",
+    "href": "articles/convert_alignment_formats.html#converting-alignments-to-fasta",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Converting alignments to FASTA",
+    "text": "Converting alignments to FASTA\nYou may also want to export alignments to FASTA, for example when preparing files for manual inspection or downstream tools that accept FASTA more readily.\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"FASTA\"\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#converting-alignments-to-phylip",
+    "href": "articles/convert_alignment_formats.html#converting-alignments-to-phylip",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Converting alignments to PHYLIP",
+    "text": "Converting alignments to PHYLIP\nSome phylogenetic programs and external workflows require PHYLIP format.\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"PHYLIP\"\n)\n\nThis can be useful when preparing alignment files for software outside the immediate catGenes workflow.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#working-with-a-folder-of-alignments",
+    "href": "articles/convert_alignment_formats.html#working-with-a-folder-of-alignments",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Working with a folder of alignments",
+    "text": "Working with a folder of alignments\nconvertAlign()is designed to work on a directory of input files. This is especially useful when several loci need to be converted in one step.\nFor example:\n\nconvertAlign(\n  filepath = \"RESULTS_alignSeqs/09Mar2026\",\n  format = \"NEXUS\"\n)\n\nor\n\nconvertAlign(\n  filepath = \"RESULTS_mineSeq/09Mar2026\",\n  format = \"FASTA\"\n)\n\nThis batch-conversion approach helps standardize a workflow quickly.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#saving-converted-files-in-a-custom-directory",
+    "href": "articles/convert_alignment_formats.html#saving-converted-files-in-a-custom-directory",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Saving converted files in a custom directory",
+    "text": "Saving converted files in a custom directory\nBy default, convertAlign() creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument.\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"NEXUS\",\n  dir = \"RESULTS_convertAlign\"\n)\n\nThis is useful when you want all converted outputs written to a specific project folder.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#removing-original-files",
+    "href": "articles/convert_alignment_formats.html#removing-original-files",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Removing original files",
+    "text": "Removing original files\nIf you want the converted files to replace the original inputs, you can use rmfiles = TRUE.\n\nconvertAlign(\n  filepath = \"path_to_alignments\",\n  format = \"NEXUS\",\n  rmfiles = TRUE\n)\n\nThis removes the original input files after conversion. Because deleting original files can be risky, it is usually safer to keep rmfiles = FALSE unless you are sure the converted outputs are correct.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#example-workflow-after-sequence-alignment",
+    "href": "articles/convert_alignment_formats.html#example-workflow-after-sequence-alignment",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Example workflow after sequence alignment",
+    "text": "Example workflow after sequence alignment\nA common use case is to convert aligned files into NEXUS format after a previous alignment step.\nFor example:\nStep 1. Align sequences\n\nalignSeqs(\n  filepath = \"RESULTS_mineSeq/09Mar2026\",\n  method = \"ClustalW\",\n  format = \"FASTA\",\n  dir = \"RESULTS_alignSeqs\"\n)\n\nStep 2. Convert the aligned outputs to NEXUS\n\nconvertAlign(\n  filepath = \"RESULTS_alignSeqs/09Mar2026\",\n  format = \"NEXUS\",\n  dir = \"RESULTS_convertAlign\"\n)\n\nStep 3. Load the NEXUS files into R\n\ngenes &lt;- list.files(\"RESULTS_convertAlign/09Mar2026\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"RESULTS_convertAlign/09Mar2026/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))\n\nThis produces a named list ready for concatenation with catGenes.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#understanding-the-output-directory",
+    "href": "articles/convert_alignment_formats.html#understanding-the-output-directory",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Understanding the output directory",
+    "text": "Understanding the output directory\nWhen converted files are written to disk, they are typically saved in a directory such as:\n\nRESULTS_convertAlign/09Mar2026/\n\nThis date-based structure helps keep conversion results organized across runs.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#recommended-file-naming",
+    "href": "articles/convert_alignment_formats.html#recommended-file-naming",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Recommended file naming",
+    "text": "Recommended file naming\nBefore conversion, it is helpful if files are already named clearly by locus, for example:\n\nITS.fasta\nmatK.fasta\nrbcL.fasta\n\nAfter conversion, these names usually remain easy to interpret and help keep downstream list names and partition labels clear.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#loading-converted-files-into-r",
+    "href": "articles/convert_alignment_formats.html#loading-converted-files-into-r",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Loading converted files into R",
+    "text": "Loading converted files into R\nIf you convert files to NEXUS, they can then be loaded into R with ape::read.nexus.data().\n\ngenes &lt;- list.files(\"RESULTS_convertAlign/09Mar2026\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"RESULTS_convertAlign/09Mar2026/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))\n\nThis creates the standard input structure for catGenes concatenation functions.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#typical-workflow-after-conversion",
+    "href": "articles/convert_alignment_formats.html#typical-workflow-after-conversion",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Typical workflow after conversion",
+    "text": "Typical workflow after conversion\nOnce files are converted and loaded into R, the next step is usually to concatenate the loci. For datasets with one sequence per species per locus:\n\ncatdf &lt;- catfullGenes(\n  my_alignments,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nFor datasets containing duplicated taxa or multiple accessions:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#common-issues",
+    "href": "articles/convert_alignment_formats.html#common-issues",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Common issues",
+    "text": "Common issues\n\nInput files are not in a recognizable alignment format\nconvertAlign() expects standard alignment files in formats that can be interpreted correctly. If the input files are malformed, conversion may fail.\n\n\nThe wrong output format is chosen\nDifferent downstream tools expect different formats. If your next step is concatenation with catGenes, NEXUS is usually the best choice.\n\n\nOriginal files are deleted unintentionally\nIf rmfiles = TRUE, the input files are removed after conversion. Use this option carefully and only when you are confident the converted files are correct.\n\n\nFile names remain difficult to interpret\nConversion changes file format, not naming conventions. If file names are unclear before conversion, they may still be unclear afterward. Rename files when needed so that each locus remains easy to identify.",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#recommended-practice",
+    "href": "articles/convert_alignment_formats.html#recommended-practice",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest workflow: - keep one file per locus - use simple and consistent file names - convert alignments to NEXUS before loading them into catGenes - keep the original files unless you are sure the conversion results are correct - inspect converted outputs before moving to concatenation",
+    "crumbs": [
+      "Articles",
+      "Alignment and concatenation workflows",
+      "Convert among FASTA, NEXUS, and PHYLIP"
+    ]
+  },
+  {
+    "objectID": "articles/convert_alignment_formats.html#next-step",
+    "href": "articles/convert_alignment_formats.html#next-step",
+    "title": "Convert among FASTA, NEXUS, and PHYLIP",
+    "section": "Next step",
+    "text": "Next step\nOnce your alignments have been converted into the desired format, the next step is usually to: - load them into R - organize them as a named list - concatenate loci with catfullGenes() or catmultGenes()\nSee the next tutorials for concatenating multilocus datasets with catGenes.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -1691,423 +2171,591 @@
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#why-standardization-matters",
-    "href": "articles/model_selection_and_mrbayes.html#why-standardization-matters",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "Why standardization matters",
-    "text": "Why standardization matters\nBefore using the concatenation functions in catGenes, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.\nFor datasets without duplicated accessions, catGenes matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.",
+    "objectID": "articles/model_selection_and_mrbayes.html#overview",
+    "href": "articles/model_selection_and_mrbayes.html#overview",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Overview",
+    "text": "Overview\nAfter concatenating multilocus alignments and exporting the final dataset, a common next step is to determine suitable substitution models for each partition and prepare the dataset for Bayesian phylogenetic analysis. In catGenes, this workflow is supported by evomodelTest().\nThe function evomodelTest() performs evolutionary model selection using phangorn::modelTest(), identifies the best-fitting model according to an information criterion, and can generate MrBayes command blocks for downstream analysis. When desired, it can also append these commands directly to NEXUS files.\nThis article explains how to use evomodelTest() for model selection and MrBayes preparation, how its main arguments affect the output, and how it fits into a broader catGenes phylogenetic workflow.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#general-principles",
-    "href": "articles/model_selection_and_mrbayes.html#general-principles",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "General principles",
-    "text": "General principles\nWhen preparing alignments for catGenes:\n\nuse consistent taxon naming across all loci\nseparate all components of sequence labels with underscores\navoid spaces and hyphens in sequence names\nkeep identifiers stable across all alignments when the same accession is represented in multiple loci\nuse simple and consistent file names for each alignment",
+    "objectID": "articles/model_selection_and_mrbayes.html#when-to-use-evomodeltest",
+    "href": "articles/model_selection_and_mrbayes.html#when-to-use-evomodeltest",
+    "title": "Model selection and MrBayes preparation",
+    "section": "When to use evomodelTest()",
+    "text": "When to use evomodelTest()\nUse evomodelTest() when:\n\nyou already have one or more aligned NEXUS files\nyou want to compare nucleotide substitution models for each locus\nyou want to select models according to AIC or BIC\nyou want to generate a MrBayes block automatically\nyou want to prepare a combined partitioned dataset for Bayesian analysis\n\nA typical point to use this function is after:\n\naligning loci\nloading them into R\nconcatenating the dataset\nexporting the aligned partitions or final concatenated matrix as NEXUS",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#datasets-with-a-single-sequence-per-species",
-    "href": "articles/model_selection_and_mrbayes.html#datasets-with-a-single-sequence-per-species",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "1. Datasets with a single sequence per species",
-    "text": "1. Datasets with a single sequence per species\nWhen each species is represented by only one sequence per locus, taxon labels can be formatted simply as:\n\nGenus_species\nG_species\n\nLabels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:\n\nGenus_species_identifier\nGenus_species_identifier_accession\n\nExamples:\n\nVatairea_fusca\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\n\n\n\nExample with no identifiers in the sequences\n\n\n\n\n\nExample with identifiers in the sequences",
+    "objectID": "articles/model_selection_and_mrbayes.html#relationship-with-the-broader-workflow",
+    "href": "articles/model_selection_and_mrbayes.html#relationship-with-the-broader-workflow",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Relationship with the broader workflow",
+    "text": "Relationship with the broader workflow\nA common catGenes workflow is:\n\nretrieve or mine sequences\nalign loci\nconcatenate the dataset with catfullGenes() or catmultGenes()\nexport the final matrix with writeNexus()\nuse evomodelTest() to select models and prepare a MrBayes block\nrun MrBayes with mrbayesRun()\n\nThis means evomodelTest() serves as the bridge between dataset preparation and Bayesian phylogenetic inference.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "href": "articles/model_selection_and_mrbayes.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "2. Datasets with duplicated species or multiple accessions",
-    "text": "2. Datasets with duplicated species or multiple accessions\nWhen one or more species are represented by multiple accessions, catGenes requires labels that include both:\n\nthe scientific name\na stable accession identifier\n\nThis identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.\nRecommended format:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\nIn these cases, use catmultGenes() rather than catfullGenes().\n\n\n\nExample when species are duplicated with multiple accessions",
+    "objectID": "articles/model_selection_and_mrbayes.html#basic-usage",
+    "href": "articles/model_selection_and_mrbayes.html#basic-usage",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Basic usage",
+    "text": "Basic usage\nA simple model-selection workflow looks like this:\n\nlibrary(catGenes)\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\"\n)\n\nThis evaluates substitution models for the provided NEXUS alignment and generates a report of model-selection results.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#genus-level-identifications-and-infraspecific-taxa",
-    "href": "articles/model_selection_and_mrbayes.html#genus-level-identifications-and-infraspecific-taxa",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "3. Genus-level identifications and infraspecific taxa",
-    "text": "3. Genus-level identifications and infraspecific taxa\nAccessions identified only to genus level can be formatted as:\n\nGenus_sp\nGenus_sp1\nGenus_sp2\nGenus_spA\nGenus_spB\n\nAbbreviated generic names can also be used if done consistently:\n\nG_sp\nG_sp1\nG_spA\n\nFor infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as var. or subsp. in the label. For example:\n\nGenus_species_variety_identifier\nGenus_species_subspecies_identifier\n\n\n\n\nExample with other label formatting",
+    "objectID": "articles/model_selection_and_mrbayes.html#required-input",
+    "href": "articles/model_selection_and_mrbayes.html#required-input",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Required input",
+    "text": "Required input\nThe main input is nexus_file_path, which points to one or more NEXUS alignment files.\nFor example:\n\nevomodelTest(\n  nexus_file_path = \"path/to/ITS.nex\"\n)\n\nor, for multiple locus files:\n\nevomodelTest(\n  nexus_file_path = c(\"path/to/ITS.nex\",\n                      \"path/to/matK.nex\",\n                      \"path/to/rbcL.nex\")\n)\n\nThese can be individual alignments that you later want to use in a partitioned Bayesian analysis.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
     ]
   },
   {
-    "objectID": "articles/model_selection_and_mrbayes.html#naming-alignment-files",
-    "href": "articles/model_selection_and_mrbayes.html#naming-alignment-files",
-    "title": "Standardizing DNA alignments for catGenes",
-    "section": "4. Naming alignment files",
-    "text": "4. Naming alignment files\nWe recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:\n\nITS.nex\nrbcL.nex\npsbAtrnH.nex\nCOX1.nex\n\nThis makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.",
+    "objectID": "articles/model_selection_and_mrbayes.html#choosing-the-information-criterion",
+    "href": "articles/model_selection_and_mrbayes.html#choosing-the-information-criterion",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Choosing the information criterion",
+    "text": "Choosing the information criterion\nThe argument model_criteria controls how the best model is chosen. Supported options include: - “AIC” - “BIC”\nFor example, using AIC:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"AIC\"\n)\n\nIn many phylogenetic workflows, BIC is a conservative and commonly preferred criterion, but both are useful depending on analytical preference.",
     "crumbs": [
       "Articles",
       "Export, analysis, and visualization",
-      "Model selection and MrBayes preparation with `evomodelTest()`"
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#choosing-which-models-to-test",
+    "href": "articles/model_selection_and_mrbayes.html#choosing-which-models-to-test",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Choosing which models to test",
+    "text": "Choosing which models to test\nThe argument models_to_test controls the set of substitution models included in the comparison. You can test all available models:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  models_to_test = \"all\"\n)\n\nOr a standard subset:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  models_to_test = \"standard\"\n)\n\nYou can also specify a custom vector of models:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  models_to_test = c(\"JC\", \"HKY\", \"GTR\")\n)\n\nThis is useful when you want to restrict testing to a smaller, interpretable set of candidate models.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#including-gamma-rate-heterogeneity",
+    "href": "articles/model_selection_and_mrbayes.html#including-gamma-rate-heterogeneity",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Including gamma rate heterogeneity",
+    "text": "Including gamma rate heterogeneity\nThe argument include_G controls whether among-site rate variation modeled with gamma-distributed rates should be evaluated.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  include_G = TRUE\n)\n\nIncluding gamma-distributed rate heterogeneity is often appropriate for empirical DNA datasets.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#including-invariant-sites",
+    "href": "articles/model_selection_and_mrbayes.html#including-invariant-sites",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Including invariant sites",
+    "text": "Including invariant sites\nThe argument include_I controls whether models including a proportion of invariant sites are tested.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  include_I = TRUE\n)\n\nThe combination of +G and +I options can have a substantial effect on model choice, so it is useful to make these decisions explicitly.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#parallel-computation",
+    "href": "articles/model_selection_and_mrbayes.html#parallel-computation",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Parallel computation",
+    "text": "Parallel computation\nThe argument mc.cores controls the number of cores used during model testing.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  mc.cores = 4\n)\n\nUsing multiple cores can speed up model testing, especially when working with multiple loci or larger alignments.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#appending-a-mrbayes-block-to-nexus-files",
+    "href": "articles/model_selection_and_mrbayes.html#appending-a-mrbayes-block-to-nexus-files",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Appending a MrBayes block to NEXUS files",
+    "text": "Appending a MrBayes block to NEXUS files\nOne of the main strengths of evomodelTest() is that it can automatically generate and append MrBayes commands to the input NEXUS file.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  append_mrbayes_to_nexus = TRUE\n)\n\nThis is convenient because it prepares the alignment for direct downstream use with MrBayes. If you do not want to append the block:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  append_mrbayes_to_nexus = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#overwriting-the-original-nexus-file",
+    "href": "articles/model_selection_and_mrbayes.html#overwriting-the-original-nexus-file",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Overwriting the original NEXUS file",
+    "text": "Overwriting the original NEXUS file\nThe argument overwrite_original_nexus controls whether the original NEXUS file should be replaced when the MrBayes block is appended. To overwrite the original file:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = TRUE\n)\n\nTo preserve the original file and write a modified copy instead:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE\n)\n\nKeeping the original file unchanged is often safer, especially when testing alternative model-selection settings.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#preparing-a-combined-partitioned-mrbayes-block",
+    "href": "articles/model_selection_and_mrbayes.html#preparing-a-combined-partitioned-mrbayes-block",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Preparing a combined partitioned MrBayes block",
+    "text": "Preparing a combined partitioned MrBayes block\nIf you already have a concatenated NEXUS matrix and want to append a complete partitioned MrBayes block to it, use combined_nexus_file_path. For example:\n\nevomodelTest(\n  nexus_file_path = c(\"ITS.nex\", \"matK.nex\", \"rbcL.nex\"),\n  combined_nexus_file_path = \"combined_dataset.nex\",\n  append_mrbayes_to_nexus = TRUE\n)\n\nThis allows model selection to be performed on the individual loci while the final combined MrBayes block is added to the concatenated partitioned matrix.\nThis is one of the most useful workflows when moving from locus-specific alignments to a partitioned Bayesian analysis.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#choosing-the-output-directory",
+    "href": "articles/model_selection_and_mrbayes.html#choosing-the-output-directory",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Choosing the output directory",
+    "text": "Choosing the output directory\nThe argument dir controls where model-selection results are written.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  dir = \"RESULTS_evomodelTest\"\n)\n\nBy default, the function creates a results folder with a date-stamped subdirectory. This helps keep multiple model-selection runs organized.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#verbose-output",
+    "href": "articles/model_selection_and_mrbayes.html#verbose-output",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Verbose output",
+    "text": "Verbose output\nThe argument verbose controls whether progress messages are printed during execution.\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  verbose = TRUE\n)\n\nTo suppress progress messages:\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  verbose = FALSE\n)\n\nThis can be useful when rendering tutorials or running batch workflows.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#a-complete-example-workflow",
+    "href": "articles/model_selection_and_mrbayes.html#a-complete-example-workflow",
+    "title": "Model selection and MrBayes preparation",
+    "section": "A complete example workflow",
+    "text": "A complete example workflow\nA typical workflow might look like this:\nStep 1. Export a concatenated NEXUS dataset\n\nwriteNexus(\n  catdf,\n  file = \"Vataireoids.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = FALSE\n)\n\nStep 2. Run model selection and append a MrBayes block\n\nevomodelTest(\n  nexus_file_path = \"Vataireoids.nex\",\n  model_criteria = \"BIC\",\n  models_to_test = \"standard\",\n  include_G = TRUE,\n  include_I = TRUE,\n  append_mrbayes_to_nexus = TRUE,\n  overwrite_original_nexus = FALSE,\n  dir = \"RESULTS_evomodelTest\"\n)\n\nAt this point, you have: - a model-selection report - a NEXUS file with a generated MrBayes block - a prepared input for downstream Bayesian analysis",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#typical-workflow-for-partitioned-multilocus-analyses",
+    "href": "articles/model_selection_and_mrbayes.html#typical-workflow-for-partitioned-multilocus-analyses",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Typical workflow for partitioned multilocus analyses",
+    "text": "Typical workflow for partitioned multilocus analyses\nA particularly useful workflow is: - align loci separately - export each locus as NEXUS - export a concatenated partitioned matrix with writeNexus() - run evomodelTest() on the separate loci - append the partitioned MrBayes block to the concatenated NEXUS file - run the resulting file with mrbayesRun()\nThis keeps model choice tied to each locus while preparing a combined Bayesian analysis.\nThe results directory may also contain: - a detailed text report - modified NEXUS files with appended MrBayes blocks - summaries of the selected models\nInspecting these outputs is useful before proceeding to Bayesian inference.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#common-issues",
+    "href": "articles/model_selection_and_mrbayes.html#common-issues",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Common issues",
+    "text": "Common issues\n\nInput file is not in NEXUS format\nevomodelTest() expects NEXUS alignment files. If your data are in another format, convert them first using convertAlign() or export them with writeNexus().\n\n\nModel comparison takes too long\nLarge alignments or many candidate models can increase runtime. To reduce computation time, you can: - reduce the number of models tested - lower retmax-style dataset size earlier in the workflow - increase mc.cores - use “standard” rather than “all”\n\n\nOriginal NEXUS file is overwritten unintentionally\nBe cautious when using overwrite_original_nexus = TRUE. If you want to preserve the original matrix, keep this option set to FALSE.\n\n\nThe MrBayes block is not appended where expected\nMake sure: - append_mrbayes_to_nexus = TRUE - the nexus_file_path is correct - combined_nexus_file_path is provided when working with a separate concatenated matrix\n\n\nThe selected model does not match expectations\nDifferent criteria (AIC vs BIC) or different choices for include_G and include_I can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#recommended-practice",
+    "href": "articles/model_selection_and_mrbayes.html#recommended-practice",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Recommended practice",
+    "text": "Recommended practice\nFor the smoothest model-selection workflow: - work from clean NEXUS alignments - decide in advance whether to use AIC or BIC - test a manageable but meaningful model set = - include +G and +I only when justified by the workflow - preserve original NEXUS files unless replacement is intentional - inspect the generated MrBayes block before starting the analysis",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
+    ]
+  },
+  {
+    "objectID": "articles/model_selection_and_mrbayes.html#next-step",
+    "href": "articles/model_selection_and_mrbayes.html#next-step",
+    "title": "Model selection and MrBayes preparation",
+    "section": "Next step",
+    "text": "Next step\nOnce model selection has been completed and the MrBayes block has been prepared, the next step is to run the Bayesian analysis itself using mrbayesRun() or an external MrBayes workflow.",
+    "crumbs": [
+      "Articles",
+      "Export, analysis, and visualization",
+      "Model selection and MrBayes preparation"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#why-standardization-matters",
     "href": "articles/standardizing_alignments.html#why-standardization-matters",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "Why standardization matters",
     "text": "Why standardization matters\nBefore using the concatenation functions in catGenes, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.\nFor datasets without duplicated accessions, catGenes matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#general-principles",
     "href": "articles/standardizing_alignments.html#general-principles",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "General principles",
     "text": "General principles\nWhen preparing alignments for catGenes:\n\nuse consistent taxon naming across all loci\nseparate all components of sequence labels with underscores\navoid spaces and hyphens in sequence names\nkeep identifiers stable across all alignments when the same accession is represented in multiple loci\nuse simple and consistent file names for each alignment",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#datasets-with-a-single-sequence-per-species",
     "href": "articles/standardizing_alignments.html#datasets-with-a-single-sequence-per-species",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "1. Datasets with a single sequence per species",
     "text": "1. Datasets with a single sequence per species\nWhen each species is represented by only one sequence per locus, taxon labels can be formatted simply as:\n\nGenus_species\nG_species\n\nLabels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:\n\nGenus_species_identifier\nGenus_species_identifier_accession\n\nExamples:\n\nVatairea_fusca\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\n\n\n\nExample with no identifiers in the sequences\n\n\n\n\n\nExample with identifiers in the sequences",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#datasets-with-duplicated-species-or-multiple-accessions",
     "href": "articles/standardizing_alignments.html#datasets-with-duplicated-species-or-multiple-accessions",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "2. Datasets with duplicated species or multiple accessions",
     "text": "2. Datasets with duplicated species or multiple accessions\nWhen one or more species are represented by multiple accessions, catGenes requires labels that include both:\n\nthe scientific name\na stable accession identifier\n\nThis identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.\nRecommended format:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\n\nIn these cases, use catmultGenes() rather than catfullGenes().\n\n\n\nExample when species are duplicated with multiple accessions",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#genus-level-identifications-and-infraspecific-taxa",
     "href": "articles/standardizing_alignments.html#genus-level-identifications-and-infraspecific-taxa",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "3. Genus-level identifications and infraspecific taxa",
     "text": "3. Genus-level identifications and infraspecific taxa\nAccessions identified only to genus level can be formatted as:\n\nGenus_sp\nGenus_sp1\nGenus_sp2\nGenus_spA\nGenus_spB\n\nAbbreviated generic names can also be used if done consistently:\n\nG_sp\nG_sp1\nG_spA\n\nFor infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as var. or subsp. in the label. For example:\n\nGenus_species_variety_identifier\nGenus_species_subspecies_identifier\n\n\n\n\nExample with other label formatting",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#naming-alignment-files",
     "href": "articles/standardizing_alignments.html#naming-alignment-files",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "4. Naming alignment files",
     "text": "4. Naming alignment files\nWe recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:\n\nITS.nex\nrbcL.nex\npsbAtrnH.nex\nCOX1.nex\n\nThis makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/standardizing_alignments.html#loading-multiple-alignments-into-r",
     "href": "articles/standardizing_alignments.html#loading-multiple-alignments-into-r",
-    "title": "Standardizing DNA alignments for catGenes",
+    "title": "Standardizing DNA alignments",
     "section": "5. Loading multiple alignments into R",
     "text": "5. Loading multiple alignments into R\nThe example below uses the Vataireoid example alignments included in catGenes.\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(system.file(\"DNAlignments/Vataireoids\",\n                                package = \"catGenes\"))\n\nVataireoids &lt;- list()\nfor (i in genes) {\n  Vataireoids[[i]] &lt;- ape::read.nexus.data(\n    system.file(\"DNAlignments/Vataireoids\", i, package = \"catGenes\")\n  )\n}\nnames(Vataireoids) &lt;- gsub(\"[.].*\", \"\", names(Vataireoids))",
     "crumbs": [
       "Articles",
       "Input preparation",
-      "Standardizing DNA alignments for `catGenes`"
+      "Standardizing DNA alignments"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#overview",
     "href": "articles/concatenate_with_catmultGenes.html#overview",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Overview",
     "text": "Overview\nThe function catmultGenes() is the main catGenes workflow for concatenating multilocus DNA datasets when one or more species are represented by multiple accessions across individual alignments. This situation is common in phylogenetic and phylogenomic studies that include different vouchers, collections, DNA extractions, or GenBank accessions for the same species.\nUnlike catfullGenes(), which assumes one sequence per species per locus, catmultGenes() compares alignments while taking accession identity into account. For this reason, it is the appropriate function whenever taxa are duplicated in one or more input matrices.\nThis article explains how to prepare the input data, how catmultGenes() works, how the main arguments affect the concatenated output, and how to export the resulting dataset for downstream phylogenetic analyses.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#when-to-use-catmultgenes",
     "href": "articles/concatenate_with_catmultGenes.html#when-to-use-catmultgenes",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "When to use catmultGenes()",
     "text": "When to use catmultGenes()\nUse catmultGenes() when:\n\none or more species are represented by multiple accessions in one or more loci\nthe same accession must be tracked across loci\nlabels include both taxon name and a stable identifier\nyou want to maximize taxon coverage while preserving accession-level matching\nyou are working with multilocus datasets that include duplicated taxa\n\nIf every species is represented by only one sequence per locus, use catfullGenes() instead.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#why-duplicated-accessions-require-a-different-workflow",
     "href": "articles/concatenate_with_catmultGenes.html#why-duplicated-accessions-require-a-different-workflow",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Why duplicated accessions require a different workflow",
     "text": "Why duplicated accessions require a different workflow\nWhen a species appears only once per locus, taxa can be matched across alignments using the scientific name alone. However, when a species is represented by multiple accessions, the scientific name is not enough to determine which sequence in one locus corresponds to which sequence in another.\nFor example, a species such as Vatairea_fusca may appear in one alignment with two accessions:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Silva1820\n\nIf the same species also appears in another locus, catGenes must know which accession should be matched with which. This is why the duplicated-accession workflow requires labels that include both:\n\nthe scientific name\na stable accession identifier",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#input-structure",
     "href": "articles/concatenate_with_catmultGenes.html#input-structure",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Input structure",
     "text": "Input structure\ncatmultGenes() expects a named list of individual DNA alignments, usually loaded from NEXUS files with ape::read.nexus.data().\nEach alignment should be part of a named list in which:\n\neach list element corresponds to one locus\nthe list names correspond to gene or locus names\nsequence labels follow a consistent accession-aware format\n\nFor example:\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(\"path_to_DNA_alignments_folder\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"path_to_DNA_alignments_folder/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#label-formatting-for-duplicated-taxa",
     "href": "articles/concatenate_with_catmultGenes.html#label-formatting-for-duplicated-taxa",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Label formatting for duplicated taxa",
-    "text": "Label formatting for duplicated taxa\nWhen using catmultGenes(), labels should include both taxon name and identifier, for example: Genus_species_identifier Genus_species_identifier_everythingelse Examples: Vatairea_fusca_Cardoso2939 Vatairea_fusca_Cardoso2939_JX152598 Vatairea_fusca_Silva1820 Vatairea_fusca_RB123456 The key requirement is that the identifying component be used consistently across loci for the same accession.",
+    "text": "Label formatting for duplicated taxa\nWhen using catmultGenes(), labels should include both taxon name and identifier, for example:\n\nGenus_species_identifier\nGenus_species_identifier_everythingelse\n\nExamples:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_Cardoso2939_JX152598\nVatairea_fusca_Silva1820\nVatairea_fusca_RB123456\n\nThe key requirement is that the identifying component be used consistently across loci for the same accession.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#example-of-accession-aware-labels",
     "href": "articles/concatenate_with_catmultGenes.html#example-of-accession-aware-labels",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Example of accession-aware labels",
     "text": "Example of accession-aware labels\nThe figure below illustrates the kind of sequence labels expected when species are duplicated with multiple accessions.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#basic-usage",
     "href": "articles/concatenate_with_catmultGenes.html#basic-usage",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Basic usage",
     "text": "Basic usage\nA typical concatenation workflow with duplicated accessions looks like this:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThis compares taxa across loci while taking duplicated accessions into account and returns a list of equalized data frames ready for export.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#what-catmultgenes-returns",
     "href": "articles/concatenate_with_catmultGenes.html#what-catmultgenes-returns",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "What catmultGenes() returns",
     "text": "What catmultGenes() returns\nAs with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains: a species column with the matched accession-aware taxon labels a sequence column with the corresponding aligned DNA sequence",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#understanding-maxspp",
     "href": "articles/concatenate_with_catmultGenes.html#understanding-maxspp",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Understanding maxspp",
     "text": "Understanding maxspp\nThe argument maxspp determines how species without duplicated accessions are handled in the final concatenated output. A typical call is:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nWhen maxspp = TRUE, species that are not duplicated in any alignment are retained in the final concatenated dataset. This helps maximize taxon coverage, which is usually desirable. When maxspp = FALSE, taxa that are never duplicated may end up being removed or duplicated depending on the interaction with the missdata setting and the structure of the dataset.\nIn most cases, maxspp = TRUE is the recommended setting.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#understanding-shortaxlabel",
     "href": "articles/concatenate_with_catmultGenes.html#understanding-shortaxlabel",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Understanding shortaxlabel",
     "text": "Understanding shortaxlabel\nThe argument shortaxlabel controls how much of the original label is retained in the output. When shortaxlabel = TRUE, output labels are kept shorter and more standardized:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nWhen shortaxlabel = FALSE, more of the original accession label is retained:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = FALSE,\n  missdata = TRUE\n)\n\nRetaining the full original label is often useful in genomic, voucher-rich, or accession-traceable workflows where the exact identity of each accession must be preserved throughout downstream analyses.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#understanding-missdata",
     "href": "articles/concatenate_with_catmultGenes.html#understanding-missdata",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Understanding missdata",
     "text": "Understanding missdata\nThe argument missdata controls whether taxa lacking one or more loci are retained in the final concatenated dataset.\nWhen missdata = TRUE, incomplete taxa are retained and missing partitions are filled with missing data:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nThis is often the most useful setting when trying to maximize taxon representation.\nWhen missdata = FALSE, taxa lacking any locus are excluded:\n\ncatdf_complete &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = FALSE\n)\n\nThis produces a more conservative matrix containing only accessions with complete locus coverage.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#understanding-outgroup",
     "href": "articles/concatenate_with_catmultGenes.html#understanding-outgroup",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Understanding outgroup",
     "text": "Understanding outgroup\nAs in other concatenation workflows, outgroup can be used to indicate one or more taxa that should be treated as outgroups in incomplete datasets. For example:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  outgroup = \"Outgroup_species_identifier\"\n)\n\nOr with multiple outgroups:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  outgroup = c(\"Outgroup_1\", \"Outgroup_2\")\n)\n\nThis can be useful when maintaining incomplete taxa and ensuring that critical outgroup accessions remain in the concatenated dataset.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#understanding-verbose",
     "href": "articles/concatenate_with_catmultGenes.html#understanding-verbose",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Understanding verbose",
     "text": "Understanding verbose\nThe argument verbose controls how much progress information is printed during matching and concatenation.\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  verbose = TRUE\n)\n\nTo suppress the detailed output:\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE,\n  verbose = FALSE\n)\n\nThis can be useful for large datasets or rendered tutorials.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#a-typical-workflow",
     "href": "articles/concatenate_with_catmultGenes.html#a-typical-workflow",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "A typical workflow",
     "text": "A typical workflow\nA common duplicated-accession workflow is:\nStep 1. Load the alignments\n\nlibrary(catGenes)\n\ngenes &lt;- list.files(\"path_to_DNA_alignments_folder\")\nmy_alignments &lt;- list()\n\nfor (i in genes) {\n  my_alignments[[i]] &lt;- ape::read.nexus.data(\n    paste0(\"path_to_DNA_alignments_folder/\", i)\n  )\n}\n\nnames(my_alignments) &lt;- gsub(\"[.].*\", \"\", names(my_alignments))\n\nStep 2. Run catmultGenes()\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = TRUE,\n  missdata = TRUE\n)\n\nAt this point, the dataset is ready for export.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#exporting-the-concatenated-output",
     "href": "articles/concatenate_with_catmultGenes.html#exporting-the-concatenated-output",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Exporting the concatenated output",
     "text": "Exporting the concatenated output\nAfter running catmultGenes(), the most common next step is to export the result with writeNexus() or writePhylip().\nExport as NEXUS\n\nwriteNexus(\n  catdf,\n  file = \"duplicated_accessions_dataset.nex\",\n  genomics = FALSE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nExport as PHYLIP\n\nwritePhylip(\n  catdf,\n  file = \"duplicated_accessions_dataset.phy\",\n  genomics = FALSE,\n  catalignments = TRUE,\n  partitionfile = TRUE\n)\n\nThese exports produce final concatenated datasets that can be used in downstream phylogenetic analyses.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#preserving-full-accession-labels-in-exported-datasets",
     "href": "articles/concatenate_with_catmultGenes.html#preserving-full-accession-labels-in-exported-datasets",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Preserving full accession labels in exported datasets",
     "text": "Preserving full accession labels in exported datasets\nWhen the full original accession labels need to be preserved, use shortaxlabel = FALSE during concatenation.\n\ncatdf &lt;- catmultGenes(\n  my_alignments,\n  maxspp = TRUE,\n  shortaxlabel = FALSE,\n  missdata = TRUE\n)\n\nThen export using settings that preserve this level of identifier detail.\nFor example:\n\nwriteNexus(\n  catdf,\n  file = \"full_labels_dataset.nex\",\n  genomics = TRUE,\n  interleave = TRUE,\n  bayesblock = TRUE\n)\n\nThis is particularly useful in phylogenomic datasets where accession identity needs to remain explicit in the final matrix.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#handling-differing-identifiers-across-partitions",
     "href": "articles/concatenate_with_catmultGenes.html#handling-differing-identifiers-across-partitions",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Handling differing identifiers across partitions",
     "text": "Handling differing identifiers across partitions\nWhen full labels are retained, writeNexus() can preserve differing identifiers across partitions by representing them in a structured way in the output. This helps maintain traceability between the concatenated dataset and the original accessions. The examples below illustrate how these labels can appear in exported matrices.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#removing-redundant-duplicated-accessions-after-concatenation",
     "href": "articles/concatenate_with_catmultGenes.html#removing-redundant-duplicated-accessions-after-concatenation",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Removing redundant duplicated accessions after concatenation",
     "text": "Removing redundant duplicated accessions after concatenation\nIn some cases, after concatenation you may decide that duplicated accessions of the same species should be reduced to the best or most complete representative. The function dropSeq() was designed for this purpose.\n\nclean_catdf &lt;- dropSeq(catdf)\n\nThis function removes smaller or less informative duplicated sequences, typically favoring accessions with better completeness. The screenshots below illustrate this type of cleanup.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#relationship-with-large-genomic-datasets",
     "href": "articles/concatenate_with_catmultGenes.html#relationship-with-large-genomic-datasets",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Relationship with large genomic datasets",
     "text": "Relationship with large genomic datasets\ncatmultGenes() is particularly useful in larger phylogenomic workflows where many loci are available and one or more taxa may be represented by multiple genome-derived accessions. The function has been used efficiently with larger multilocus organellar datasets. In such contexts, careful label standardization and accession consistency are especially important.\nThe example below illustrates a larger concatenated genomic matrix.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#common-mistakes",
     "href": "articles/concatenate_with_catmultGenes.html#common-mistakes",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Common mistakes",
     "text": "Common mistakes\nUsing catfullGenes() on duplicated-accession datasets If taxa are duplicated in one or more loci, catfullGenes() is not the correct workflow. In that case, use catmultGenes().\n\nInconsistent accession identifiers across loci\nIf the same accession is labeled differently in different alignments, catGenes will treat those labels as different accessions. For example, these may not be matched correctly:\n\nVatairea_fusca_Cardoso2939\nVatairea_fusca_DCardoso2939\nVatairea_fusca_RB2939\n\n\n\nMissing accession identifiers in some loci\nIf duplicated taxa are identified with accession-aware labels in one alignment but not in another, the function may not be able to resolve them correctly.\n\n\nMixing label schemes across loci\nUsing collector numbers in one locus and GenBank accession numbers in another for the same accession can create mismatches unless the same stable identifier is carried across all loci.\n\n\nUnexpected loss of taxa\nIf fewer taxa appear than expected, inspect the settings of missdata and maxspp, and make sure the input labels are truly consistent across loci.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#recommended-practice",
     "href": "articles/concatenate_with_catmultGenes.html#recommended-practice",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Recommended practice",
     "text": "Recommended practice\nFor the smoothest use of catmultGenes(): - choose one stable identifier for each accession - use that identifier consistently across all loci - separate label components with underscores - load alignments into R as a named list - use maxspp = TRUE in most cases - inspect the resulting output before export - use dropSeq() when cleanup of redundant duplicated accessions is needed",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {
     "objectID": "articles/concatenate_with_catmultGenes.html#next-step",
     "href": "articles/concatenate_with_catmultGenes.html#next-step",
-    "title": "Concatenate datasets with duplicated accessions using catmultGenes()",
+    "title": "Concatenate datasets with duplicated accessions",
     "section": "Next step",
     "text": "Next step\nOnce a duplicated-accession dataset has been concatenated with catmultGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), then proceed to downstream phylogenetic analyses and tree visualization.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
-      "Concatenate datasets with duplicated accessions using `catmultGenes()`"
+      "Concatenate datasets with duplicated accessions"
     ]
   },
   {

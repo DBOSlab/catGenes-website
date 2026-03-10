@@ -63,10 +63,10 @@ This is often the preferred output format when the next step involves `MrBayes` 
 
 ## When to use `writePhylip()`
 Use writePhylip() when you want:
-a concatenated dataset in `PHYLIP` format
-a separate partition file describing locus boundaries
-compatibility with downstream workflows that expect `PHYLIP`
-a simpler matrix representation plus an external partition definition
+- a concatenated dataset in `PHYLIP` format
+- a separate partition file describing locus boundaries
+- compatibility with downstream workflows that expect `PHYLIP`
+- a simpler matrix representation plus an external partition definition
 
 This is especially useful when preparing datasets for software or pipelines that use `PHYLIP` together with a partition text file.
 
@@ -83,6 +83,7 @@ writeNexus(
 ```
 
 This writes a concatenated NEXUS file in which:
+
 - each locus is included in the final matrix
 - the matrix is interleaved
 - a preliminary MrBayes block is added
@@ -126,13 +127,15 @@ writeNexus(
 ```
 
 This is especially useful when:
+
 - the original labels contain voucher information
 - the dataset is accession-rich
 - the goal is to preserve traceability between the concatenated matrix and the original sequences
+
 In phylogenomic workflows or datasets with detailed accession information, `genomics = TRUE` is often preferable.
 
 ## Understanding interleave in writeNexus()
-The argument interleave controls whether the NEXUS matrix is written as interleaved or fully concatenated.
+The argument interleave controls whether the `NEXUS` matrix is written as interleaved or fully concatenated.
 When `interleave = TRUE`, each locus remains visually distinguished in the matrix:
 ```{r eval=FALSE}
 writeNexus(
@@ -208,8 +211,9 @@ writePhylip(
 ```
 
 This writes:
-- a concatenated PHYLIP matrix
+- a concatenated `PHYLIP` matrix
 - a separate partition file describing the locus boundaries
+
 This is often the preferred export route when a downstream workflow expects a simple concatenated matrix plus a separate partition definition.
 
 ## Understanding catalignments in `writePhylip()`
@@ -222,7 +226,7 @@ writePhylip(
 )
 ```
 
-In most cases, this should remain TRUE, since writing the matrix is usually the main purpose of the function.
+In most cases, this should remain `TRUE`, since writing the matrix is usually the main purpose of the function.
 
 ## Understanding partitionfile in `writePhylip()`
 The argument partitionfile controls whether a separate partition text file is written.
@@ -244,7 +248,7 @@ writePhylip(
 )
 ```
 
-## Understanding endgaps.to.miss in `writePhylip()`
+## Understanding `endgaps.to.miss` in `writePhylip()`
 As in `writeNexus()`, the `writePhylip()` function can also convert terminal gaps to missing characters.
 ```{r eval=FALSE}
 writePhylip(

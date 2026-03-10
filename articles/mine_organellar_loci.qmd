@@ -181,7 +181,7 @@ mineMitochondrion(
 ```
 
 ## Understanding the output
-Both functions write the mined loci as FASTA files in the specified output directory.
+Both functions write the mined loci as `FASTA` files in the specified output directory.
 Typical outputs include:
 - one or more `FASTA` files containing the extracted target loci
 - optionally the original downloaded GenBank files, if `rm_gb_files = FALSE`
@@ -196,7 +196,7 @@ and mitochondrial results under:
 RESULTS_mineMitochondrion/09Mar2026/
 ```
 
-These FASTA outputs can then be aligned and incorporated into later concatenation workflows.
+These `FASTA` outputs can then be aligned and incorporated into later concatenation workflows.
 
 ## Keeping or removing downloaded GenBank files
 

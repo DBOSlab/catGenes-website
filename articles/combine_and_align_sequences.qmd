@@ -67,6 +67,7 @@ This is especially useful when the combined file should reflect a locus name or 
 
 ## Returning the combined sequences without saving
 If you want to inspect the combined sequences in R without immediately writing them to disk, set `save = FALSE`.
+
 ```{r, eval=FALSE}
 result <- combineFASTA(
   input_files = c("temp1.fasta", "temp2.fasta"),
@@ -94,7 +95,7 @@ This means that:
 This behavior is useful because it preserves the original contents of the input files.
 
 ## When to use `alignSeqs()`
-Use `alignSeqs()` when you have one or more FASTA files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.
+Use `alignSeqs()` when you have one or more `FASTA` files containing unaligned sequences and want to generate aligned outputs for downstream phylogenetic workflows.
 
 The function uses the msa package and supports:
 - ClustalW
@@ -115,7 +116,7 @@ alignSeqs(
 )
 ```
 
-This reads one or more FASTA files from the specified directory, aligns them, and writes the aligned output in NEXUS format.
+This reads one or more FASTA files from the specified directory, aligns them, and writes the aligned output in `NEXUS` format.
 
 ## Choosing an alignment method
 Currently, `alignSeqs()` supports two main alignment algorithms:
@@ -151,6 +152,7 @@ The argument format determines how the aligned files are written. Supported outp
 - PHYLIP
 
 For example, to write aligned files in `FASTA` format:
+
 ```{r, eval=FALSE}
 alignSeqs(
   filepath = "path_to_fasta_files",
@@ -188,6 +190,7 @@ In many cases, the default setting is adequate. However, if your dataset require
 A typical workflow might look like this:
 
 Step 1. Retrieve sequences
+
 ```{r, eval=FALSE}
 seqs <- mineSeq(
   inputdf = my_accession_table,
@@ -226,6 +229,7 @@ This produces aligned files ready for loading into R and later concatenation.
 
 ## Aligning multiple FASTA files from one folder
 If a directory contains several `FASTA` files, `alignSeqs()` can process them together.
+
 ```{r, eval=FALSE}
 alignSeqs(
   filepath = "RESULTS_mineSeq/09Mar2026",
@@ -239,10 +243,13 @@ This is useful when each file represents a different locus and all need to be al
 
 ## Output directories
 By default, aligned files are written to a directory such as:
+
 ```{r, eval=FALSE}
 RESULTS_alignSeqs/09Mar2026/
 ```
+
 Similarly, combined FASTA outputs may be written to:
+
 ```{r, eval=FALSE}
 RESULTS_combineFASTA/09Mar2026/
 ```
@@ -309,7 +316,7 @@ catdf <- catmultGenes(
 ## Common issues
 
 ### Input files are not in FASTA format
-alignSeqs() expects FASTA inputs. If your files are currently in another format, convert them first or ensure the correct file type is used before alignment.
+`alignSeqs()` expects `FASTA` inputs. If your files are currently in another format, convert them first or ensure the correct file type is used before alignment.
 
 ### Alignment method is not specified correctly
 The method argument must match one of the supported algorithms, such as `ClustalW` or `Muscle`.

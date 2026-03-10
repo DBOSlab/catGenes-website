@@ -40,90 +40,139 @@ convertAlign(
 )
 ```
 
-
 This reads one or more alignment files from the specified directory and writes the converted files in NEXUS format.
-Choosing the output format
+
+## Choosing the output format
 The argument format defines the output format to be written. Supported values are:
-"NEXUS"
-"FASTA"
-"PHYLIP"
-For example, to convert a set of files to FASTA:
+- `NEXUS`
+- `FASTA`
+- `PHYLIP``
+
+For example, to convert a set of files to `FASTA`:
+
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "FASTA"
 )
-To convert to PHYLIP:
+```
+
+## To convert to `PHYLIP`:
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "PHYLIP"
 )
-Converting alignments to NEXUS
-This is a particularly common step when preparing alignments for concatenation with catGenes.
+```
+
+## Converting alignments to `NEXUS`
+This is a particularly common step when preparing alignments for concatenation with `catGenes`.
+```{r, eval=FALSE}
 convertAlign(
   filepath = "RESULTS_alignSeqs/09Mar2026",
   format = "NEXUS"
 )
-After conversion, the resulting files can be imported into R with ape::read.nexus.data() and organized into a named list for concatenation.
-Converting alignments to FASTA
-You may also want to export alignments to FASTA, for example when preparing files for manual inspection or downstream tools that accept FASTA more readily.
+```
+
+After conversion, the resulting files can be imported into R with `ape::read.nexus.data()` and organized into a named list for concatenation.
+
+## Converting alignments to `FASTA`
+You may also want to export alignments to `FASTA`, for example when preparing files for manual inspection or downstream tools that accept `FASTA` more readily.
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "FASTA"
 )
-Converting alignments to PHYLIP
-Some phylogenetic programs and external workflows require PHYLIP format.
+```
+
+## Converting alignments to `PHYLIP`
+Some phylogenetic programs and external workflows require `PHYLIP` format.
+
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "PHYLIP"
 )
-This can be useful when preparing alignment files for software outside the immediate catGenes workflow.
-Working with a folder of alignments
-convertAlign() is designed to work on a directory of input files. This is especially useful when several loci need to be converted in one step.
+```
+
+This can be useful when preparing alignment files for software outside the immediate `catGenes` workflow.
+
+## Working with a folder of alignments
+`convertAlign() `is designed to work on a directory of input files. This is especially useful when several loci need to be converted in one step.
+
 For example:
+```{r, eval=FALSE}
 convertAlign(
   filepath = "RESULTS_alignSeqs/09Mar2026",
   format = "NEXUS"
 )
+```
+
 or
+
+```{r, eval=FALSE}
 convertAlign(
   filepath = "RESULTS_mineSeq/09Mar2026",
   format = "FASTA"
 )
+```
+
 This batch-conversion approach helps standardize a workflow quickly.
-Saving converted files in a custom directory
-By default, convertAlign() creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument.
+
+## Saving converted files in a custom directory
+By default, `convertAlign()` creates a results directory to save the converted files. You can also specify a custom output directory using the dir argument.
+
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "NEXUS",
   dir = "RESULTS_convertAlign"
 )
+```
+
 This is useful when you want all converted outputs written to a specific project folder.
-Removing original files
-If you want the converted files to replace the original inputs, you can use rmfiles = TRUE.
+
+## Removing original files
+
+If you want the converted files to replace the original inputs, you can use `rmfiles = TRUE`.
+
+```{r, eval=FALSE}
 convertAlign(
   filepath = "path_to_alignments",
   format = "NEXUS",
   rmfiles = TRUE
 )
+```
+
 This removes the original input files after conversion.
-Because deleting original files can be risky, it is usually safer to keep rmfiles = FALSE unless you are sure the converted outputs are correct.
-Example workflow after sequence alignment
+Because deleting original files can be risky, it is usually safer to keep `rmfiles = FALSE` unless you are sure the converted outputs are correct.
+
+## Example workflow after sequence alignment
 A common use case is to convert aligned files into NEXUS format after a previous alignment step.
+
 For example:
+
 Step 1. Align sequences
+```{r, eval=FALSE}
 alignSeqs(
   filepath = "RESULTS_mineSeq/09Mar2026",
   method = "ClustalW",
   format = "FASTA",
   dir = "RESULTS_alignSeqs"
 )
-Step 2. Convert the aligned outputs to NEXUS
+```
+
+Step 2. Convert the aligned outputs to `NEXUS`
+```{r, eval=FALSE}
 convertAlign(
   filepath = "RESULTS_alignSeqs/09Mar2026",
   format = "NEXUS",
   dir = "RESULTS_convertAlign"
 )
-Step 3. Load the NEXUS files into R
+```
+
+Step 3. Load the `NEXUS` files into R
+```{r, eval=FALSE}
 genes <- list.files("RESULTS_convertAlign/09Mar2026")
 my_alignments <- list()
 
@@ -134,19 +183,30 @@ for (i in genes) {
 }
 
 names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
+```
+
 This produces a named list ready for concatenation with catGenes.
-Understanding the output directory
+
+## Understanding the output directory
+
 When converted files are written to disk, they are typically saved in a directory such as:
+```{r, eval=FALSE}
 RESULTS_convertAlign/09Mar2026/
+```
 This date-based structure helps keep conversion results organized across runs.
-Recommended file naming
+
+## Recommended file naming
 Before conversion, it is helpful if files are already named clearly by locus, for example:
+```{r, eval=FALSE}
 ITS.fasta
 matK.fasta
 rbcL.fasta
+```
 After conversion, these names usually remain easy to interpret and help keep downstream list names and partition labels clear.
-Loading converted files into R
-If you convert files to NEXUS, they can then be loaded into R with ape::read.nexus.data().
+
+## Loading converted files into R
+If you convert files to `NEXUS`, they can then be loaded into R with `ape::read.nexus.data()`.
+```{r, eval=FALSE}
 genes <- list.files("RESULTS_convertAlign/09Mar2026")
 my_alignments <- list()
 
@@ -157,41 +217,58 @@ for (i in genes) {
 }
 
 names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
+```
+
 This creates the standard input structure for catGenes concatenation functions.
-Typical workflow after conversion
+
+## Typical workflow after conversion
 Once files are converted and loaded into R, the next step is usually to concatenate the loci.
 For datasets with one sequence per species per locus:
+```{r, eval=FALSE}
 catdf <- catfullGenes(
   my_alignments,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
+```
+
 For datasets containing duplicated taxa or multiple accessions:
+
+```{r, eval=FALSE}
 catdf <- catmultGenes(
   my_alignments,
   maxspp = TRUE,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-Common issues
-Input files are not in a recognizable alignment format
-convertAlign() expects standard alignment files in formats that can be interpreted correctly. If the input files are malformed, conversion may fail.
-The wrong output format is chosen
-Different downstream tools expect different formats. If your next step is concatenation with catGenes, NEXUS is usually the best choice.
-Original files are deleted unintentionally
-If rmfiles = TRUE, the input files are removed after conversion. Use this option carefully and only when you are confident the converted files are correct.
-File names remain difficult to interpret
+```
+
+## Common issues
+
+### Input files are not in a recognizable alignment format
+`convertAlign()` expects standard alignment files in formats that can be interpreted correctly. If the input files are malformed, conversion may fail.
+
+### The wrong output format is chosen
+Different downstream tools expect different formats. If your next step is concatenation with `catGenes`, `NEXUS` is usually the best choice.
+
+### Original files are deleted unintentionally
+If `rmfiles = TRUE`, the input files are removed after conversion. Use this option carefully and only when you are confident the converted files are correct.
+
+### File names remain difficult to interpret
 Conversion changes file format, not naming conventions. If file names are unclear before conversion, they may still be unclear afterward. Rename files when needed so that each locus remains easy to identify.
-Recommended practice
+
+## Recommended practice
 For the smoothest workflow:
-keep one file per locus
-use simple and consistent file names
-convert alignments to NEXUS before loading them into catGenes
-keep the original files unless you are sure the conversion results are correct
-inspect converted outputs before moving to concatenation
-Next step
+- keep one file per locus
+- use simple and consistent file names
+- convert alignments to `NEXUS` before loading them into catGenes
+- keep the original files unless you are sure the conversion results are correct
+- inspect converted outputs before moving to concatenation
+
+## Next step
 Once your alignments have been converted into the desired format, the next step is usually to:
-load them into R
-organize them as a named list
-concatenate loci with catfullGenes() or catmultGenes()
-See the next tutorials for concatenating multilocus datasets with catGenes.
+- load them into R
+- organize them as a named list
+- concatenate loci with `catfullGenes()` or `catmultGenes()`
+
+See the next tutorials for concatenating multilocus datasets with `catGenes`.

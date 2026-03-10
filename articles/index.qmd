@@ -30,7 +30,7 @@ These tutorials provide step-by-step guidance for common `catGenes` workflows, f
 
 ::: {style="display: block;"}
 ### Input preparation
-- [Standardizing DNA alignments for `catGenes`](/articles/standardizing_alignments.qmd)
+- [Standardizing DNA alignments](/articles/standardizing_alignments.qmd)
 - [Loading multiple alignments into R](/articles/loading_alignments.qmd)
 - [Working with duplicated taxa and multiple accessions](/articles/duplicated_taxa_and_accessions.qmd)
 
@@ -44,14 +44,14 @@ These tutorials provide step-by-step guidance for common `catGenes` workflows, f
 ### Alignment and concatenation workflows
 - [Combine FASTA files and align sequences](/articles/combine_and_align_sequences.qmd)
 - [Convert among FASTA, NEXUS, and PHYLIP](/articles/convert_alignment_formats.qmd)
-- [Concatenate multilocus datasets with `catfullGenes()`](/articles/concatenate_with_catfullGenes.qmd)
-- [Concatenate datasets with duplicated accessions using `catmultGenes()`](/articles/concatenate_with_catmultGenes.qmd)
-- [Remove redundant accessions with `dropSeq()`](/articles/remove_redundant_accessions.qmd)
+- [Concatenate multilocus datasets](/articles/concatenate_with_catfullGenes.qmd)
+- [Concatenate datasets with duplicated accessions](/articles/concatenate_with_catmultGenes.qmd)
+- [Remove redundant accessions](/articles/remove_redundant_accessions.qmd)
 
 ### Export, analysis, and visualization
 - [Write concatenated datasets](/articles/write_concatenated_datasets.qmd)
-- [Model selection and MrBayes preparation with `evomodelTest()`](/articles/model_selection_and_mrbayes.qmd)
+- [Model selection and MrBayes preparation](/articles/model_selection_and_mrbayes.qmd)
 - [Run MrBayes from R](/articles/run_mrbayes.qmd)
-- [Plot and edit phylogenetic trees with `plotPhylo()`](/articles/plot_phylogenetic_trees.qmd)
+- [Plot and edit phylogenetic trees](/articles/plot_phylogenetic_trees.qmd)
 :::
 :::

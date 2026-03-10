@@ -144,6 +144,7 @@ This is particularly useful when the same species is represented by multiple acc
 # Saving the original unprocessed query
 
 If you want to preserve a copy of the original unprocessed FASTA output alongside the cleaned version, use `original_query = TRUE`.
+
 ```{r, eval=FALSE}
 mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
@@ -151,6 +152,7 @@ mineTaxa(
   original_query = TRUE
 )
 ```
+
 This writes an additional file with the suffix _ORIGINAL_QUERY, allowing you to compare the cleaned output against the raw GenBank results.
 
 ## Separating plastomes from standard sequences

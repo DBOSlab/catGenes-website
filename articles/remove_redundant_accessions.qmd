@@ -1,102 +1,201 @@
 ---
-title: "Standardizing DNA alignments for catGenes"
+title: "Remove redundant accessions"
 format:
   html:
     toc: true
     toc-depth: 3
 ---
 
-## Why standardization matters
+## Overview
 
-Before using the concatenation functions in `catGenes`, DNA alignments must be consistently formatted. The package compares taxa across individual alignments based on their sequence labels. When labels are inconsistent, taxa may fail to match across loci, leading to incomplete or incorrect concatenated datasets.
+In multilocus datasets that include duplicated taxa or multiple accessions per species, it is often useful to simplify the final matrix by retaining only the best or most informative accession for each species. In `catGenes`, this cleanup step is performed with `dropSeq()`.
 
-For datasets without duplicated accessions, `catGenes` matches taxa primarily by scientific name. For datasets with multiple accessions per species, the package uses both the scientific name and an associated identifier. For this reason, careful standardization of sequence labels is an essential first step.
+The function `dropSeq()` removes smaller or less informative duplicated accessions from a concatenated dataset, typically favoring the accession with the greatest sequence completeness. This is especially helpful after running `catmultGenes()` and before exporting the final dataset with `writeNexus()` or `writePhylip()`.
 
-## General principles
+This article explains when to use `dropSeq()`, how it fits into the broader workflow, and how to inspect the cleaned result before export.
 
-When preparing alignments for `catGenes`:
+## When to use `dropSeq()`
 
-- use consistent taxon naming across all loci
-- separate all components of sequence labels with underscores
-- avoid spaces and hyphens in sequence names
-- keep identifiers stable across all alignments when the same accession is represented in multiple loci
-- use simple and consistent file names for each alignment
+Use `dropSeq()` when:
 
-## 1. Datasets with a single sequence per species
+- one or more species are represented by multiple accessions in the concatenated dataset
+- you want to reduce redundancy before export
+- you want to keep the accession with the most complete sequence information
+- you want a simplified final matrix for downstream phylogenetic analysis
 
-When each species is represented by only one sequence per locus, taxon labels can be formatted simply as:
+This function is especially relevant after workflows based on `catmultGenes()`.
 
-- `Genus_species`
-- `G_species`
+If your input dataset already contains only one sequence per species per locus, `dropSeq()` is usually not needed.
 
-Labels may also include additional information after the species name, provided that the scientific name remains consistently formatted. For example:
+## Why redundant accessions may remain after concatenation
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_accession`
+The purpose of `catmultGenes()` is to correctly match duplicated accessions across loci. This is often the right strategy during dataset assembly, because it preserves accession identity and avoids premature loss of information.
 
-Examples:
+However, after concatenation you may decide that:
 
-- `Vatairea_fusca`
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+- duplicated accessions of the same species are unnecessary in the final matrix
+- only one accession per species should be retained
+- the accession with the best data coverage is preferable for downstream analyses
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+`dropSeq()` performs this reduction after concatenation, when the full matrix can be evaluated more directly.
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+## Input required by `dropSeq()`
 
-## 2. Datasets with duplicated species or multiple accessions
+The function `dropSeq()` expects a concatenated object, typically the result of `catmultGenes()`.
 
-When one or more species are represented by multiple accessions, `catGenes` requires labels that include both:
+For example:
 
-- the scientific name
-- a stable accession identifier
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
 
-This identifier may correspond to a collector number, voucher code, DNA extraction code, or another stable accession label used consistently across loci.
+## Basic usage
+A minimal workflow is:
+```{r, eval=FALSE}
+clean_catdf <- dropSeq(catdf)
+```
+This returns a new concatenated object in which redundant duplicated accessions have been removed.
 
-Recommended format:
+## How `dropSeq()` decides which accession to keep
 
-- `Genus_species_identifier`
-- `Genus_species_identifier_everythingelse`
+The general purpose of `dropSeq()` is to retain the most informative accession when a species is duplicated. In practice, this typically means favoring the accession with:
+- fewer missing characters
+- greater sequence completeness
+- more informative data across the concatenated matrix
 
-Examples:
+The function is especially useful when duplicated accessions differ mainly in how complete their sequences are.
 
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Cardoso2939_JX152598`
+## Typical workflow with dropSeq()
+A common duplicated-accession workflow is:
+- load the aligned loci into R
+- concatenate the dataset with `catmultGenes()`
+- inspect the concatenated output
+- run `dropSeq()` to reduce redundancy
+- export the cleaned result with `writeNexus()` or `writePhylip()`
 
-In these cases, use `catmultGenes()` rather than `catfullGenes()`.
+This allows accession-aware matching to happen first, followed by a deliberate cleanup of the final matrix.
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+## Example workflow
+Step 1. Run `catmultGenes()`
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
 
-## 3. Genus-level identifications and infraspecific taxa
+Step 2. Remove redundant duplicated accessions
+```{r, eval=FALSE}
+clean_catdf <- dropSeq(catdf)
+```
 
-Accessions identified only to genus level can be formatted as:
+Step 3. Export the cleaned dataset
+```{r, eval=FALSE}
+writeNexus(
+  clean_catdf,
+  file = "cleaned_dataset.nex",
+  genomics = FALSE,
+  interleave = TRUE,
+  bayesblock = TRUE
+)
+```
 
-- `Genus_sp`
-- `Genus_sp1`
-- `Genus_sp2`
-- `Genus_spA`
-- `Genus_spB`
+Or:
+```{r, eval=FALSE}
+writePhylip(
+  clean_catdf,
+  file = "cleaned_dataset.phy",
+  genomics = FALSE,
+  catalignments = TRUE,
+  partitionfile = TRUE
+)
+```
 
-Abbreviated generic names can also be used if done consistently:
+## Visual example of the cleanup step
+The screenshots below illustrate a concatenated dataset before and after applying `dropSeq()`.
+The first screenshot shows a concatenated dataset in which some species are still represented by multiple accessions:
 
-- `G_sp`
-- `G_sp1`
-- `G_spA`
 
-For infraspecific taxa, add the infraspecific epithet after the species epithet, without including terms such as `var.` or `subsp.` in the label. For example:
 
-- `Genus_species_variety_identifier`
-- `Genus_species_subspecies_identifier`
+After running `dropSeq()`, redundant accessions are removed and the dataset becomes simpler:
 
-![Example with other label formatting](figures/other_label_fformatting.png)
+## Relationship with `shortaxlabel`
+The behavior of `dropSeq()` is easiest to interpret when the concatenated object already has consistent and informative labels. Whether the labels are shorter or more complete depends on how `catmultGenes()` was run.
 
-## 4. Naming alignment files
+For example:
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = FALSE,
+  missdata = TRUE
+)
+```
 
-We recommend using simple file names based on the corresponding gene or locus name, without spaces or hyphens. For example:
+If full labels are retained, the cleaned output may preserve more accession detail. If short labels were used, the cleaned output will be correspondingly simplified.
 
-- `ITS.nex`
-- `rbcL.nex`
-- `psbAtrnH.nex`
-- `COX1.nex`
+## Relationship with `missdata`
+`dropSeq()` is often most useful when `catmultGenes()` was run with `missdata = TRUE`, because incomplete accessions are retained during concatenation and can then be evaluated for removal afterward.
 
-This makes it easier to load all alignments into R and helps preserve clear partition names in downstream concatenation workflows.
+For example:
+```{r, eval=FALSE}
+catdf <- catmultGenes(
+  my_alignments,
+  maxspp = TRUE,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+
+clean_catdf <- dropSeq(catdf)
+```
+
+This workflow first maximizes taxon representation and then reduces redundancy in a more informed way.
+
+## When not to use `dropSeq()`
+You may not want to use `dropSeq()` when:
+- accession-level representation is biologically important
+- multiple accessions per species are intentionally being retained for downstream analyses
+- the goal is to preserve voucher-level or population-level diversity
+- no duplicated taxa remain after concatenation
+
+In such cases, the full accession-aware output from `catmultGenes()` may already be the appropriate final dataset.
+
+## Typical use cases
+`dropSeq()` is especially useful when:
+- building a species-level phylogeny from accession-rich input data
+- simplifying a matrix after accession-aware matching
+- selecting the best accession of each species for final export
+- reducing noise before downstream model selection or phylogenetic inference
+
+It is less relevant in workflows focused explicitly on within-species sampling or accession-level phylogenetic structure.
+
+## Common issues
+### No duplicated accessions are removed
+If `dropSeq()` does not appear to change the dataset, this may mean:
+- no duplicated species remained after concatenation
+- the labels are not formatted in a way that allows duplicated taxa to be recognized
+- the input object did not contain the expected accession-level redundancy
+
+### Labels are inconsistent
+If the same species is labeled inconsistently across loci or across accessions, the cleanup step may not behave as intended. Always standardize labels before concatenation.
+
+### Important accessions were removed unintentionally
+Because `dropSeq()` is designed to simplify the dataset, always inspect the cleaned result before export, especially if some accessions are biologically important.
+
+## Recommended practice
+For the smoothest use of `dropSeq()`:
+- use it after `catmultGenes()`, not before concatenation
+- inspect the concatenated output before deciding to simplify it
+- verify that labels are standardized and accession-aware
+- compare the cleaned and original outputs before export
+- use `dropSeq()` only when species-level simplification is the intended goal
+
+## Next step
+Once redundant accessions have been removed with `dropSeq()`, the next step is usually to export the cleaned dataset with `writeNexus()` or `writePhylip()`, then proceed to downstream phylogenetic analyses.

@@ -1,5 +1,5 @@
 ---
-title: "Concatenate multilocus datasets with catfullGenes()"
+title: "Concatenate multilocus datasets"
 format:
   html:
     toc: true
@@ -48,100 +48,137 @@ for (i in genes[1:3]) {
 names(Vataireoids) <- gsub("[.].*", "", names(Vataireoids))
 ```
 
-You can inspect the loaded loci:
-names(Vataireoids)
-This creates the standard input structure expected by catfullGenes().
-Basic usage
+## Basic usage
 A basic concatenation workflow looks like this:
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
+```
+
 This compares taxa across the input alignments and returns a list of equalized data frames that can be exported later as a concatenated dataset.
-What catfullGenes() returns
-The output of catfullGenes() is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
-a species column with the matched taxon names
-a sequence column with the corresponding aligned DNA sequence
+
+## What `catfullGenes()` returns
+The output of `catfullGenes()` is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
+
+- a species column with the matched taxon names
+- a sequence column with the corresponding aligned DNA sequence
+
 Because the taxa have been standardized across loci, these data frames can be combined directly by the export functions.
-You can inspect the output structure with:
 
-str(catdf, max.level = 1)
-And inspect the first locus:
-head(catdf[[1]])
-Understanding shortaxlabel
-The argument shortaxlabel controls how sequence labels are represented in the concatenated output.
-When shortaxlabel = TRUE, labels are simplified and standardized:
+## Understanding shortaxlabel
+The argument `shortaxlabel` controls how sequence labels are represented in the concatenated output.
+When `shortaxlabel = TRUE`, labels are simplified and standardized:
 
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-This is usually the most convenient setting for downstream phylogenetic analysis.
-When shortaxlabel = FALSE, more of the original identifying information present in the sequence labels is retained:
+```
 
+This is usually the most convenient setting for downstream phylogenetic analysis.
+
+When `shortaxlabel = FALSE`, more of the original identifying information present in the sequence labels is retained:
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = FALSE,
   missdata = TRUE
 )
-This can be useful when accession identifiers or other annotations need to be preserved throughout the workflow.
-Understanding missdata
-The argument missdata controls whether taxa that lack one or more loci are retained in the concatenated dataset.
-When missdata = TRUE, incomplete taxa are retained and missing loci are filled with missing data:
+```
 
+This can be useful when accession identifiers or other annotations need to be preserved throughout the workflow.
+
+## Understanding `missdata`
+The argument `missdata` controls whether taxa that lack one or more loci are retained in the concatenated dataset.
+When `missdata = TRUE`, incomplete taxa are retained and missing loci are filled with missing data:
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-This is often useful when maximizing taxon coverage is more important than complete locus coverage.
-When missdata = FALSE, taxa lacking any locus are excluded:
+```
 
+This is often useful when maximizing taxon coverage is more important than complete locus coverage.
+
+When `missdata = FALSE`, taxa lacking any locus are excluded:
+
+```{r eval=FALSE}
 catdf_complete <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = FALSE
 )
+```
+
 This produces a more conservative dataset with complete data only.
-Understanding outgroup
-The outgroup argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output.
+
+## Understanding `outgroup`
+The `outgroup` argument is useful when incomplete taxa are being retained and you want to ensure that one or more known outgroup taxa remain properly represented in the output.
+
 For example:
 
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE,
   outgroup = "Outgroup_species"
 )
+```
+
 You can also provide multiple outgroups:
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE,
   outgroup = c("Outgroup_species1", "Outgroup_species2")
 )
+```
+
 This is especially relevant in concatenated datasets where some loci are missing for some taxa and outgroup retention matters for downstream tree rooting.
-Understanding verbose
-The argument verbose controls whether the function prints progress messages during the matching and concatenation process.
+
+## Understanding `verbose`
+The argument `verbose` controls whether the function prints progress messages during the matching and concatenation process.
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE,
   verbose = TRUE
 )
+```
+
 To suppress detailed progress output:
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE,
   verbose = FALSE
 )
+```
+
 This can be useful when running large datasets or preparing rendered tutorials.
-A complete example
+
+## A complete example
+
 A typical small-scale workflow looks like this:
+
 Step 1. Load the alignments
+
+```{r eval=FALSE}
 library(catGenes)
 
 genes <- list.files(system.file("DNAlignments/Vataireoids",
@@ -156,19 +193,27 @@ for (i in genes[1:3]) {
 }
 
 names(Vataireoids) <- gsub("[.].*", "", names(Vataireoids))
+```
+
 Step 2. Run the concatenation
+
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = TRUE,
   missdata = TRUE
 )
-Step 3. Inspect the output
-names(catdf)
-head(catdf[[1]])
+```
+
 At this point, the dataset is ready for export with writeNexus() or writePhylip().
-Exporting the concatenated output
-After running catfullGenes(), the most common next step is to write the concatenated dataset to disk.
-Export as NEXUS
+
+## Exporting the concatenated output
+
+After running `catfullGenes()`, the most common next step is to write the concatenated dataset to disk.
+
+Export as `NEXUS`
+
+```{r eval=FALSE}
 writeNexus(
   catdf,
   file = "Vataireoids.nex",
@@ -176,7 +221,11 @@ writeNexus(
   interleave = TRUE,
   bayesblock = TRUE
 )
-Export as PHYLIP
+```
+
+Export as `PHYLIP`
+
+```{r eval=FALSE}
 writePhylip(
   catdf,
   file = "Vataireoids_dataset.phy",
@@ -184,62 +233,69 @@ writePhylip(
   catalignments = TRUE,
   partitionfile = TRUE
 )
+```
+
 This moves the workflow from equalized alignments to a final concatenated dataset suitable for phylogenetic analysis.
-Preserving original identifiers
+
+## Preserving original identifiers
 In some datasets, even when each species is represented by only one sequence per locus, the original labels may contain voucher numbers or GenBank accessions that you want to preserve.
+
 In that case, use:
 
+```{r eval=FALSE}
 catdf <- catfullGenes(
   Vataireoids,
   shortaxlabel = FALSE,
   missdata = TRUE
 )
-Then export with an appropriate setting in writeNexus() or writePhylip() to preserve those identifiers in the output.
-Typical workflow after catfullGenes()
+```
+
+Then export with an appropriate setting in `writeNexus()` or `writePhylip()` to preserve those identifiers in the output.
+
+## Typical workflow after `catfullGenes()`
 A common multilocus workflow is:
-standardize sequence labels
-align loci separately
-load alignments into R
-run catfullGenes()
-export the result with writeNexus() or writePhylip()
-perform downstream phylogenetic analyses
-visualize resulting trees with plotPhylo()
-Common issues
-Taxa do not match across loci
-If catfullGenes() produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments.
+- standardize sequence labels
+- align loci separately
+- load alignments into R
+- run `catfullGenes()`
+- export the result with `writeNexus()` or `writePhylip()`
+- perform downstream phylogenetic analyses
+- visualize resulting trees with `plotPhylo()`
+
+## Common issues
+### Taxa do not match across loci
+If `catfullGenes()` produces unexpected results, the most common cause is inconsistent taxon labels across the input alignments.
+
 Before concatenation, confirm that:
+- taxon names follow the same formatting scheme
+- genus abbreviations are used consistently
+- labels do not differ in unexpected ways across loci
 
-taxon names follow the same formatting scheme
-genus abbreviations are used consistently
-labels do not differ in unexpected ways across loci
-Species are duplicated in one or more alignments
-If one or more loci contain multiple accessions for the same species, catfullGenes() is not the correct function. In that case, use catmultGenes().
-File names are unclear
+### Species are duplicated in one or more alignments
+If one or more loci contain multiple accessions for the same species, `catfullGenes()` is not the correct function. In that case, use `catmultGenes()`.
+
+### File names are unclear
 The list names of the input alignments usually become the locus names carried forward into downstream workflows. Using clear file names from the beginning helps avoid confusion.
-Too many taxa are removed
-If you expected more taxa in the final dataset, check whether missdata = FALSE is excluding incomplete taxa.
-Recommended practice
-For the smoothest use of catfullGenes():
-make sure each species is represented by only one sequence per locus
-standardize taxon labels across all alignments
-use simple and consistent locus names
-decide in advance whether incomplete taxa should be retained
-inspect the resulting list before export
-Example of a larger genomic workflow
-The catGenes concatenation functions are also designed to work with larger phylogenomic datasets. For example, catmultGenes() has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to catfullGenes() workflows when the data structure matches the one-sequence-per-species assumption.
+
+### Too many taxa are removed
+If you expected more taxa in the final dataset, check whether `missdata = FALSE` is excluding incomplete taxa.
+
+## Recommended practice
+For the smoothest use of `catfullGenes()`:
+- make sure each species is represented by only one sequence per locus
+- standardize taxon labels across all alignments
+- use simple and consistent locus names
+- decide in advance whether incomplete taxa should be retained
+- inspect the resulting list before export
+
+## Example of a larger genomic workflow
+The `catGenes` concatenation functions are also designed to work with larger phylogenomic datasets. For example, `catmultGenes()` has been used efficiently with large plastid gene datasets, but the same general logic of careful standardization and export applies to `catfullGenes()` workflows when the data structure matches the one-sequence-per-species assumption.
+
 For large projects, it is especially important to:
+- keep naming conventions fully standardized
+- inspect locus coverage before concatenation
+- use clear file and list names
+- document the export settings used for downstream analysis
 
-keep naming conventions fully standardized
-inspect locus coverage before concatenation
-use clear file and list names
-document the export settings used for downstream analysis
-Next step
-Once a dataset has been concatenated with catfullGenes(), the next step is usually to export the result with writeNexus() or writePhylip(), select evolutionary models if needed, and proceed to downstream phylogenetic analyses.
-
-
-
-
-
-
-
-
+## Next step
+Once a dataset has been concatenated with `catfullGenes()`, the next step is usually to export the result with `writeNexus()` or `writePhylip()`, select evolutionary models if needed, and proceed to downstream phylogenetic analyses.

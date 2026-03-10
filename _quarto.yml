@@ -71,7 +71,7 @@ website:
           href: articles/index.qmd
         - section: Input preparation
           contents:
-            - text: Standardizing DNA alignments for `catGenes`
+            - text: Standardizing DNA alignments
               href: articles/standardizing_alignments.qmd
             - text: Loading multiple alignments into R
               href: articles/loading_alignments.qmd
@@ -91,21 +91,21 @@ website:
               href: articles/combine_and_align_sequences.qmd
             - text: Convert among FASTA, NEXUS, and PHYLIP
               href: articles/convert_alignment_formats.qmd
-            - text: Concatenate multilocus datasets with `catfullGenes()`
+            - text: Concatenate multilocus datasets
               href: articles/concatenate_with_catfullGenes.qmd
-            - text: Concatenate datasets with duplicated accessions using `catmultGenes()`
+            - text: Concatenate datasets with duplicated accessions
               href: articles/concatenate_with_catmultGenes.qmd
-            - text: Remove redundant accessions with `dropSeq()`
+            - text: Remove redundant accessions
               href: articles/remove_redundant_accessions.qmd
         - section: Export, analysis, and visualization
           contents:
             - text: Write concatenated datasets
               href: articles/write_concatenated_datasets.qmd
-            - text: Model selection and MrBayes preparation with `evomodelTest()`
+            - text: Model selection and MrBayes preparation
               href: articles/model_selection_and_mrbayes.qmd
             - text: Run MrBayes from R
               href: articles/run_mrbayes.qmd
-            - text: Plot and edit phylogenetic trees with `plotPhylo()`
+            - text: Plot and edit phylogenetic trees
               href: articles/plot_phylogenetic_trees.qmd
 
 format:

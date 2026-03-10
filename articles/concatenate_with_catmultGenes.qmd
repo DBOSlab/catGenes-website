@@ -1,5 +1,5 @@
 ---
-title: "Concatenate datasets with duplicated accessions using catmultGenes()"
+title: "Concatenate datasets with duplicated accessions"
 format:
   html:
     toc: true
@@ -32,8 +32,10 @@ When a species appears only once per locus, taxa can be matched across alignment
 
 For example, a species such as `Vatairea_fusca` may appear in one alignment with two accessions:
 
-- `Vatairea_fusca_Cardoso2939`
-- `Vatairea_fusca_Silva1820`
+```{r eval=FALSE}
+Vatairea_fusca_Cardoso2939
+Vatairea_fusca_Silva1820
+```
 
 If the same species also appears in another locus, `catGenes` must know which accession should be matched with which. This is why the duplicated-accession workflow requires labels that include both:
 
@@ -68,14 +70,20 @@ names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
 ```
 
 ## Label formatting for duplicated taxa
-When using catmultGenes(), labels should include both taxon name and identifier, for example:
+When using `catmultGenes()`, labels should include both taxon name and identifier, for example:
+```{r eval=FALSE}
 Genus_species_identifier
 Genus_species_identifier_everythingelse
+```
+
 Examples:
+```{r eval=FALSE}
 Vatairea_fusca_Cardoso2939
 Vatairea_fusca_Cardoso2939_JX152598
 Vatairea_fusca_Silva1820
 Vatairea_fusca_RB123456
+```
+
 The key requirement is that the identifying component be used consistently across loci for the same accession.
 
 ## Example of accession-aware labels
@@ -94,13 +102,13 @@ catdf <- catmultGenes(
 
 This compares taxa across loci while taking duplicated accessions into account and returns a list of equalized data frames ready for export.
 
-## What catmultGenes() returns
-As with catfullGenes(), the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
+## What `catmultGenes()` returns
+As with `catfullGenes()`, the output is a list of data frames of equal size. Each data frame corresponds to one locus and contains:
 a species column with the matched accession-aware taxon labels
 a sequence column with the corresponding aligned DNA sequence
 
 ## Understanding `maxspp`
-The argument maxspp determines how species without duplicated accessions are handled in the final concatenated output.
+The argument `maxspp` determines how species without duplicated accessions are handled in the final concatenated output.
 A typical call is:
 ```{r, eval=FALSE}
 catdf <- catmultGenes(
@@ -111,13 +119,13 @@ catdf <- catmultGenes(
 )
 ```
 
-When maxspp = TRUE, species that are not duplicated in any alignment are retained in the final concatenated dataset. This helps maximize taxon coverage, which is usually desirable.
-When maxspp = FALSE, taxa that are never duplicated may end up being removed or duplicated depending on the interaction with the missdata setting and the structure of the dataset.
+When `maxspp = TRUE`, species that are not duplicated in any alignment are retained in the final concatenated dataset. This helps maximize taxon coverage, which is usually desirable.
+When `maxspp = FALSE`, taxa that are never duplicated may end up being removed or duplicated depending on the interaction with the missdata setting and the structure of the dataset.
 
 In most cases, `maxspp = TRUE` is the recommended setting.
 
 ## Understanding `shortaxlabel`
-The argument shortaxlabel controls how much of the original label is retained in the output.
+The argument `shortaxlabel` controls how much of the original label is retained in the output.
 When `shortaxlabel = TRUE`, output labels are kept shorter and more standardized:
 
 ```{r, eval=FALSE}
@@ -143,7 +151,7 @@ catdf <- catmultGenes(
 Retaining the full original label is often useful in genomic, voucher-rich, or accession-traceable workflows where the exact identity of each accession must be preserved throughout downstream analyses.
 
 ## Understanding `missdata`
-The argument missdata controls whether taxa lacking one or more loci are retained in the final concatenated dataset.
+The argument `missdata` controls whether taxa lacking one or more loci are retained in the final concatenated dataset.
 
 When `missdata = TRUE`, incomplete taxa are retained and missing partitions are filled with missing data:
 ```{r, eval=FALSE}
