@@ -1,0 +1,59 @@
+---
+title: 'renameTaxa'
+description: 'Rename taxa across multiple DNA alignments'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::renameTaxa()
+```
+
+### Description
+
+Reads every DNA alignment (NEXUS, FASTA or PHYLIP; any mix is
+fine) found in a directory and renames the sequences whose names are found
+in `lookup`, leaving any unmatched sequence name unchanged. This is
+useful, for example, for replacing opaque voucher codes with a more
+informative label (e.g. combining the taxon name with the original code),
+after fishing out a subset of taxa with `fishSeqs`.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| filepath | Path to the directory where the DNA alignments are stored. |
+| lookup | Either a named character vector, where each name is the original sequence name and each value is the new name to be assigned to it, or a two-column data.frame/table with the original names in the first column and the new names in the second. Any sequence name not found in `lookup` is kept unchanged. |
+| format | Define either "NEXUS", "FASTA" or "PHYLIP" for writing the resulting renamed alignments. The default (`NULL`) keeps each output file in the same format as its original input file. Ignored when `overwrite = TRUE`, in which case the original format is always kept. |
+| overwrite | Logical, if `TRUE` the renamed alignment overwrites the original input file in place, keeping its original format. The default (`FALSE`) saves the renamed alignments into `dir` instead, leaving the original files untouched. |
+| verbose | Logical, if `FALSE`, a message showing each step during the analysis will not be printed in the console in full. |
+| save | Logical, if `FALSE` the renamed alignments are returned as an R object but not saved to disk (`overwrite` is then ignored). |
+| dir | The path to the directory where the renamed alignments should be saved when `overwrite = FALSE`. The default is to create a directory named **RESULTS_renameTaxa** and save the files within a subfolder named after the current date. |
+
+### Value
+
+An invisible named list of the renamed alignments, one
+list-formatted alignment per input file (in the same style produced by
+`read.nexus.data`).
+
+### Examples
+
+```r
+library(catGenes)
+
+lookup <- c(FC520 = "Moldenhawera_blanchetiana_FC520",
+            FC459 = "Tachigali_costaricensis_FC459")
+
+renameTaxa(filepath = "RESULTS_fishSeqs/01Sep2026",
+           lookup = lookup,
+           dir = "RESULTS_renameTaxa")
+
+# Rename in place, overwriting the original files
+renameTaxa(filepath = "RESULTS_fishSeqs/01Sep2026",
+           lookup = lookup,
+           overwrite = TRUE)
+```
+
+

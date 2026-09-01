@@ -45,6 +45,7 @@ These tutorials provide step-by-step guidance for common `catGenes` workflows, f
 - [Why catGenes instead of manual concatenation](/articles/why_catgenes_for_concatenation.qmd)
 - [Combine FASTA files and align sequences](/articles/combine_and_align_sequences.qmd)
 - [Convert among FASTA, NEXUS, and PHYLIP](/articles/convert_alignment_formats.qmd)
+- [Fish and rename taxa across multiple alignments](/articles/fish_and_rename_taxa.qmd)
 - [Concatenate multilocus datasets](/articles/concatenate_with_catfullGenes.qmd)
 - [Concatenate datasets with duplicated accessions](/articles/concatenate_with_catmultGenes.qmd)
 - [Remove redundant accessions](/articles/remove_redundant_accessions.qmd)

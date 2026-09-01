@@ -93,6 +93,8 @@ website:
               href: articles/combine_and_align_sequences.qmd
             - text: Convert among FASTA, NEXUS, and PHYLIP
               href: articles/convert_alignment_formats.qmd
+            - text: Fish and rename taxa across multiple alignments
+              href: articles/fish_and_rename_taxa.qmd
             - text: Concatenate multilocus datasets
               href: articles/concatenate_with_catfullGenes.qmd
             - text: Concatenate datasets with duplicated accessions

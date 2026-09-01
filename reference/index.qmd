@@ -49,6 +49,8 @@ format:
 
 - [`fastadframe()`](/reference/fastadframe.qmd)
 
+- [`fishSeqs()`](/reference/fishSeqs.qmd)
+
 - [`mineMitochondrion()`](/reference/mineMitochondrion.qmd)
 
 - [`minePlastome()`](/reference/minePlastome.qmd)
@@ -66,6 +68,8 @@ format:
 - [`phylipdframe()`](/reference/phylipdframe.qmd)
 
 - [`plotPhylo()`](/reference/plotPhylo.qmd)
+
+- [`renameTaxa()`](/reference/renameTaxa.qmd)
 
 - [`splitTips()`](/reference/splitTips.qmd)
 

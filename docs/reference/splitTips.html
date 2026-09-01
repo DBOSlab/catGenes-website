@@ -4419,11 +4419,15 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>This function is designed to split tip labels into a dataframe object. Each column in the dataframe corresponds to the genus, species, infraspecific name, and associated voucher and GenBank information, whenever available. If doubtful particles such as ‘aff.’ or ‘cf.’ are provided, they will also be separated into a distinct column.</p>
+<p>This function is designed to split tip labels into a dataframe object. Each column in the dataframe corresponds to the genus, species, infraspecific name, and associated voucher and GenBank information, whenever available. If doubtful particles such as ‘aff.’ or ‘cf.’ are provided, they will also be separated into a distinct column. When an infraspecific rank marker (‘var.’ or ‘subsp.’) is present, the epithet that follows it (not the marker itself) is captured as the infraspecific name. Tip labels can be supplied directly as a vector, or read from a NEXUS, FASTA or PHYLIP alignment file.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Argument</th>
@@ -4433,7 +4437,11 @@ height: 400px;
 <tbody>
 <tr class="odd">
 <td>tiplabels</td>
-<td>A vector of tip labels from a phylogeny.</td>
+<td>A vector of tip labels from a phylogeny. Either <code>tiplabels</code> or <code>file</code> must be provided.</td>
+</tr>
+<tr class="even">
+<td>file</td>
+<td>Path to a NEXUS, FASTA or PHYLIP alignment file, from which the taxon/tip labels will be extracted. Only used when <code>tiplabels = NULL</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -4448,7 +4456,9 @@ height: 400px;
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Harpalyce_bayes_tree)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">tiplabels =</span> Harpalyce_bayes_tree<span class="sc">@</span>phylo<span class="sc">$</span>tip.label)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">tiplabels =</span> Harpalyce_bayes_tree<span class="sc">@</span>phylo<span class="sc">$</span>tip.label)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">file =</span> <span class="st">&quot;myalignment.nex&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -4939,28 +4949,35 @@ height: 400px;
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>object. Each column in the dataframe corresponds to the genus, species,</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>infraspecific name, and associated voucher and GenBank information, whenever</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>available. If doubtful particles such as &#39;aff.&#39; or &#39;cf.&#39; are provided, they</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>will also be separated into a distinct column.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> tiplabels <span class="pp">|</span> A vector of tip labels from a phylogeny. <span class="pp">|</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>will also be separated into a distinct column. When an infraspecific rank</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>marker (&#39;var.&#39; or &#39;subsp.&#39;) is present, the epithet that follows it (not</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>the marker itself) is captured as the infraspecific name. Tip labels can be</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>supplied directly as a vector, or read from a NEXUS, FASTA or PHYLIP</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>alignment file.</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>A dataframe.</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> tiplabels <span class="pp">|</span> A vector of tip labels from a phylogeny. Either <span class="in">`tiplabels`</span> or <span class="in">`file`</span> must be provided. <span class="pp">|</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> file <span class="pp">|</span> Path to a NEXUS, FASTA or PHYLIP alignment file, from which the taxon/tip labels will be extracted. Only used when <span class="in">`tiplabels = NULL`</span>. <span class="pp">|</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>A dataframe.</span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Harpalyce_bayes_tree)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">tiplabels =</span> Harpalyce_bayes_tree<span class="sc">@</span>phylo<span class="sc">$</span>tip.label)</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(catGenes)</span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Harpalyce_bayes_tree)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">tiplabels =</span> Harpalyce_bayes_tree<span class="sc">@</span>phylo<span class="sc">$</span>tip.label)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">splitTips</span>(<span class="at">file =</span> <span class="st">&quot;myalignment.nex&quot;</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

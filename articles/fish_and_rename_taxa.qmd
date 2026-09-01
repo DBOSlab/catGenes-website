@@ -1,0 +1,210 @@
+---
+title: "Fish and rename taxa across multiple alignments"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+It is common to receive or download a large, published multi-locus dataset (a supermatrix of many per-gene alignments) and only need a handful of taxa from it, for example to build a small focused analysis around a single genus or clade. Pulling those sequences out one file at a time, and then manually deleting alignment sites that become entirely empty once the other taxa are removed, is tedious and error-prone across dozens or hundreds of loci.
+
+`catGenes` provides two companion functions for this:
+
+- `fishSeqs()`: keeps only the sequences you ask for across every alignment in a folder, and removes any site (column) left entirely composed of gaps ("-") or missing data ("?") once the other taxa are gone.
+- `renameTaxa()`: relabels sequences across a folder of alignments using a lookup table, leaving any unmatched name unchanged.
+
+Both work the same way as other `catGenes` batch functions such as `convertAlign()` and `alignSeqs()`: point them at a directory containing NEXUS, FASTA or PHYLIP alignments (any mix is fine), and they process every file in it.
+
+## When to use `fishSeqs()`
+
+Use `fishSeqs()` when:
+
+- you have a large set of per-locus alignments (a published supermatrix, for instance) and only need a subset of taxa from it
+- you want each resulting alignment to remain valid, i.e. without leftover all-gap columns from the taxa you removed
+- you want to process many loci in a folder at once instead of editing each file by hand
+
+## Basic usage
+
+```{r, eval=FALSE}
+library(catGenes)
+
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/coding",
+  taxa = c("Moldenhawera", "Tachigali")
+)
+```
+
+This reads every alignment file in `coding/`, keeps only the sequences whose names contain `"Moldenhawera"` or `"Tachigali"`, and writes the fished-out alignments to a dated subfolder under `RESULTS_fishSeqs/`.
+
+`taxa` is matched case-insensitively as a pattern against each sequence's name, so it works directly whenever tip labels follow the usual `Genus_species_Voucher` convention used throughout `catGenes`.
+
+## Gap-only columns are trimmed after filtering, not before
+
+A site that carried real data for a taxon you are removing can become entirely empty once that taxon is gone. `fishSeqs()` only removes a column if it is **entirely** gaps/missing data **among the taxa you kept** — trimming always happens after filtering, so no informative site is ever discarded by mistake.
+
+## Working with datasets that use coded labels
+
+Not every published dataset uses `Genus_species_Voucher` tip labels. The Zhang et al. (2020) plastome dataset, for example, uses opaque voucher codes as headers (`>FC520`, `>FC459`, ...), with the genus/species information kept in a separate supplementary table. `fishSeqs()` matches directly against whatever text is in the alignment, so for a dataset like this you resolve the taxon names to their codes yourself first, then pass the codes in:
+
+```{r, eval=FALSE}
+tbl <- openxlsx::read.xlsx("Loci_alignment_ZHANGetal2020/Supplementary_Table_S1.xlsx")
+codes <- tbl$Label[tbl$Genus %in% c("Moldenhawera", "Tachigali")]
+# codes -> "FC520" "FC459"
+
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/coding",
+  taxa = codes
+)
+```
+
+## Renaming taxa with `renameTaxa()`
+
+Once you have fished out a coded dataset like the one above, you will usually want to replace the opaque codes with something readable, for instance combining the taxon name with the original code:
+
+```{r, eval=FALSE}
+lookup <- c(
+  FC520 = "Moldenhawera_blanchetiana_FC520",
+  FC459 = "Tachigali_costaricensis_FC459"
+)
+
+renameTaxa(
+  filepath = "RESULTS_fishSeqs/01Sep2026",
+  lookup = lookup
+)
+```
+
+`lookup` can also be a two-column data.frame, with the original names in the first column and the new names in the second — useful when you build it directly from a spreadsheet:
+
+```{r, eval=FALSE}
+lookup <- data.frame(
+  old = tbl$Label,
+  new = paste(tbl$Genus, tbl$Species, tbl$Label, sep = "_")
+)
+
+renameTaxa(
+  filepath = "RESULTS_fishSeqs/01Sep2026",
+  lookup = lookup
+)
+```
+
+Any sequence name **not** found in `lookup` is left unchanged, so you can rename just a subset of taxa without affecting the rest of the alignment.
+
+### Saving elsewhere vs. overwriting in place
+
+By default, `renameTaxa()` writes the renamed alignments to a new dated subfolder under `dir` (`RESULTS_renameTaxa/` by default), leaving your original files untouched:
+
+```{r, eval=FALSE}
+renameTaxa(
+  filepath = "RESULTS_fishSeqs/01Sep2026",
+  lookup = lookup,
+  dir = "RESULTS_renameTaxa"
+)
+```
+
+If you are confident in the lookup table and want to relabel the files in place instead, set `overwrite = TRUE`:
+
+```{r, eval=FALSE}
+renameTaxa(
+  filepath = "RESULTS_fishSeqs/01Sep2026",
+  lookup = lookup,
+  overwrite = TRUE
+)
+```
+
+When `overwrite = TRUE`, each file is always rewritten in its original format; the `format` argument only applies to the default (non-overwrite) mode.
+
+## Fishing and renaming in a single step
+
+`fishSeqs()` accepts the same kind of lookup directly through its `rename` argument, so you can fish and relabel in one call instead of chaining two:
+
+```{r, eval=FALSE}
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/coding",
+  taxa = c("FC520", "FC459"),
+  rename = c(
+    FC520 = "Moldenhawera_blanchetiana_FC520",
+    FC459 = "Tachigali_costaricensis_FC459"
+  ),
+  dir = "RESULTS_fishSeqs"
+)
+```
+
+Renaming is applied after taxa are kept and gap-only columns are removed, so the lookup keys should match the *original* sequence names, not the trimmed alignment content.
+
+## Forcing an output format
+
+Both functions keep each output file in the same format as its original input file by default. Use `format` to force a common output format instead:
+
+```{r, eval=FALSE}
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/coding",
+  taxa = c("FC520", "FC459"),
+  format = "NEXUS"
+)
+```
+
+## Working across a whole folder of loci
+
+Both functions process every file in `filepath`, so a full multi-locus dataset can be fished (and renamed) in one call:
+
+```{r, eval=FALSE}
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/coding",
+  taxa = codes,
+  rename = lookup,
+  dir = "RESULTS_fishSeqs"
+)
+
+fishSeqs(
+  filepath = "Loci_alignment_ZHANGetal2020/noncoding",
+  taxa = codes,
+  rename = lookup,
+  dir = "RESULTS_fishSeqs"
+)
+```
+
+A locus that has none of the requested taxa is skipped (with a message when `verbose = TRUE`), so it is normal for the two calls above to produce a different number of output files than there are input files, especially for `noncoding` regions that were not sequenced for every accession.
+
+## Common issues
+
+### No taxa matched in a given file
+If none of the sequence names in a file match `taxa`, that file is skipped and a warning is issued once at the end if no file produced any output at all. This is expected for loci where a given accession was not sequenced.
+
+### Sequences in a file are not the same length
+`fishSeqs()` expects each input file to already be an alignment (equal-length sequences). If a file's sequences differ in length, it is skipped with a warning rather than silently producing a broken output.
+
+### A renamed lookup key does not match anything
+`renameTaxa()` never errors on an unmatched lookup entry; it simply leaves that sequence's name unchanged. Check the "Renamed X of Y" message (`verbose = TRUE`) if you expect more names to have matched than actually did — it usually means the original code in your alignment does not exactly match the key you used in `lookup`.
+
+## Recommended practice
+
+- resolve genus/species names to the codes actually used in your headers **before** calling `fishSeqs()`, using whatever crosswalk table came with the dataset
+- keep the default `overwrite = FALSE` for `renameTaxa()` until you have checked the renamed output, then switch to `overwrite = TRUE` if you want to relabel in place
+- run with `verbose = TRUE` the first time on a new dataset so you can see per-file match counts and catch typos in `taxa`/`lookup` early
+
+## Next step
+
+Once you have a folder of fished (and renamed) per-locus alignments, the usual next step is to load them into R and concatenate them:
+
+```{r, eval=FALSE}
+genes <- list.files("RESULTS_fishSeqs/01Sep2026")
+my_alignments <- list()
+
+for (i in genes) {
+  my_alignments[[i]] <- ape::read.nexus.data(
+    paste0("RESULTS_fishSeqs/01Sep2026/", i)
+  )
+}
+
+names(my_alignments) <- gsub("[.].*", "", names(my_alignments))
+
+catdf <- catfullGenes(
+  my_alignments,
+  shortaxlabel = TRUE,
+  missdata = TRUE
+)
+```
+
+See the tutorials on concatenating multilocus datasets for the next steps.
