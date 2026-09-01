@@ -1,0 +1,38 @@
+<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'SFMono-Regular', Consolas, 'Courier New', monospace">
+  <title>Genome-scale NEXUS matrix from 78 plastid gene partitions</title>
+  <desc>NEXUS-formatted concatenated matrix from 78 plastid gene partitions across a phylogenomic Vochysiaceae dataset, with 125 taxa and 81354 characters, illustrating that catGenes scales from a handful of Sanger loci to genome-level datasets.</desc>
+
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff" stroke="#F2A3A8" stroke-width="1.3"/>
+  <rect x="0" y="0" width="900" height="36" rx="12" fill="#F9E3E5"/>
+  <rect x="0" y="24" width="900" height="12" fill="#F9E3E5"/>
+  <circle cx="22" cy="18" r="5" fill="#B85C63"/>
+  <text x="38" y="23" font-size="12.5" fill="#1A1A1A">Vochysiaceae_interleave_missingdata_multiaccessions.nex</text>
+
+  <g font-size="12.5" fill="#1A1A1A">
+    <text x="20" y="58" fill="#86293F" font-weight="700">#NEXUS</text>
+    <text x="20" y="80" fill="#8a7375">[DBOSLab R scripts, Tue Jan 12 2021]</text>
+
+    <text x="20" y="112" fill="#86293F" font-weight="700">BEGIN DATA;</text>
+    <text x="20" y="132">DIMENSIONS NTAX=125 NCHAR=81354;</text>
+    <text x="40" y="152" fill="#8a7375">[accD=1450 + atpA=1515 + atpB=1494 + atpE=402 + atpF=1284 + …</text>
+    <text x="40" y="172" fill="#8a7375" font-style="italic">… 78 gene partitions total]</text>
+    <text x="20" y="194">FORMAT DATATYPE=DNA GAP=- MISSING=? INTERLEAVE=YES;</text>
+    <text x="20" y="214" fill="#86293F" font-weight="700">MATRIX</text>
+
+    <text x="20" y="244" fill="#B85C63" font-weight="700">[accD]</text>
+
+    <text x="20" y="266">Allomaieta_villosa_NC031875_Myrtales_Melastomataceae</text>
+    <text x="20" y="286" fill="#B85C63">ATGGAACGGCGGTTTAATTCGATGTTGTCTAGCGGGAAATTAGAATACAGG …</text>
+
+    <text x="20" y="310">Alzatea_verticillata_TV548_Myrtales_Alzateaceae</text>
+    <text x="20" y="330" fill="#B85C63">ATGGAATGGTCTTCATTCGATGTTGTCTAGGCGGAAATTAGAATACAGGTA …</text>
+
+    <text x="20" y="354">Callisthene_erythroclada_DG439_Myrtales_Vochysiaceae</text>
+    <text x="20" y="374" fill="#B85C63">ATGCAATGGTGGTTAATTCGATGTTGTAGAAGAAATTAGAAATACAGGTGT …</text>
+
+    <text x="20" y="398">Corymbia_eximia_NC022409_Myrtales_Myrtaceae</text>
+    <text x="20" y="418" fill="#B85C63">ATGGAATGGTGGTCAATTCGATGTTGTAAAAAAAAATTAAAAATACAGGTG …</text>
+
+    <text x="20" y="450" font-style="italic" fill="#8a7375">… 121 more taxa across accD and the other 77 gene partitions</text>
+  </g>
+</svg>

@@ -88,7 +88,7 @@ For infraspecific taxa, add the infraspecific epithet after the species epithet,
 - `Genus_species_variety_identifier`
 - `Genus_species_subspecies_identifier`
 
-![Example with other label formatting](../figures/other_label_fformatting.png)
+![Example with other label formatting](../figures/other_label_formatting.png)
 
 ## 4. Naming alignment files
 

@@ -26,6 +26,9 @@ format: html
 
 These tutorials provide step-by-step guidance for common `catGenes` workflows, from sequence retrieval and alignment preparation to multilocus concatenation, phylogenetic analysis support, and tree visualization.
 
+![](/figures/catGenes_workflow.svg)
+*The articles below are organized around the stages of this pipeline.*
+
 ::: {layout-ncol="2"}
 
 ::: {style="display: block;"}

@@ -60,9 +60,9 @@ This directly closes the outgroup-loss risk described above — something the ra
 
 When alignments are exported with `shortaxlabel = FALSE`, [`writeNexus()`](/reference/writeNexus.qmd) and [`writePhylip()`](/reference/writePhylip.qmd) keep any identifier that differs across partitions as a bracketed comment next to the affected taxon, instead of silently dropping it or treating the accession as an unrelated species. The example below is a real multi-accession *Brongniartia* dataset:
 
-![ITS partition of a concatenated matrix, with differing GenBank/collector identifiers preserved as bracketed comments (e.g. [AF467022], [Hernandez9407_GQ250075])](figures/catGenes_with_taxlabels1.png)
+![ITS partition of a concatenated matrix, with differing GenBank/collector identifiers preserved as bracketed comments (e.g. [AF467022], [Hernandez9407_GQ250075])](figures/catGenes_with_taxlabels1.svg)
 
-![ETS partition of the same matrix — note that the bracketed identifier changes per partition, always reflecting which accession actually contributed data to that locus](../figures/catGenes_with_taxlabels2.png)
+![ETS partition of the same matrix — note that the bracketed identifier changes per partition, always reflecting which accession actually contributed data to that locus](../figures/catGenes_with_taxlabels2.svg)
 
 This means the concatenated matrix stays fully traceable back to its original vouchers and GenBank records, with no manual bookkeeping required. See [Write concatenated datasets](/articles/write_concatenated_datasets.qmd) for the full explanation of this feature.
 
@@ -70,7 +70,7 @@ This means the concatenated matrix stays fully traceable back to its original vo
 
 Because matching is based on parsed identity rather than exact string comparison, the same logic that fixes a two-locus dataset also scales to genomic-level concatenation. The screenshot below shows the result of `catmultGenes()` applied to 78 partitioned plastid genes across more than 120 Vochysiaceae accessions (data originally published by [Gonçalves et al. 2020](https://bsapubs.onlinelibrary.wiley.com/doi/abs/10.1002/ajb2.1502), kindly shared for use as example data):
 
-![NEXUS-formatted concatenated matrix from 78 plastid gene partitions across a phylogenomic Vochysiaceae dataset](../figures/Vochysiaceae1.png)
+![NEXUS-formatted concatenated matrix from 78 plastid gene partitions across a phylogenomic Vochysiaceae dataset](../figures/Vochysiaceae1.svg)
 
 Manually curating name consistency across dozens or hundreds of loci by hand in a GUI editor is impractical at this scale; `catGenes` handles it the same way it handles a three-locus Sanger dataset.
 

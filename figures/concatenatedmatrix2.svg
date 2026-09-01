@@ -1,0 +1,39 @@
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'SFMono-Regular', Consolas, 'Courier New', monospace">
+  <title>End of the NEXUS matrix with the auto-generated MrBayes block</title>
+  <desc>Closing lines of the matrix block followed by the MrBayes block with charset definitions for each partition (ETS, ITS, matK) and the partition command, as produced by writeNexus().</desc>
+
+  <rect x="0" y="0" width="900" height="460" rx="12" fill="#ffffff" stroke="#F2A3A8" stroke-width="1.3"/>
+  <rect x="0" y="0" width="900" height="36" rx="12" fill="#F9E3E5"/>
+  <rect x="0" y="24" width="900" height="12" fill="#F9E3E5"/>
+  <circle cx="22" cy="18" r="5" fill="#B85C63"/>
+  <text x="38" y="23" font-size="12.5" fill="#1A1A1A">concatenated_dataset.nex (end)</text>
+
+  <g font-size="12.5" fill="#1A1A1A">
+    <text x="20" y="58">Vataireopsis_araroba</text>
+    <text x="300" y="58" fill="#B85C63">ATGGAGGAATATCAAGTATTCAAGTATATTTAGAACGGATCTCGC …</text>
+
+    <text x="20" y="80">Vataireopsis_surinamensis</text>
+    <text x="300" y="80" fill="#B85C63">ATGGAGGAATATCAAGTATTCAAGTATATTTAGAACGAGATAGAT …</text>
+
+    <text x="20" y="102">Zollernia_magnifica</text>
+    <text x="300" y="102" fill="#B85C63">ATGGAGGAATATCAAGTA---------TATTTAGAACTAGATAGA …</text>
+
+    <text x="20" y="126" fill="#86293F" font-weight="700">;</text>
+    <text x="20" y="146" fill="#86293F" font-weight="700">END;</text>
+
+    <text x="20" y="182" fill="#86293F" font-weight="700">begin mrbayes;</text>
+    <text x="20" y="202">set autoclose=yes;</text>
+    <text x="20" y="234">outgroup WRITE_YOUR_OUTGROUP;</text>
+
+    <text x="20" y="266" fill="#B85C63">charset ETS = 1-426;</text>
+    <text x="300" y="266" fill="#8a7375">[426=ETS]</text>
+    <text x="20" y="288" fill="#B85C63">charset ITS = 427-1256;</text>
+    <text x="300" y="288" fill="#8a7375">[830=ITS]</text>
+    <text x="20" y="310" fill="#B85C63">charset matK = 1257-3125;</text>
+    <text x="300" y="310" fill="#8a7375">[1869=matK]</text>
+
+    <text x="20" y="344">partition regions = 3: ETS, ITS, matK;</text>
+    <text x="20" y="366">set partition = regions;</text>
+    <text x="20" y="400" fill="#86293F" font-weight="700">end;</text>
+  </g>
+</svg>

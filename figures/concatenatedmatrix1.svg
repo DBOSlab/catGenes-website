@@ -1,0 +1,51 @@
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'SFMono-Regular', Consolas, 'Courier New', monospace">
+  <title>Beginning of a NEXUS-formatted concatenated matrix</title>
+  <desc>NEXUS header, dimensions, and matrix block showing the ETS partition, with missing-data taxa shown as question marks and taxa with real sequence data truncated for legibility.</desc>
+
+  <rect x="0" y="0" width="900" height="460" rx="12" fill="#ffffff" stroke="#F2A3A8" stroke-width="1.3"/>
+  <rect x="0" y="0" width="900" height="36" rx="12" fill="#F9E3E5"/>
+  <rect x="0" y="24" width="900" height="12" fill="#F9E3E5"/>
+  <circle cx="22" cy="18" r="5" fill="#B85C63"/>
+  <text x="38" y="23" font-size="12.5" fill="#1A1A1A">concatenated_dataset.nex</text>
+
+  <g font-size="12.5" fill="#1A1A1A">
+    <text x="20" y="58" fill="#86293F" font-weight="700">#NEXUS</text>
+    <text x="20" y="80" fill="#8a7375">[DBOSLab R scripts, Wed Nov 04 2020]</text>
+
+    <text x="20" y="112" fill="#86293F" font-weight="700">BEGIN DATA;</text>
+    <text x="20" y="132">DIMENSIONS NTAX=33 NCHAR=3125; [ETS=426 + ITS=830 + matK=1869]</text>
+    <text x="20" y="152">FORMAT DATATYPE=DNA GAP=- MISSING=? INTERLEAVE=YES;</text>
+    <text x="20" y="172" fill="#86293F" font-weight="700">MATRIX</text>
+
+    <text x="20" y="202" fill="#B85C63" font-weight="700">[ETS]</text>
+
+    <text x="20" y="224">Exostyles_venusta</text>
+    <text x="300" y="224" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="246">Harleyodendron_unifoliolatum</text>
+    <text x="300" y="246" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="268">Holocalyx_balansae</text>
+    <text x="300" y="268" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="290">Luetzelburgia_amazonica</text>
+    <text x="300" y="290" fill="#B85C63">CATCGAACGGTTGGCACGCAACCCTCCTCAGTAAACATCACGCT …</text>
+
+    <text x="20" y="312">Luetzelburgia_andina</text>
+    <text x="300" y="312" fill="#B85C63">CATCGAACGGTTGGCACGCAACCCTCCTCAGTAAACATCACGCT …</text>
+
+    <text x="20" y="334">Luetzelburgia_bahiensis</text>
+    <text x="300" y="334" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="356">Sweetia_fruticosa</text>
+    <text x="300" y="356" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="378">Vatairea_erythrocarpa</text>
+    <text x="300" y="378" fill="#B9A7A9">????????????????????????????????????? …</text>
+
+    <text x="20" y="400">Vatairea_macrocarpa</text>
+    <text x="300" y="400" fill="#B85C63">CATCGAACGGTTGGCATACAACCCTCTTCAGCAAACATC-GGTCCC …</text>
+
+    <text x="20" y="428" font-style="italic" fill="#8a7375">… 23 more taxa in this partition</text>
+  </g>
+</svg>

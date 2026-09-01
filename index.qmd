@@ -53,7 +53,7 @@ resources:
 
 `catGenes` is an R package designed to support reproducible phylogenetic and phylogenomic workflows, from sequence retrieval and alignment preparation to multilocus dataset assembly, model selection, Bayesian inference, and tree visualization.
 
-Although originally developed to compare and concatenate multiple DNA alignments, `catGenes` now provides a broader suite of tools for retrieving sequences from GenBank, mining loci from plastid and mitochondrial genomes, combining FASTA files, performing automated multiple sequence alignment, converting alignment formats, exporting partitioned datasets, generating `MrBayes` command blocks, running `MrBayes` from R, and editing phylogenetic trees with `ggtree`.
+Although originally developed to compare and concatenate multiple DNA alignments, `catGenes` now provides a broader suite of tools for retrieving sequences from GenBank, mining loci from plastid and mitochondrial genomes, combining FASTA files, performing automated multiple sequence alignment, converting alignment formats, fishing out and renaming specific taxa across many alignments at once, exporting partitioned datasets, generating `MrBayes` command blocks, running `MrBayes` from R, and editing phylogenetic trees with `ggtree`.
 
 ## What `catGenes` can do
 
@@ -62,6 +62,7 @@ Although originally developed to compare and concatenate multiple DNA alignments
 - combine multiple `FASTA` files into a single file
 - perform automated multiple sequence alignment
 - convert alignments among `FASTA`, `NEXUS`, and `PHYLIP` formats
+- fish specific taxa out of many alignments at once, trimming now-empty sites, and rename them
 - compare and concatenate multilocus datasets with or without duplicated accessions
 - export concatenated datasets with partition information for downstream analyses
 - select evolutionary models and prepare `MrBayes` blocks
@@ -81,10 +82,10 @@ The package is especially useful for researchers working with:
 
 ## Typical phylogenetic workflow with `catGenes`
 
-The diagram below summarizes a typical `catGenes` workflow, from sequence retrieval and alignment preparation to concatenation, model selection, phylogenetic inference, and tree visualization.
+The diagram below summarizes a typical `catGenes` workflow, from sequence retrieval and alignment preparation to taxon subsetting, concatenation, model selection, phylogenetic inference, and tree visualization.
 
-![](figures/catGenes_workflow.png)
-*Overview of the main `catGenes` workflow, highlighting sequence retrieval, FASTA combination, sequence alignment, alignment conversion, concatenation, export of partitioned datasets, model selection, phylogenetic inference, and tree visualization.*
+![](figures/catGenes_workflow.svg)
+*Overview of the main `catGenes` workflow, highlighting sequence retrieval, FASTA combination, sequence alignment, alignment conversion, fishing and renaming taxa across multiple alignments, concatenation, export of partitioned datasets, model selection, phylogenetic inference, and tree visualization.*
 
 ## Development and scope
 

@@ -122,11 +122,11 @@ writePhylip(
 The screenshots below illustrate a concatenated dataset before and after applying `dropSeq()`.
 The first screenshot shows a concatenated *Brongniartia* dataset (`NTAX=62`) in which several species are still represented by multiple accessions — note, for instance, four separate accessions of `Brongniartia_bracteolata` (`Linares4454`, `Lopat682`, `RT8593`, `Sousa10554`):
 
-![Concatenated dataset before dropSeq(), with several species represented by multiple duplicated accessions](../figures/dropseq1.png)
+![Concatenated dataset before dropSeq(), with several species represented by multiple duplicated accessions](../figures/dropseq1.svg)
 
 After running `dropSeq()`, redundant accessions are removed — the matrix drops from 62 to 46 taxa — while the identifier of the single, most complete accession retained for each species is kept in the label:
 
-![Same dataset after dropSeq(), now with only the most complete accession retained per species (NTAX reduced from 62 to 46)](../figures/dropseq2.png)
+![Same dataset after dropSeq(), now with only the most complete accession retained per species (NTAX reduced from 62 to 46)](../figures/dropseq2.svg)
 
 ## Relationship with `shortaxlabel`
 The behavior of `dropSeq()` is easiest to interpret when the concatenated object already has consistent and informative labels. Whether the labels are shorter or more complete depends on how `catmultGenes()` was run.
