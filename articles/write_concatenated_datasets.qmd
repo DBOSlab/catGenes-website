@@ -363,17 +363,24 @@ When `writeNexus()` is used with interleaving and partition definitions, the fil
 - a concatenated `NEXUS` matrix
 - each partition defined by character ranges
 - optionally a preliminary MrBayes block
-- The beginning of the matrix may look similar to the screenshots below:
 
-And the end of the file may include the partition definitions:
+The beginning of the matrix looks like this (Vataireoid legumes, `NTAX=33`, three loci concatenated to `NCHAR=3125`; species missing the first locus are correctly filled with `?`):
 
+![Beginning of a NEXUS-formatted concatenated matrix produced by writeNexus()](figures/concatenatedmatrix1.png)
+
+And the end of the file includes the `END;` statement followed by the preliminary MrBayes block, with `charset` definitions for each partition and a `partition regions` command ready to use:
+
+![End of the same NEXUS matrix, showing the auto-generated MrBayes block with charsets for each partition](figures/concatenatedmatrix2.png)
 
 ## Keeping differing identifiers in `NEXUS` output
 If you ran `catfullGenes()` or `catmultGenes()` with `shortaxlabel = FALSE`, `writeNexus()` can preserve differing identifiers across partitions while retaining a species-oriented concatenated matrix structure.
-This is particularly useful when accession labels differ among loci but still need to remain traceable.
+This is particularly useful when accession labels differ among loci but still need to remain traceable — for example, when a species was sequenced for one locus using a GenBank accession from a different collector than the accession used for another locus.
 
-The output may appear as shown below:
+The output below shows a real multi-accession *Brongniartia* dataset. Notice how GenBank accessions and collector numbers that differ from the "primary" identifier of that row are preserved as bracketed comments, gene by gene, instead of being silently discarded or causing the accession to be treated as an unrelated taxon:
 
+![ITS partition of a concatenated matrix with differing identifiers kept as bracketed comments (e.g. [AF467022], [Hernandez9407_GQ250075])](figures/catGenes_with_taxlabels1.png)
+
+![ETS partition of the same matrix — the bracketed identifiers change per partition, always reflecting which accession actually contributed data to that gene](figures/catGenes_with_taxlabels2.png)
 
 ## What the `PHYLIP` output looks like
 When `writePhylip()` is used, the result usually consists of:
@@ -381,9 +388,13 @@ When `writePhylip()` is used, the result usually consists of:
 - a concatenated `PHYLIP` matrix
 - a separate partition file
 
-The matrix may resemble the example below:
+The matrix looks like this:
 
-And the partition file may look like this:
+![Concatenated PHYLIP-formatted matrix produced by writePhylip()](figures/concatenatedmatrix3.png)
+
+And the partition file, ready to upload to RAxML or CIPRES for a mixed/partitioned-model analysis, looks like this:
+
+![RAxML-style partition file produced alongside the PHYLIP matrix](figures/concatenatedmatrix3_partitition.png)
 
 ## Choosing between `NEXUS` and `PHYLIP`
 Use `writeNexus()` when you want:

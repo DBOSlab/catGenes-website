@@ -41,7 +41,7 @@ The package aims to simplify and standardize many steps that researchers typical
 
 Modern phylogenetic workflows often involve multiple software tools, repeated file conversions, and extensive manual editing of sequence labels, partitions, and alignment datasets. These steps can introduce inconsistencies and make analyses difficult to reproduce.
 
-`catGenes` was developed to streamline these processes within the R environment by integrating several common tasks into a unified workflow. By automating sequence retrieval, dataset preparation, and phylogenetic analysis support, the package helps researchers focus more on biological interpretation rather than file manipulation.
+`catGenes` was developed to streamline these processes within the R environment by integrating several common tasks into a unified workflow. By automating sequence retrieval, dataset preparation, and phylogenetic analysis support, the package helps researchers focus more on biological interpretation rather than file manipulation. See [Why catGenes instead of manual concatenation](/articles/why_catgenes_for_concatenation.qmd) for a concrete comparison against sequence-editor-plus-GUI workflows.
 
 The package is particularly useful for:
 

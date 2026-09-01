@@ -31,7 +31,7 @@ name and associated identifying number.
 
 | Argument | Description |
 |---|---|
-| ... | a list of NEXUS-formatted gene datasets as read by ape's `read.nexus.data` or at least two individually ape-read objects of NEXUS-formatted gene datasets. |
+| ... | a list of NEXUS-formatted gene datasets as read by `read.nexus.data` or at least two individually ape-read objects of NEXUS-formatted gene datasets. |
 | maxspp | Logical, if `FALSE` any species never duplicated with multiple accessions in any indvidual DNA alignment might end either duplicated or deleted, depending on the chosen missdata argument. We recomend to maxspp = `TRUE` so as to maximize the taxon coverage. This means that if the species is not duplicated in any individual dataset, it will always be kept in the final concatenated dataset no matter each sequence for that species across the individual dataset were generated from distinct collections or accessions. |
 | shortaxlabel | Logical, if `FALSE` the final individual gene dataset will maintain the accession numbers associated with each species or sequence. |
 | missdata | Logical, if `FALSE` the comparison will exclude any species that lacks a complete sequence for one of the input gene dataset. |

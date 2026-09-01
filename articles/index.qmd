@@ -42,6 +42,7 @@ These tutorials provide step-by-step guidance for common `catGenes` workflows, f
 
 ::: {style="display: block;"}
 ### Alignment and concatenation workflows
+- [Why catGenes instead of manual concatenation](/articles/why_catgenes_for_concatenation.qmd)
 - [Combine FASTA files and align sequences](/articles/combine_and_align_sequences.qmd)
 - [Convert among FASTA, NEXUS, and PHYLIP](/articles/convert_alignment_formats.qmd)
 - [Concatenate multilocus datasets](/articles/concatenate_with_catfullGenes.qmd)

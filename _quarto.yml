@@ -87,6 +87,8 @@ website:
               href: articles/mine_organellar_loci.qmd
         - section: Alignment and concatenation workflows
           contents:
+            - text: Why catGenes instead of manual concatenation
+              href: articles/why_catgenes_for_concatenation.qmd
             - text: Combine FASTA files and align sequences
               href: articles/combine_and_align_sequences.qmd
             - text: Convert among FASTA, NEXUS, and PHYLIP

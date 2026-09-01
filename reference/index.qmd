@@ -67,8 +67,6 @@ format:
 
 - [`plotPhylo()`](/reference/plotPhylo.qmd)
 
-- [`run_catGenes()`](/reference/run_catGenes.qmd)
-
 - [`splitTips()`](/reference/splitTips.qmd)
 
 - [`writeNexus()`](/reference/writeNexus.qmd)

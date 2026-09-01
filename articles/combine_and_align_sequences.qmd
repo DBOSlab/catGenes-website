@@ -49,7 +49,7 @@ A simple workflow looks like this:
 library(catGenes)
 
 result <- combineFASTA(
-  input_files = c("gene1.fasta", "gene2.fasta", "gene3.fasta")
+  input.files = c("gene1.fasta", "gene2.fasta", "gene3.fasta")
 )
 ```
 
@@ -59,8 +59,8 @@ This reads the listed files, combines all sequences into a single object, and by
 You can specify a custom file name for the combined output.
 ```{r, eval=FALSE}
 result <- combineFASTA(
-  input_files = c("data/part1.fasta", "data/part2.fasta"),
-  output_file = "combined_sequences.fasta"
+  input.files = c("data/part1.fasta", "data/part2.fasta"),
+  output.file = "combined_sequences.fasta"
 )
 ```
 This is especially useful when the combined file should reflect a locus name or project name.
@@ -70,7 +70,7 @@ If you want to inspect the combined sequences in R without immediately writing t
 
 ```{r, eval=FALSE}
 result <- combineFASTA(
-  input_files = c("temp1.fasta", "temp2.fasta"),
+  input.files = c("temp1.fasta", "temp2.fasta"),
   save = FALSE,
   verbose = TRUE
 )
@@ -206,11 +206,11 @@ seqs <- mineSeq(
 Step 2. Combine `FASTA` files if needed
 ```{r, eval=FALSE}
 combined <- combineFASTA(
-  input_files = c(
+  input.files = c(
     "RESULTS_mineSeq/09Mar2026/locus_part1.fasta",
     "RESULTS_mineSeq/09Mar2026/locus_part2.fasta"
   ),
-  output_file = "ITS_combined.fasta",
+  output.file = "ITS_combined.fasta",
   dir = "RESULTS_combineFASTA"
 )
 ```

@@ -53,8 +53,8 @@ all input files are included in the output.
 
 | Argument | Description |
 |---|---|
-| input_files | Character vector specifying the paths to FASTA files to be combined. This parameter is required - users must specify exactly which files they want to combine. |
-| output_file | Character string specifying the name of the output combined FASTA file. Default is "combined_sequences.fasta". |
+| input.files | Character vector specifying the paths to FASTA files to be combined. This parameter is required - users must specify exactly which files they want to combine. |
+| output.file | Character string specifying the name of the output combined FASTA file. Default is "combined_sequences.fasta". |
 | save | Logical. If `TRUE` (default), the combined sequences are saved to disk in the specified directory. If `FALSE`, the combined sequences are only returned as an R object without saving. |
 | verbose | Logical. If `TRUE` (default), progress messages are printed to the console. |
 | dir | Character string specifying the directory path for saving results. Default is "RESULTS_combineFASTA". A subdirectory with current date will be created within this directory when `save = TRUE`. |
@@ -84,17 +84,17 @@ A list containing:
 
 ```r
 # Basic usage: combine specific FASTA files
-result <- combineFASTA(input_files = c("file1.fasta", "file2.fasta", "file3.fasta"))
+result <- combineFASTA(input.files = c("file1.fasta", "file2.fasta", "file3.fasta"))
 
 # Combine files with custom output name
 result <- combineFASTA(
-  input_files = c("data/gene1.fasta", "data/gene2.fasta"),
-  output_file = "all_genes.fasta"
+  input.files = c("data/gene1.fasta", "data/gene2.fasta"),
+  output.file = "all_genes.fasta"
 )
 
 # Return results without saving to disk
 result <- combineFASTA(
-  input_files = c("temp1.fasta", "temp2.fasta"),
+  input.files = c("temp1.fasta", "temp2.fasta"),
   save = FALSE,
   verbose = TRUE
 )

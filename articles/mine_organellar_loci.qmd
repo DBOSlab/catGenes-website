@@ -150,7 +150,7 @@ minePlastome(
   voucher = c("Voucher1", "Voucher2"),
   CDS = TRUE,
   genes = c("matK", "rbcL", "ndhF"),
-  rm_gb_files = FALSE,
+  rm.gb.files = FALSE,
   verbose = TRUE,
   dir = "RESULTS_minePlastome"
 )
@@ -173,7 +173,7 @@ mineMitochondrion(
   voucher = c("VoucherA", "VoucherB"),
   CDS = TRUE,
   genes = c("cox1", "nad1"),
-  rm_gb_files = FALSE,
+  rm.gb.files = FALSE,
   verbose = TRUE,
   dir = "RESULTS_mineMitochondrion"
 )
@@ -184,7 +184,7 @@ Both functions write the mined loci as `FASTA` files in the specified output dir
 Typical outputs include:
 
 - one or more `FASTA` files containing the extracted target loci
-- optionally the original downloaded GenBank files, if `rm_gb_files = FALSE`
+- optionally the original downloaded GenBank files, if `rm.gb.files = FALSE`
 
 For example, plastome results may be saved under a directory such as:
 ```{r, eval=FALSE}
@@ -200,14 +200,14 @@ These `FASTA` outputs can then be aligned and incorporated into later concatenat
 
 ## Keeping or removing downloaded GenBank files
 
-By default, downloaded `.gb` files can be kept or removed depending on the setting of `rm_gb_files`.
+By default, downloaded `.gb` files can be kept or removed depending on the setting of `rm.gb.files`.
 
 To remove them after locus extraction:
 ```{r, eval=FALSE}
 minePlastome(
   genbank = plastome_accessions,
   genes = c("matK", "rbcL"),
-  rm_gb_files = TRUE
+  rm.gb.files = TRUE
 )
 ```
 
@@ -216,7 +216,7 @@ To retain them for inspection or reuse:
 minePlastome(
   genbank = plastome_accessions,
   genes = c("matK", "rbcL"),
-  rm_gb_files = FALSE
+  rm.gb.files = FALSE
 )
 ```
 

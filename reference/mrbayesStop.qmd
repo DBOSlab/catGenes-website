@@ -15,7 +15,7 @@ catGenes::mrbayesStop()
 
 Convenience wrapper to stop a MrBayes run returned by `mrbayesRun`.
 For programmatic stopping, the run must have been started with processx
-(i.e., `use_processx = TRUE`) and, for practical "stop anytime" control,
+(i.e., `use.processx = TRUE`) and, for practical "stop anytime" control,
 `background = TRUE`.
 
 ### Arguments

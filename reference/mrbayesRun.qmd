@@ -13,13 +13,13 @@ catGenes::mrbayesRun()
 
 ### Description
 
-Runs a Bayesian phylogenetic analysis in
+Run a Bayesian phylogenetic analysis in
 [MrBayes](https://nbisweden.github.io/MrBayes/) directly from R/RStudio using a
 pre-configured NEXUS file that already contains a complete `begin mrbayes;`
 command block. The function copies (or moves) the NEXUS file to a dedicated run
 directory, launches MrBayes, and captures the program output.
 
-When processx is installed and `use_processx = TRUE`, output can be
+When processx is installed and `use.processx = TRUE`, output can be
 streamed live to the R console and the returned object includes a `stop()`
 handle that can terminate the run programmatically. Programmatic stopping is
 only useful when `background = TRUE`, because in foreground mode the call
@@ -28,22 +28,77 @@ blocks until MrBayes finishes.
 Without processx, the analysis can still be run and live output can be
 printed, but stopping is interactive (e.g., Esc in RStudio).
 
+### Details
+
+Output capture:
+
+- 
+
+- 
+-  
+- `stdout`
+- : file path where standard output is recorded.
+
+- 
+-  
+- `stderr`
+- : file path where errors/warnings are recorded.
+
+- The function runs MrBayes in 
+- `run.dir`
+- , so all MrBayes output files
+
+- (e.g., 
+- `.p`
+- , 
+- `.t`
+- , 
+- `.con.tre`
+- ) will be written there.
+
+Stopping the run:
+
+- 
+
+- 
+-  With 
+- processx
+-  + 
+- `background = TRUE`
+- : call 
+- `mrbayesStop(res)`
+-  or 
+- `res$stop()`
+- .
+
+- 
+-  With 
+- processx
+-  + 
+- `background = FALSE`
+- : stop interactively (Esc) because the call blocks.
+
+- 
+-  Without 
+- processx
+- : stop interactively (Esc in RStudio).
+
 ### Arguments
 
 | Argument | Description |
 |---|---|
-| nexus_file | Path to a NEXUS file (`.nex` or `.nexus`) that already contains a valid MrBayes block (i.e., `begin mrbayes;` ... `end;`). |
-| mrbayes_dir | Path to the folder containing the MrBayes executable. On macOS/Linux this is typically a folder containing `mb`; on Windows, `mb.exe`. If the executable is not found directly in `mrbayes_dir`, the function also checks `file.path(mrbayes_dir, "bin")`. Typical values for `mrbayes_dir`: - - - macOS (Intel, Homebrew): - `"/usr/local/bin"` - - - macOS (Apple Silicon, Homebrew): - `"/opt/homebrew/bin"` - - - macOS/Linux (local install): - `"~/.local/bin"` - (use - `path.expand("~/.local/bin")` - ) - - Windows (typical): - `"C:/Program Files/MrBayes"` - or a folder containing - `mb.exe` - |
-| run_dir | Directory where the analysis will run. If `NULL`, a new folder named `mrbayes_run_YYYYmmdd_HHMMSS` is created in `getwd()`. |
-| copy_mode | Either `"copy"` (default) or `"move"`. Determines whether `nexus_file` is copied to `run_dir` or moved there before running MrBayes. |
+| nexus.file | Path to a NEXUS file (`.nex` or `.nexus`) that already contains a valid MrBayes block (i.e., `begin mrbayes;` ... `end;`). |
+| mrbayes.dir | Path to the folder containing the MrBayes executable. On macOS/Linux this is typically a folder containing `mb`; on Windows, `mb.exe`. If the executable is not found directly in `mrbayes.dir`, the function also checks `file.path(mrbayes.dir, "bin")`. Typical values for `mrbayes.dir`: - - - macOS (Intel, Homebrew): - `"/usr/local/bin"` - - - macOS (Apple Silicon, Homebrew): - `"/opt/homebrew/bin"` - - - macOS/Linux (local install): - `"~/.local/bin"` - (use - `path.expand("~/.local/bin")` - ) - - Windows (typical): - `"C:/Program Files/MrBayes"` - or a folder containing - `mb.exe` - |
+| run.dir | Directory where the analysis will run. If `NULL`, a new folder named `mrbayes_run_YYYYmmdd_HHMMSS` is created in `getwd()`. |
+| copy.mode | Either `"copy"` (default) or `"move"`. Determines whether `nexus.file` is copied to `run.dir` or moved there before running MrBayes. |
 | quiet | Logical. If `TRUE`, suppresses most informational messages (default: `FALSE`). |
 | live | Logical. If `TRUE`, prints MrBayes output to the R console (default: `TRUE`). Live streaming is most reliable with processx. |
-| use_processx | Logical. If `TRUE` (default), uses processx when installed to provide robust output streaming and a programmatic stop handle. |
+| use.processx | Logical. If `TRUE` (default), uses processx when installed to provide robust output streaming and a programmatic stop handle. |
 | background | Logical. If `TRUE`, starts MrBayes and returns immediately (non-blocking). The returned object includes `poll()` to print new output on demand and `stop()` to terminate the run. Requires processx. Default: `FALSE`. |
 
 ### Value
 
-A list with (at minimum) `exe_path`, `run_dir`, `nexus_path`,
+A list with (at minimum) `exe_path`, `run.dir`, `nexus_path`,
 `stdout`, `stderr`, `exit_status`, and `error`. When
 processx is used, the list additionally includes `proc` (a
 processx process object) and `stop`. When `background = TRUE`,
@@ -54,7 +109,7 @@ the list also includes `poll`.
 ```r
 # Background mode (recommended for stop-anytime control)
 res <- mrbayesRun("analysis.nex",
-                  mrbayes_dir = "/usr/local/bin",
+                  mrbayes.dir = "/usr/local/bin",
                   background = TRUE)
 res$poll()          # print new output
 mrbayesStop(res)    # graceful stop
@@ -62,7 +117,7 @@ mrbayesStop(res, TRUE) # force kill
 
 # Foreground mode (blocking): stop with Esc in RStudio
 mrbayesRun("analysis.nex",
-           mrbayes_dir = "/usr/local/bin")
+           mrbayes.dir = "/usr/local/bin")
 ```
 
 

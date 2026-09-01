@@ -47,6 +47,8 @@ phylogenetic estimation methods.
 | phylogram.side | If `TRUE`, a small phylogram with branch lengths will be plotted on the upper left. |
 | phylogram.supports | If `TRUE`, the side phylogram will include the same symbols of node support as those plotted in the main edited tree. |
 | phylogram.height | A number to adjust the size of the side phylogram. |
+| support.legend | Logical, whether to add a legend for node support symbols. Defaults to TRUE. |
+| support.legend.position | Position of the support legend. Can be a numeric vector of length 2 (e.g., c(0.15, 0.95) for top-left) or a character string like "top.left", "top.right", "bottom.left", "bottom.right". Defaults to c(0.15, 0.95) for top-left corner. |
 | save | Logical, if `TRUE`, the edited tree will be saved on disk. |
 | dpi | One number in the range of 72-4000 referring to the image resolution in the format of dots per inch in the output file. Default is to create an output with 600 dpi. |
 | dir | The path to the directory where the edited tree file will be saved provided that the argument `save` is set up in `TRUE`. The default is to create a directory named **RESULTS_edited_tree** and the tree will be saved within a subfolder named after the current date. |

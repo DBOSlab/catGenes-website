@@ -51,8 +51,8 @@ A simple model-selection workflow looks like this:
 library(catGenes)
 
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  model_criteria = "BIC"
+  nexus.file.path = "Vataireoids.nex",
+  model.criteria = "BIC"
 )
 ```
 
@@ -61,19 +61,19 @@ This evaluates substitution models for the provided NEXUS alignment and generate
 
 ## Required input
 
-The main input is nexus_file_path, which points to one or more NEXUS alignment files.
+The main input is `nexus.file.path`, which points to one or more NEXUS alignment files.
 
 For example:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "path/to/ITS.nex"
+  nexus.file.path = "path/to/ITS.nex"
 )
 ```
 
 or, for multiple locus files:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = c("path/to/ITS.nex",
+  nexus.file.path = c("path/to/ITS.nex",
                       "path/to/matK.nex",
                       "path/to/rbcL.nex")
 )
@@ -82,7 +82,7 @@ evomodelTest(
 These can be individual alignments that you later want to use in a partitioned Bayesian analysis.
 
 ## Choosing the information criterion
-The argument model_criteria controls how the best model is chosen.
+The argument `model.criteria` controls how the best model is chosen.
 Supported options include:
 - "AIC"
 - "BIC"
@@ -90,58 +90,58 @@ Supported options include:
 For example, using AIC:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  model_criteria = "AIC"
+  nexus.file.path = "Vataireoids.nex",
+  model.criteria = "AIC"
 )
 ```
 
 In many phylogenetic workflows, BIC is a conservative and commonly preferred criterion, but both are useful depending on analytical preference.
 
 ## Choosing which models to test
-The argument models_to_test controls the set of substitution models included in the comparison.
+The argument `models.to.test` controls the set of substitution models included in the comparison.
 You can test all available models:
 
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  models_to_test = "all"
+  nexus.file.path = "Vataireoids.nex",
+  models.to.test = "all"
 )
 ```
 
 Or a standard subset:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  models_to_test = "standard"
+  nexus.file.path = "Vataireoids.nex",
+  models.to.test = "standard"
 )
 ```
 
 You can also specify a custom vector of models:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  models_to_test = c("JC", "HKY", "GTR")
+  nexus.file.path = "Vataireoids.nex",
+  models.to.test = c("JC", "HKY", "GTR")
 )
 ```
 This is useful when you want to restrict testing to a smaller, interpretable set of candidate models.
 
 ## Including gamma rate heterogeneity
-The argument `include_G` controls whether among-site rate variation modeled with gamma-distributed rates should be evaluated.
+The argument `include.G` controls whether among-site rate variation modeled with gamma-distributed rates should be evaluated.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  include_G = TRUE
+  nexus.file.path = "Vataireoids.nex",
+  include.G = TRUE
 )
 ```
 
 Including gamma-distributed rate heterogeneity is often appropriate for empirical DNA datasets.
 
 ## Including invariant sites
-The argument `include_I` controls whether models including a proportion of invariant sites are tested.
+The argument `include.I` controls whether models including a proportion of invariant sites are tested.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  include_I = TRUE
+  nexus.file.path = "Vataireoids.nex",
+  include.I = TRUE
 )
 ```
 
@@ -151,7 +151,7 @@ The combination of +G and +I options can have a substantial effect on model choi
 The argument mc.cores controls the number of cores used during model testing.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
+  nexus.file.path = "Vataireoids.nex",
   mc.cores = 4
 )
 ```
@@ -162,8 +162,8 @@ Using multiple cores can speed up model testing, especially when working with mu
 One of the main strengths of `evomodelTest()` is that it can automatically generate and append MrBayes commands to the input `NEXUS` file.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  append_mrbayes_to_nexus = TRUE
+  nexus.file.path = "Vataireoids.nex",
+  append.mrbayes.to.nexus = TRUE
 )
 ```
 
@@ -171,41 +171,41 @@ This is convenient because it prepares the alignment for direct downstream use w
 If you do not want to append the block:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  append_mrbayes_to_nexus = FALSE
+  nexus.file.path = "Vataireoids.nex",
+  append.mrbayes.to.nexus = FALSE
 )
 ```
 
 ## Overwriting the original NEXUS file
-The argument overwrite_original_nexus controls whether the original `NEXUS` file should be replaced when the `MrBayes` block is appended.
+The argument `overwrite.original.nexus` controls whether the original `NEXUS` file should be replaced when the `MrBayes` block is appended.
 To overwrite the original file:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  append_mrbayes_to_nexus = TRUE,
-  overwrite_original_nexus = TRUE
+  nexus.file.path = "Vataireoids.nex",
+  append.mrbayes.to.nexus = TRUE,
+  overwrite.original.nexus = TRUE
 )
 ```
 
 To preserve the original file and write a modified copy instead:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  append_mrbayes_to_nexus = TRUE,
-  overwrite_original_nexus = FALSE
+  nexus.file.path = "Vataireoids.nex",
+  append.mrbayes.to.nexus = TRUE,
+  overwrite.original.nexus = FALSE
 )
 ```
 
 Keeping the original file unchanged is often safer, especially when testing alternative model-selection settings.
 
 ## Preparing a combined partitioned MrBayes block
-If you already have a concatenated `NEXUS` matrix and want to append a complete partitioned `MrBayes` block to it, use `combined_nexus_file_path`.
+If you already have a concatenated `NEXUS` matrix and want to append a complete partitioned `MrBayes` block to it, use `combined.nexus.file.path`.
 For example:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = c("ITS.nex", "matK.nex", "rbcL.nex"),
-  combined_nexus_file_path = "combined_dataset.nex",
-  append_mrbayes_to_nexus = TRUE
+  nexus.file.path = c("ITS.nex", "matK.nex", "rbcL.nex"),
+  combined.nexus.file.path = "combined_dataset.nex",
+  append.mrbayes.to.nexus = TRUE
 )
 ```
 This allows model selection to be performed on the individual loci while the final combined `MrBayes` block is added to the concatenated partitioned matrix.
@@ -216,7 +216,7 @@ This is one of the most useful workflows when moving from locus-specific alignme
 The argument `dir` controls where model-selection results are written.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
+  nexus.file.path = "Vataireoids.nex",
   dir = "RESULTS_evomodelTest"
 )
 ```
@@ -226,7 +226,7 @@ By default, the function creates a results folder with a date-stamped subdirecto
 The argument `verbose` controls whether progress messages are printed during execution.
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
+  nexus.file.path = "Vataireoids.nex",
   verbose = TRUE
 )
 ```
@@ -234,7 +234,7 @@ evomodelTest(
 To suppress progress messages:
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
+  nexus.file.path = "Vataireoids.nex",
   verbose = FALSE
 )
 ```
@@ -258,13 +258,13 @@ writeNexus(
 Step 2. Run model selection and append a `MrBayes` block
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  model_criteria = "BIC",
-  models_to_test = "standard",
-  include_G = TRUE,
-  include_I = TRUE,
-  append_mrbayes_to_nexus = TRUE,
-  overwrite_original_nexus = FALSE,
+  nexus.file.path = "Vataireoids.nex",
+  model.criteria = "BIC",
+  models.to.test = "standard",
+  include.G = TRUE,
+  include.I = TRUE,
+  append.mrbayes.to.nexus = TRUE,
+  overwrite.original.nexus = FALSE,
   dir = "RESULTS_evomodelTest"
 )
 ```
@@ -306,17 +306,17 @@ Large alignments or many candidate models can increase runtime. To reduce comput
 - use "standard" rather than "all"
 
 ### Original `NEXUS` file is overwritten unintentionally
-Be cautious when using `overwrite_original_nexus = TRUE`. If you want to preserve the original matrix, keep this option set to `FALSE`.
+Be cautious when using `overwrite.original.nexus = TRUE`. If you want to preserve the original matrix, keep this option set to `FALSE`.
 
 ### The `MrBayes` block is not appended where expected
 Make sure:
 
-- `append_mrbayes_to_nexus = TRUE`
-- the `nexus_file_path` is correct
-- `combined_nexus_file_path` is provided when working with a separate concatenated matrix
+- `append.mrbayes.to.nexus = TRUE`
+- the `nexus.file.path` is correct
+- `combined.nexus.file.path` is provided when working with a separate concatenated matrix
 
 ### The selected model does not match expectations
-Different criteria (AIC vs BIC) or different choices for `include_G` and `include_I` can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.
+Different criteria (AIC vs BIC) or different choices for `include.G` and `include.I` can change the best-fitting model. This is normal and should be interpreted in the context of the dataset and analytical goals.
 
 ## Recommended practice
 For the smoothest model-selection workflow:

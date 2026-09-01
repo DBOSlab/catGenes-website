@@ -1,0 +1,96 @@
+---
+title: "Why catGenes for concatenating DNA alignments"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Overview
+
+Many phylogenetics labs still concatenate multilocus DNA alignments by hand, using a sequence editor such as [SeaView](https://doi.org/10.1093/molbev/msp259), [AliView](https://doi.org/10.1093/bioinformatics/btu531), BioEdit, or Mesquite to standardize matrices, and then relying on the built-in auto-concatenation feature of a phylogenetic GUI such as [raxmlGUI](https://doi.org/10.1111/2041-210X.13512) to merge them before a maximum-likelihood or Bayesian analysis.
+
+This works well for small, tidy datasets — but it depends entirely on every sequence name being **character-for-character identical** across every input matrix. As soon as sequence names carry additional information (a voucher number, a collector code, a GenBank accession), which is exactly what taxonomic and biodiversity best practice recommends for traceability, these tools stop recognizing that the same species is present in more than one alignment. The result can range from a bloated, duplicated matrix to a completely empty file, and — in the worst case — the silent loss of your outgroup.
+
+This article walks through that failure mode with a real example, and explains how `catGenes` was specifically designed to avoid it.
+
+## How GUI-based concatenation tools work
+
+Tools like raxmlGUI concatenate `FASTA`- or `PHYLIP`-formatted alignments by comparing sequence names **verbatim**. When you load two or more matrices:
+
+- if a name is present in more than one matrix, its sequences are merged into one row of the concatenated matrix;
+- if a name is present in only one matrix, the tool has two options, usually toggled by a single switch (in raxmlGUI, *"Fill taxon gaps with empty sequences"*):
+  - **on** (union): the taxon is kept, and its sequence for the missing locus is padded with missing data;
+  - **off** (intersection): the taxon is dropped entirely, so only taxa present in *every* input matrix are retained.
+
+This works exactly as expected when sequence names are already perfectly standardized across all input files.
+
+## What goes wrong when names carry identifiers
+
+To see where this breaks down, consider two small plastid alignments of the same *Begonia* species, `ndhA` and `ndhF-rpl21` (an example error we ran into ourselves and used to motivate `catGenes`). With clean, identifier-free names, raxmlGUI behaves correctly: toggling *"Fill taxon gaps"* on gives a union of 15 species; toggling it off gives an intersection of just the 6 species shared by both loci.
+
+Now repeat the same concatenation using the *same two loci*, but with sequence names that include a GenBank accession suffix — `ndhA` with 20 sequences, `ndhF-rpl21` with 21 sequences, exactly as they would be named after a real GenBank download. Because the accession suffix makes every name unique to its own file, raxmlGUI can no longer recognize that `Begonia_species_MN123456` in one matrix and `Begonia_species_MN654321` in the other are the *same* species:
+
+- With **"Fill taxon gaps" on**, the concatenated matrix has 41 sequences — simply `20 + 21`, the sum of the two files — because every real taxon is duplicated into a second, entirely empty "ghost" row under the other file's distinct name.
+- With **"Fill taxon gaps" off**, the tool finds *zero* names in common between the two matrices, and the resulting "concatenated" file is completely empty — with no warning that anything went wrong.
+
+Worse, this failure mode creates a silent methodological risk: if your single most important outgroup happens to be missing a sequence for one of the loci — which is common, since outgroups are often less densely sampled than the ingroup — the intersection approach will drop it from the final matrix without telling you. Losing or misplacing an outgroup can materially bias phylogenetic inference, and nothing in the GUI workflow flags that this happened.
+
+## How `catGenes` solves this
+
+`catGenes`'s concatenating functions, [`catfullGenes()`](/reference/catfullGenes.qmd) and [`catmultGenes()`](/reference/catmultGenes.qmd), never compare sequence names verbatim. Instead, they parse each label structurally, separating the scientific name from any trailing voucher, collector, or accession identifier (see [Standardizing DNA alignments](/articles/standardizing_alignments.qmd) for the labeling convention). This means the same species — or, with `catmultGenes()`, the same individual accession — is correctly recognized across matrices no matter what identifying code is appended to its name.
+
+### Correct union and intersection, with outgroup protection
+
+With `missdata = TRUE` (the default, equivalent to raxmlGUI's "Fill taxon gaps" on), `catGenes` produces the true union of taxa: one row per real species or accession, filled with `?` only for the loci where that taxon genuinely has no sequence — never a duplicated ghost row.
+
+With `missdata = FALSE` (intersection), `catGenes` goes a step further than any GUI tool: the `outgroup` argument lets you name one or more taxa that must always be retained in the final matrix, even if they are missing data for some loci:
+
+```{r, eval=FALSE}
+catdf <- catfullGenes(
+  my_alignments,
+  missdata = FALSE,
+  outgroup = c("Hillebrandia_sandwicensis")
+)
+```
+
+This directly closes the outgroup-loss risk described above — something the raxmlGUI-style intersection concatenation has no mechanism for.
+
+### Identifiers preserved as bracketed comments, not lost
+
+When alignments are exported with `shortaxlabel = FALSE`, [`writeNexus()`](/reference/writeNexus.qmd) and [`writePhylip()`](/reference/writePhylip.qmd) keep any identifier that differs across partitions as a bracketed comment next to the affected taxon, instead of silently dropping it or treating the accession as an unrelated species. The example below is a real multi-accession *Brongniartia* dataset:
+
+![ITS partition of a concatenated matrix, with differing GenBank/collector identifiers preserved as bracketed comments (e.g. [AF467022], [Hernandez9407_GQ250075])](figures/catGenes_with_taxlabels1.png)
+
+![ETS partition of the same matrix — note that the bracketed identifier changes per partition, always reflecting which accession actually contributed data to that locus](figures/catGenes_with_taxlabels2.png)
+
+This means the concatenated matrix stays fully traceable back to its original vouchers and GenBank records, with no manual bookkeeping required. See [Write concatenated datasets](/articles/write_concatenated_datasets.qmd) for the full explanation of this feature.
+
+### Scales from a handful of Sanger loci to full plastomes
+
+Because matching is based on parsed identity rather than exact string comparison, the same logic that fixes a two-locus dataset also scales to genomic-level concatenation. The screenshot below shows the result of `catmultGenes()` applied to 78 partitioned plastid genes across more than 120 Vochysiaceae accessions (data originally published by [Gonçalves et al. 2020](https://bsapubs.onlinelibrary.wiley.com/doi/abs/10.1002/ajb2.1502), kindly shared for use as example data):
+
+![NEXUS-formatted concatenated matrix from 78 plastid gene partitions across a phylogenomic Vochysiaceae dataset](figures/Vochysiaceae1.png)
+
+Manually curating name consistency across dozens or hundreds of loci by hand in a GUI editor is impractical at this scale; `catGenes` handles it the same way it handles a three-locus Sanger dataset.
+
+## At a glance
+
+| | SeaView / AliView + raxmlGUI-style auto-concatenation | `catGenes` |
+|---|---|---|
+| Matches taxa across matrices by | exact, character-for-character name | parsed scientific name (+ identifier, when relevant) |
+| Names with voucher/GenBank suffixes | treated as different taxa | correctly matched |
+| Union of taxa (missing data allowed) | works, but duplicates taxa when names differ | one row per real taxon, `?` only where data is truly missing |
+| Intersection of taxa (complete cases only) | can silently return an empty file | works correctly; `outgroup` protects named taxa from being dropped |
+| Differing identifiers across loci | lost or cause a mismatch | preserved as bracketed comments in the output |
+| Scale | manual editing becomes impractical beyond a few loci | tested with 78+ partitioned genomic loci |
+| Reproducibility | manual, GUI-driven, hard to script | fully scriptable R functions |
+
+## Getting started
+
+To see these functions in practice, start with:
+
+- [Standardizing DNA alignments](/articles/standardizing_alignments.qmd) — the labeling convention `catGenes` relies on
+- [Concatenate multilocus datasets](/articles/concatenate_with_catfullGenes.qmd) — single-accession-per-species workflow
+- [Working with duplicated taxa and multiple accessions](/articles/duplicated_taxa_and_accessions.qmd) and [Concatenate datasets with duplicated accessions](/articles/concatenate_with_catmultGenes.qmd) — for datasets with multiple accessions per species
+- [Write concatenated datasets](/articles/write_concatenated_datasets.qmd) — exporting to `NEXUS`/`PHYLIP` with identifiers preserved

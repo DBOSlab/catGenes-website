@@ -23,6 +23,7 @@ format into each other.
 | filepath | Path to the directory where the DNA alignments are stored. |
 | format | Define either "NEXUS", "FASTA" or "PHYLIP" format for writing the resulting newly converted files. |
 | rmfiles | Logical, if `TRUE`, the original input file(s) are removed from the directory and only the newly converted files are kept. |
+| verbose | Logical, if `FALSE`, a message showing each step during the analysis will not be printed in the console in full. |
 | dir | The path to the directory where the newly converted files should be saved. If no directory is given, then the files will saved in a subfolder named after the current date under the folder named **RESULTS_convertAlign**. |
 
 ### Examples

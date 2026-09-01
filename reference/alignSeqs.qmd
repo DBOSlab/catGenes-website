@@ -26,7 +26,7 @@ the aligned sequences in FASTA, NEXUS or PHYLIP format.
 |---|---|
 | filepath | Path to the directory where the FASTA-formatted DNA alignments are stored. |
 | method | Specifies the multiple sequence alignment to be used. Currently, "ClustalW" and "Muscle" are supported. |
-| gapOpening | Gap opening penalty; the defaults are specific to the algorithm (see `msaClustalW` and `msaMuscle)`. Note that the sign of this parameter is ignored. The sign is automatically adjusted such that the called algorithm penalizes gaps instead of rewarding them. |
+| gapOpening | Gap opening penalty; the defaults are specific to the algorithm (see `msaClustalW` and `msaMuscle`. Note that the sign of this parameter is ignored. The sign is automatically adjusted such that the called algorithm penalizes gaps instead of rewarding them. |
 | format | Define either "NEXUS", "FASTA" or "PHYLIP" for writing the resulting aligned DNA sequences in such formats. The default is to save the aligned sequences in a NEXUS-formatted file. |
 | verbose | Logical, if `FALSE`, a message showing each step during the multiple sequence alignment will not be printed in the console in full. |
 | dir | The path to the directory where the mined DNA sequences in a fasta format file will be saved provided that the argument `save` is set up in `TRUE`. The default is to create a directory named **RESULTS_alignSeqs** and the sequences will be saved within a subfolder named after the current date. |

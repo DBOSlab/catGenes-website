@@ -95,7 +95,7 @@ By default, `mineTaxa()` cleans and standardizes sequence labels.
 ```{r, eval=FALSE}
 seqs <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  clean_taxa = TRUE
+  clean.taxa = TRUE
 )
 ```
 
@@ -113,12 +113,12 @@ Taxon name cleaning may include:
 This is especially useful when retrieving large numbers of GenBank records with heterogeneous metadata.
 
 ## Preserving original GenBank names
-If you prefer to keep GenBank names unchanged, set `clean_taxa = FALSE`.
+If you prefer to keep GenBank names unchanged, set `clean.taxa = FALSE`.
 
 ```{r, eval=FALSE}
 seqs_raw <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  clean_taxa = FALSE
+  clean.taxa = FALSE
 )
 ```
 
@@ -130,7 +130,7 @@ By default, `mineTaxa()` attempts to extract voucher information from GenBank me
 ```{r, eval=FALSE}
 seqs <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  add_voucher = TRUE
+  rm.duplicated = TRUE
 )
 ```
 
@@ -143,17 +143,17 @@ This is particularly useful when the same species is represented by multiple acc
 
 # Saving the original unprocessed query
 
-If you want to preserve a copy of the original unprocessed `FASTA` output alongside the cleaned version, use `original_query = TRUE`.
+If you want to preserve a copy of the original unprocessed `FASTA` output alongside the cleaned version, use `original.query = TRUE`.
 
 ```{r, eval=FALSE}
 mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  clean_taxa = TRUE,
-  original_query = TRUE
+  clean.taxa = TRUE,
+  original.query = TRUE
 )
 ```
 
-This writes an additional file with the suffix _ORIGINAL_QUERY, allowing you to compare the cleaned output against the raw GenBank results.
+This writes an additional file with the suffix _original.query, allowing you to compare the cleaned output against the raw GenBank results.
 
 ## Separating plastomes from standard sequences
 
@@ -162,7 +162,7 @@ One important feature of `mineTaxa()` is the ability to separate complete plasto
 ```{r, eval=FALSE}
 seqs <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  plastome_apart = TRUE
+  plastome.apart = TRUE
 )
 ```
 When this option is enabled, complete plastomes are separated into a dedicated file with a prefix such as:
@@ -179,7 +179,7 @@ By default, `mineTaxa()` removes duplicate sequences from the same species, keep
 ```{r, eval=FALSE}
 seqs <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  rm_duplicated = TRUE
+  rm.duplicated = TRUE
 )
 ```
 
@@ -192,7 +192,7 @@ If you want to retain all retrieved sequences, including duplicates, disable dup
 ```{r, eval=FALSE}
 seqs_all <- mineTaxa(
   term = "Leguminosae[Organism] AND matK[Gene]",
-  rm_duplicated = FALSE
+  rm.duplicated = FALSE
 )
 ```
 

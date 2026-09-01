@@ -39,8 +39,8 @@ A minimal call looks like this:
 library(catGenes)
 
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/path/to/mrbayes"
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/path/to/mrbayes"
 )
 ```
 
@@ -71,17 +71,17 @@ writeNexus(
 )
 
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  model_criteria = "BIC",
-  append_mrbayes_to_nexus = TRUE,
-  overwrite_original_nexus = FALSE
+  nexus.file.path = "Vataireoids.nex",
+  model.criteria = "BIC",
+  append.mrbayes.to.nexus = TRUE,
+  overwrite.original.nexus = FALSE
 )
 ```
 
 After that, the prepared file can be passed to `mrbayesRun()`.
 
 ## Finding the MrBayes executable
-The argument `mrbayes_dir` should point to the folder containing the `MrBayes` executable.
+The argument `mrbayes.dir` should point to the folder containing the `MrBayes` executable.
 Typical examples include:
 
 - macOS (Intel, Homebrew)
@@ -105,8 +105,8 @@ If the executable is not found directly in mrbayes_dir, mrbayesRun() also checks
 A standard foreground analysis looks like this:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin"
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin"
 )
 ```
 
@@ -118,24 +118,24 @@ This:
 - captures standard output and standard error
 - returns a summary object in R
 
-## Understanding `run_dir`
-The argument `run_dir` controls where the analysis is executed.
+## Understanding `run.dir`
+The argument `run.dir` controls where the analysis is executed.
 
 If left as `NULL`, `mrbayesRun()` creates a new folder in the current working directory with a timestamped name.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  run_dir = NULL
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  run.dir = NULL
 )
 ```
 
 You can also specify a custom directory:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  run_dir = "RESULTS_mrbayes/my_analysis"
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  run.dir = "RESULTS_mrbayes/my_analysis"
 )
 ```
 Using an explicit run directory can be helpful when organizing multiple analyses.
@@ -146,9 +146,9 @@ The argument `copy_mode` determines whether the input NEXUS file is copied or mo
 Copy the file
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  copy_mode = "copy"
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  copy.mode = "copy"
 )
 ```
 This is the safest and most common option because the original file is preserved.
@@ -156,9 +156,9 @@ This is the safest and most common option because the original file is preserved
 Move the file
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  copy_mode = "move"
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  copy.mode = "move"
 )
 ```
 This relocates the original file to the run directory, which may be useful in some fully automated workflows.
@@ -167,8 +167,8 @@ This relocates the original file to the run directory, which may be useful in so
 The argument `quiet` controls whether informational messages are printed.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
   quiet = FALSE
 )
 ```
@@ -176,8 +176,8 @@ res <- mrbayesRun(
 To suppress most informational output:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
   quiet = TRUE
 )
 ```
@@ -187,8 +187,8 @@ This is useful when running analyses in scripts or batch workflows.
 The argument `live` controls whether the MrBayes output is streamed to the R console while the analysis runs.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
   live = TRUE
 )
 ```
@@ -198,8 +198,8 @@ This is often useful for monitoring progress interactively.
 To disable live console output:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
   live = FALSE
 )
 ```
@@ -208,9 +208,9 @@ res <- mrbayesRun(
 When available, `mrbayesRun()` can use the processx package to improve output handling and support background execution.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  use_processx = TRUE
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  use.processx = TRUE
 )
 ```
 
@@ -219,9 +219,9 @@ This is the default and generally the most robust option.
 If processx is not installed or you do not want to use it:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  use_processx = FALSE
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  use.processx = FALSE
 )
 ```
 
@@ -229,8 +229,8 @@ res <- mrbayesRun(
 A particularly useful feature is background execution. When `background = TRUE`, `MrBayes` starts and returns control to R immediately.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
   background = TRUE
 )
 ```
@@ -294,19 +294,19 @@ writeNexus(
 Step 2. Select models and append a `MrBayes` block
 ```{r, eval=FALSE}
 evomodelTest(
-  nexus_file_path = "Vataireoids.nex",
-  model_criteria = "BIC",
-  append_mrbayes_to_nexus = TRUE,
-  overwrite_original_nexus = FALSE
+  nexus.file.path = "Vataireoids.nex",
+  model.criteria = "BIC",
+  append.mrbayes.to.nexus = TRUE,
+  overwrite.original.nexus = FALSE
 )
 ```
 
 Step 3. Run `MrBayes`
 ```{r, eval=FALSE}
 res <- mrbayesRun(
-  nexus_file = "Vataireoids.nex",
-  mrbayes_dir = "/opt/homebrew/bin",
-  copy_mode = "copy",
+  nexus.file = "Vataireoids.nex",
+  mrbayes.dir = "/opt/homebrew/bin",
+  copy.mode = "copy",
   live = TRUE,
   background = FALSE
 )
@@ -346,7 +346,7 @@ Programmatic stopping is mainly available when processx is installed and `backgr
 For the smoothest use of `mrbayesRun()`:
 
 - always prepare and inspect the `NEXUS` file first
-- preserve the original file by using `copy_mode = "copy"`
+- preserve the original file by using `copy.mode = "copy"`
 - use an explicit run_dir for organized projects
 - use background = TRUE for long analyses
 - inspect returned paths and logs after the run
