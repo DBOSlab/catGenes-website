@@ -69,7 +69,7 @@ In this format, `catGenes` uses the scientific name plus the identifier to recog
 
 The figure below illustrates how labels should be formatted when one or more species are represented by multiple accessions.
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+![Example when species are duplicated with multiple accessions](../figures/labelling_with_identifiers_and_duplicated_species.png)
 
 The key principle is that the identifying component must be consistent wherever the same accession appears.
 

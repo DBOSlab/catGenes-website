@@ -40,9 +40,9 @@ Examples:
 - `Vatairea_fusca_Cardoso2939`
 - `Vatairea_fusca_Cardoso2939_JX152598`
 
-![Example with no identifiers in the sequences](figures/labelling_no_identifiers.png)
+![Example with no identifiers in the sequences](../figures/labelling_no_identifiers.png)
 
-![Example with identifiers in the sequences](figures/labelling_with_identifiers_no_duplicated_species.png)
+![Example with identifiers in the sequences](../figures/labelling_with_identifiers_no_duplicated_species.png)
 
 ## 2. Datasets with duplicated species or multiple accessions
 
@@ -65,7 +65,7 @@ Examples:
 
 In these cases, use `catmultGenes()` rather than `catfullGenes()`.
 
-![Example when species are duplicated with multiple accessions](figures/labelling_with_identifiers_and_duplicated_species.png)
+![Example when species are duplicated with multiple accessions](../figures/labelling_with_identifiers_and_duplicated_species.png)
 
 ## 3. Genus-level identifications and infraspecific taxa
 
@@ -88,7 +88,7 @@ For infraspecific taxa, add the infraspecific epithet after the species epithet,
 - `Genus_species_variety_identifier`
 - `Genus_species_subspecies_identifier`
 
-![Example with other label formatting](figures/other_label_fformatting.png)
+![Example with other label formatting](../figures/other_label_fformatting.png)
 
 ## 4. Naming alignment files
 
