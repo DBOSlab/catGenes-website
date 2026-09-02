@@ -32,13 +32,16 @@ You can install the latest development version of `catGenes` package from [GitHu
 
 
 ```{r, eval=FALSE}
-#install.packages("devtools")
-devtools::install_github("DBOSlab/catGenes")
+if (!requireNamespace("BiocManager", quietly = TRUE)) 
+install.packages("BiocManager") 
+
+# Install the development version of catGenes from GitHub, 
+# together with its required dependencies 
+BiocManager::install("DBOSlab/catGenes", dependencies = TRUE)
 ```
 
-Notes
 :::{.callout-note}
-`catGenes` is currently distributed from GitHub. Make sure devtools is installed before running devtools::install_github().
-:::
+`catGenes` is currently distributed from GitHub. Make sure BiocManager is installed before running BiocManager::install().
+
 :::{.callout-caution}
 Some functions in `catGenes` rely on additional external software or online resources. For example, functions that retrieve sequences from GenBank require an internet connection, and running `MrBayes` from R requires a working local installation of `MrBayes`.

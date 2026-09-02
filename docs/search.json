@@ -4,7 +4,7 @@
     "href": "get-started/index.html#install-the-package",
     "title": "Install",
     "section": "Install the package",
-    "text": "Install the package\nYou can install the latest development version of catGenes package from GitHub as follows:\n\n#install.packages(\"devtools\")\ndevtools::install_github(\"DBOSlab/catGenes\")\n\nNotes :::{.callout-note} catGenes is currently distributed from GitHub. Make sure devtools is installed before running devtools::install_github(). ::: :::{.callout-caution} Some functions in catGenes rely on additional external software or online resources. For example, functions that retrieve sequences from GenBank require an internet connection, and running MrBayes from R requires a working local installation of MrBayes."
+    "text": "Install the package\nYou can install the latest development version of catGenes package from GitHub as follows:\n\nif (!requireNamespace(\"BiocManager\", quietly = TRUE)) \ninstall.packages(\"BiocManager\") \n\n# Install the development version of catGenes from GitHub, \n# together with its required dependencies \nBiocManager::install(\"DBOSlab/catGenes\", dependencies = TRUE)\n\n\n\n\n\n\n\nNote\n\n\n\ncatGenes is currently distributed from GitHub. Make sure BiocManager is installed before running BiocManager::install().\n\n\n\n\n\n\nCaution\n\n\n\nSome functions in catGenes rely on additional external software or online resources. For example, functions that retrieve sequences from GenBank require an internet connection, and running MrBayes from R requires a working local installation of MrBayes."
   },
   {
     "objectID": "reference/writeNexus.html",
