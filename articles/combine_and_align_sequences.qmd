@@ -8,7 +8,7 @@ format:
 
 ## Overview
 
-`combineFASTA()` merges multiple `FASTA` files that all contain the **same locus** into a single file. It belongs to the sequence retrieval and preprocessing stage of a `catGenes` workflow. Therefore, it is a function you must run, per locus, *before* entering the actual alignment and concatenation workflow, not a step that mixes different genes together.
+`combineFASTA()` merges multiple `FASTA` files that all contain the **same locus** into a single file. It belongs to the sequence retrieval and preprocessing stage of a `catGenes` workflow. Therefore, it is a function you must run per locus *before* entering the actual alignment and concatenation workflow, not a step that mixes different genes together.
 
 A `FASTA` file for a given locus commonly ends up split across several files because it came from more than one source or batch, for example:
 
