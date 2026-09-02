@@ -8,7 +8,7 @@ format:
 
 ## Overview
 
-`combineFASTA()` merges multiple `FASTA` files that all contain the **same locus** into a single file. It belongs to the sequence retrieval and preprocessing stage of a `catGenes` workflow — something you run, per locus, *before* entering the actual alignment and concatenation workflow — not a step that mixes different genes together.
+`combineFASTA()` merges multiple `FASTA` files that all contain the **same locus** into a single file. It belongs to the sequence retrieval and preprocessing stage of a `catGenes` workflow. Therefore, it is a function you must run, per locus, *before* entering the actual alignment and concatenation workflow, not a step that mixes different genes together.
 
 A `FASTA` file for a given locus commonly ends up split across several files because it came from more than one source or batch, for example:
 
@@ -39,7 +39,7 @@ A common sequence-processing workflow is:
 5. save aligned output in `NEXUS`, `FASTA`, or `PHYLIP`
 6. load the alignments into R for downstream concatenation
 
-Not every project requires the `combineFASTA()` step — if each locus is already in a single `FASTA` file, go straight to `alignSeqs()`.
+Not every project requires the `combineFASTA()` step. But if each locus is already in a single `FASTA` file, go straight to `alignSeqs()`.
 
 ## When to use `combineFASTA()`
 
@@ -47,10 +47,10 @@ Use `combineFASTA()` when the **same locus** is split across multiple `FASTA` fi
 
 - a search with `mineSeq()` or `mineTaxa()` was run more than once for that locus
 - you want to merge separate downloads of the same locus into one file before alignment
-- **the same locus was mined from two different sources** — some accessions were retrieved as individual gene sequences with `mineSeq()` or `mineTaxa()`, while others were only available as whole plastid genomes and had to be extracted for that gene with `minePlastome()` (see [Combining the same locus mined from different sources](#combining-the-same-locus-mined-from-different-sources) below)
+- **the same locus was mined from two different sources**; for example, some accessions were retrieved as individual gene sequences with `mineSeq()` or `mineTaxa()`, while others were only available as whole plastid genomes and had to be extracted for that gene with `minePlastome()` (see [Combining the same locus mined from different sources](#combining-the-same-locus-mined-from-different-sources) below)
 - you fished taxa for a locus out of a previous alignment with `fishSeqs()` and want to merge that output with other sequences of the same locus
 
-`combineFASTA()` should **not** be used to merge files belonging to different genes into one file — each locus should stay in its own `FASTA` file going into `alignSeqs()`, so that alignment and, later, concatenation still operate on one locus at a time.
+`combineFASTA()` should **not** be used to merge files belonging to different genes into one file; each locus should stay in its own `FASTA` file going into `alignSeqs()`, so that alignment and, later, concatenation still operate on one locus at a time.
 
 If your sequences are already in one `FASTA` file per locus, you may go directly to `alignSeqs()`.
 
@@ -66,13 +66,13 @@ result <- combineFASTA(
 )
 ```
 
-This reads three `FASTA` files that all contain `matK` sequences — for instance three separate `mineSeq()` runs against different accession tables — combines all of them into a single object, and by default saves the result to disk.
+This reads three `FASTA` files that all contain `matK` sequences (for instance three separate `mineSeq()` runs against different accession tables) combines all of them into a single object, and by default saves the result to disk.
 
 ## Choosing the output file name
-You can specify a custom file name for the combined output.
+You can specify a custom file name for the combined output, and the input file can come from different folder directories.
 ```{r, eval=FALSE}
 result <- combineFASTA(
-  input.files = c("data/matK_part1.fasta", "data/matK_part2.fasta"),
+  input.files = c("data_mineSeqs/matK_part1.fasta", "data_mineTaxa/matK_part2.fasta"),
   output.file = "matK_combined.fasta"
 )
 ```
@@ -83,7 +83,7 @@ If you want to inspect the combined sequences in R without immediately writing t
 
 ```{r, eval=FALSE}
 result <- combineFASTA(
-  input.files = c("temp1.fasta", "temp2.fasta"),
+  input.files = c("file1.fasta", "file2.fasta"),
   save = FALSE,
   verbose = TRUE
 )

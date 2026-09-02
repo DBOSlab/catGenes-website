@@ -8,7 +8,7 @@ format:
 
 ## Overview
 
-`catGenes` includes dedicated functions to retrieve targeted loci directly from complete organellar genomes available in GenBank:
+`catGenes` includes functions to retrieve targeted loci directly from complete organellar genomes available in GenBank:
 
 - `minePlastome()` for plastid genomes
 - `mineMitochondrion()` for mitochondrial genomes

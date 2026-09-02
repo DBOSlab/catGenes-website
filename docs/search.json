@@ -799,7 +799,7 @@
     "href": "articles/mine_organellar_loci.html#overview",
     "title": "Mine loci from plastomes and mitochondrial genomes",
     "section": "Overview",
-    "text": "Overview\ncatGenes includes dedicated functions to retrieve targeted loci directly from complete organellar genomes available in GenBank:\n\nminePlastome() for plastid genomes\nmineMitochondrion() for mitochondrial genomes\n\nThese functions are useful when you already know which complete organellar accessions you want to use and need to extract one or more specific genes or regions for downstream alignment, concatenation, or phylogenetic analysis.\nCompared with broader GenBank search workflows, these functions are designed for a more targeted task: starting from complete genome accessions and mining particular loci in a consistent way.",
+    "text": "Overview\ncatGenes includes functions to retrieve targeted loci directly from complete organellar genomes available in GenBank:\n\nminePlastome() for plastid genomes\nmineMitochondrion() for mitochondrial genomes\n\nThese functions are useful when you already know which complete organellar accessions you want to use and need to extract one or more specific genes or regions for downstream alignment, concatenation, or phylogenetic analysis.\nCompared with broader GenBank search workflows, these functions are designed for a more targeted task: starting from complete genome accessions and mining particular loci in a consistent way.",
     "crumbs": [
       "Articles",
       "Sequence retrieval and preprocessing",
@@ -2518,7 +2518,7 @@
     "href": "articles/combine_and_align_sequences.html#overview",
     "title": "Combine FASTA files and align sequences",
     "section": "Overview",
-    "text": "Overview\ncombineFASTA() merges multiple FASTA files that all contain the same locus into a single file. It belongs to the sequence retrieval and preprocessing stage of a catGenes workflow — something you run, per locus, before entering the actual alignment and concatenation workflow — not a step that mixes different genes together.\nA FASTA file for a given locus commonly ends up split across several files because it came from more than one source or batch, for example:\n\na search with mineSeq() or mineTaxa() split across more than one run or accession table\nthe same locus retrieved both directly (mineSeq()/mineTaxa()) and extracted from whole plastid or mitochondrial genomes (minePlastome()/mineMitochondrion())\ntaxa fished out of a previous alignment for that locus with fishSeqs(), to be merged with other sequences of the same locus\n\nIn catGenes, this preprocessing step is paired with one more function before you move on to the alignment and concatenation workflow proper:\n\ncombineFASTA() to combine multiple FASTA files of the same locus into a single file\nalignSeqs() to perform automated multiple sequence alignment on each locus file\n\nThis article explains when to combine FASTA files, how to run alignments, how to choose output formats, and how to prepare aligned files for later use in catGenes.",
+    "text": "Overview\ncombineFASTA() merges multiple FASTA files that all contain the same locus into a single file. It belongs to the sequence retrieval and preprocessing stage of a catGenes workflow. Therefore, it is a function you must run, per locus, before entering the actual alignment and concatenation workflow, not a step that mixes different genes together.\nA FASTA file for a given locus commonly ends up split across several files because it came from more than one source or batch, for example:\n\na search with mineSeq() or mineTaxa() split across more than one run or accession table\nthe same locus retrieved both directly (mineSeq()/mineTaxa()) and extracted from whole plastid or mitochondrial genomes (minePlastome()/mineMitochondrion())\ntaxa fished out of a previous alignment for that locus with fishSeqs(), to be merged with other sequences of the same locus\n\nIn catGenes, this preprocessing step is paired with one more function before you move on to the alignment and concatenation workflow proper:\n\ncombineFASTA() to combine multiple FASTA files of the same locus into a single file\nalignSeqs() to perform automated multiple sequence alignment on each locus file\n\nThis article explains when to combine FASTA files, how to run alignments, how to choose output formats, and how to prepare aligned files for later use in catGenes.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2530,7 +2530,7 @@
     "href": "articles/combine_and_align_sequences.html#typical-workflow",
     "title": "Combine FASTA files and align sequences",
     "section": "Typical workflow",
-    "text": "Typical workflow\nA common sequence-processing workflow is:\nSequence retrieval and preprocessing (per locus)\n\nretrieve or mine sequences for that locus, possibly from more than one source\nsave them as FASTA files\nif the locus ended up split across more than one file, combine them into a single FASTA file with combineFASTA()\n\nAlignment and concatenation workflow\n\nalign the sequences for each locus\nsave aligned output in NEXUS, FASTA, or PHYLIP\nload the alignments into R for downstream concatenation\n\nNot every project requires the combineFASTA() step — if each locus is already in a single FASTA file, go straight to alignSeqs().",
+    "text": "Typical workflow\nA common sequence-processing workflow is:\nSequence retrieval and preprocessing (per locus)\n\nretrieve or mine sequences for that locus, possibly from more than one source\nsave them as FASTA files\nif the locus ended up split across more than one file, combine them into a single FASTA file with combineFASTA()\n\nAlignment and concatenation workflow\n\nalign the sequences for each locus\nsave aligned output in NEXUS, FASTA, or PHYLIP\nload the alignments into R for downstream concatenation\n\nNot every project requires the combineFASTA() step. But if each locus is already in a single FASTA file, go straight to alignSeqs().",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2542,7 +2542,7 @@
     "href": "articles/combine_and_align_sequences.html#when-to-use-combinefasta",
     "title": "Combine FASTA files and align sequences",
     "section": "When to use combineFASTA()",
-    "text": "When to use combineFASTA()\nUse combineFASTA() when the same locus is split across multiple FASTA files, for example because:\n\na search with mineSeq() or mineTaxa() was run more than once for that locus\nyou want to merge separate downloads of the same locus into one file before alignment\nthe same locus was mined from two different sources — some accessions were retrieved as individual gene sequences with mineSeq() or mineTaxa(), while others were only available as whole plastid genomes and had to be extracted for that gene with minePlastome() (see Combining the same locus mined from different sources below)\nyou fished taxa for a locus out of a previous alignment with fishSeqs() and want to merge that output with other sequences of the same locus\n\ncombineFASTA() should not be used to merge files belonging to different genes into one file — each locus should stay in its own FASTA file going into alignSeqs(), so that alignment and, later, concatenation still operate on one locus at a time.\nIf your sequences are already in one FASTA file per locus, you may go directly to alignSeqs().",
+    "text": "When to use combineFASTA()\nUse combineFASTA() when the same locus is split across multiple FASTA files, for example because:\n\na search with mineSeq() or mineTaxa() was run more than once for that locus\nyou want to merge separate downloads of the same locus into one file before alignment\nthe same locus was mined from two different sources; for example, some accessions were retrieved as individual gene sequences with mineSeq() or mineTaxa(), while others were only available as whole plastid genomes and had to be extracted for that gene with minePlastome() (see Combining the same locus mined from different sources below)\nyou fished taxa for a locus out of a previous alignment with fishSeqs() and want to merge that output with other sequences of the same locus\n\ncombineFASTA() should not be used to merge files belonging to different genes into one file; each locus should stay in its own FASTA file going into alignSeqs(), so that alignment and, later, concatenation still operate on one locus at a time.\nIf your sequences are already in one FASTA file per locus, you may go directly to alignSeqs().",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2554,7 +2554,7 @@
     "href": "articles/combine_and_align_sequences.html#basic-usage-of-combinefasta",
     "title": "Combine FASTA files and align sequences",
     "section": "Basic usage of combineFASTA()",
-    "text": "Basic usage of combineFASTA()\nA simple workflow looks like this:\n\nlibrary(catGenes)\n\nresult &lt;- combineFASTA(\n  input.files = c(\"matK_batch1.fasta\", \"matK_batch2.fasta\", \"matK_batch3.fasta\")\n)\n\nThis reads three FASTA files that all contain matK sequences — for instance three separate mineSeq() runs against different accession tables — combines all of them into a single object, and by default saves the result to disk.",
+    "text": "Basic usage of combineFASTA()\nA simple workflow looks like this:\n\nlibrary(catGenes)\n\nresult &lt;- combineFASTA(\n  input.files = c(\"matK_batch1.fasta\", \"matK_batch2.fasta\", \"matK_batch3.fasta\")\n)\n\nThis reads three FASTA files that all contain matK sequences (for instance three separate mineSeq() runs against different accession tables) combines all of them into a single object, and by default saves the result to disk.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2566,7 +2566,7 @@
     "href": "articles/combine_and_align_sequences.html#choosing-the-output-file-name",
     "title": "Combine FASTA files and align sequences",
     "section": "Choosing the output file name",
-    "text": "Choosing the output file name\nYou can specify a custom file name for the combined output.\n\nresult &lt;- combineFASTA(\n  input.files = c(\"data/matK_part1.fasta\", \"data/matK_part2.fasta\"),\n  output.file = \"matK_combined.fasta\"\n)\n\nName the output after the locus itself — this keeps it clear that the combined file, like its inputs, holds a single gene.",
+    "text": "Choosing the output file name\nYou can specify a custom file name for the combined output, and the input file can come from different folder directories.\n\nresult &lt;- combineFASTA(\n  input.files = c(\"data_mineSeqs/matK_part1.fasta\", \"data_mineTaxa/matK_part2.fasta\"),\n  output.file = \"matK_combined.fasta\"\n)\n\nName the output after the locus itself — this keeps it clear that the combined file, like its inputs, holds a single gene.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
@@ -2578,7 +2578,7 @@
     "href": "articles/combine_and_align_sequences.html#returning-the-combined-sequences-without-saving",
     "title": "Combine FASTA files and align sequences",
     "section": "Returning the combined sequences without saving",
-    "text": "Returning the combined sequences without saving\nIf you want to inspect the combined sequences in R without immediately writing them to disk, set save = FALSE.\n\nresult &lt;- combineFASTA(\n  input.files = c(\"temp1.fasta\", \"temp2.fasta\"),\n  save = FALSE,\n  verbose = TRUE\n)\n\nIn this case, the function returns the combined sequence object and summary information without creating an output file.",
+    "text": "Returning the combined sequences without saving\nIf you want to inspect the combined sequences in R without immediately writing them to disk, set save = FALSE.\n\nresult &lt;- combineFASTA(\n  input.files = c(\"file1.fasta\", \"file2.fasta\"),\n  save = FALSE,\n  verbose = TRUE\n)\n\nIn this case, the function returns the combined sequence object and summary information without creating an output file.",
     "crumbs": [
       "Articles",
       "Alignment and concatenation workflows",
