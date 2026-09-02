@@ -41,7 +41,7 @@ BiocManager::install("DBOSlab/catGenes", dependencies = TRUE)
 ```
 
 :::{.callout-note}
-`catGenes` is currently distributed from GitHub. Make sure BiocManager is installed before running BiocManager::install().
+`catGenes` is currently distributed from GitHub. Make sure `BiocManager` is installed before running `BiocManager::install()`.
 
 :::{.callout-caution}
 Some functions in `catGenes` rely on additional external software or online resources. For example, functions that retrieve sequences from GenBank require an internet connection, and running `MrBayes` from R requires a working local installation of `MrBayes`.
