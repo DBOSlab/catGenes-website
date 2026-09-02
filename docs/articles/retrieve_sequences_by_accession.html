@@ -4786,7 +4786,8 @@ height: 400px;
 <h2 class="anchored" data-anchor-id="next-step">Next step</h2>
 <p>Once sequences have been retrieved with mineSeq(), the next step is usually to:</p>
 <ul>
-<li>combine and align the sequences</li>
+<li>if the same locus was also retrieved from another source (a separate <code>mineSeq()</code>/<code>mineTaxa()</code> run, or extracted from whole plastomes with <code>minePlastome()</code>), combine those same-locus files into one with <code>combineFASTA()</code> — see <a href="../articles/combine_and_align_sequences.html#combining-the-same-locus-mined-from-different-sources">Combining the same locus mined from different sources</a></li>
+<li>align the sequences for each locus with <code>alignSeqs()</code></li>
 <li>convert the resulting alignments if needed</li>
 <li>load them into R for concatenation with <code>catGenes</code></li>
 </ul>
@@ -5476,11 +5477,12 @@ height: 400px;
 <span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next step</span></span>
 <span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a>Once sequences have been retrieved with mineSeq(), the next step is usually to:</span>
 <span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>combine and align the sequences</span>
-<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>convert the resulting alignments if needed</span>
-<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>load them into R for concatenation with <span class="in">`catGenes`</span></span>
-<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a>See the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>if the same locus was also retrieved from another source (a separate <span class="in">`mineSeq()`</span>/<span class="in">`mineTaxa()`</span> run, or extracted from whole plastomes with <span class="in">`minePlastome()`</span>), combine those same-locus files into one with <span class="in">`combineFASTA()`</span> — see <span class="co">[</span><span class="ot">Combining the same locus mined from different sources</span><span class="co">](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources)</span></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>align the sequences for each locus with <span class="in">`alignSeqs()`</span></span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>convert the resulting alignments if needed</span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>load them into R for concatenation with <span class="in">`catGenes`</span></span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a>See the next tutorials for sequence alignment, format conversion, and multilocus concatenation workflows.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

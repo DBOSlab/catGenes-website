@@ -285,6 +285,7 @@ For smooth organellar mining workflows:
 ## Next step
 Once loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:
 
+- if the same locus was also mined directly with `mineSeq()`/`mineTaxa()`, combine both same-locus files into one with `combineFASTA()` before alignment — see [Combining the same locus mined from different sources](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources)
 - align the extracted sequences with `alignSeqs()`
 - convert alignment formats if necessary
 - load the alignments into R

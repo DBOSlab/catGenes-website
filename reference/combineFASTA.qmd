@@ -18,33 +18,12 @@ single FASTA file. It saves the combined sequences to a specified output directo
 
 ### Details
 
-The function performs the following steps:
-
-1. 
-
-2. 
-3.  Validates that all specified input files exist
-
-4. 
-5.  Creates an output directory with date stamp if 
-6. `save = TRUE`
-7. 
-
-8. 
-9.  Reads each specified FASTA file using 
-10. `ape::read.FASTA()`
-11. 
-
-12. 
-13.  Combines all sequences into a single DNAbin object
-
-14. 
-15.  Saves the combined sequences to the output file if 
-16. `save = TRUE`
-17. 
-
-18. 
-19.  Returns summary statistics
+The function performs the following steps: (i) validates that all specified
+input files exist; (ii) creates an output directory with date stamp if `save = TRUE`;
+(iii) reads each specified FASTA file using `ape::read.FASTA()`; (iv)
+combines all sequences into a single DNAbin object; (v) saves the combined
+sequences to the output file if `save = TRUE`; and (vi) returns summary
+statistics.
 
 Note: This function does not remove duplicate sequences. All sequences from
 all input files are included in the output.
@@ -61,24 +40,9 @@ all input files are included in the output.
 
 ### Value
 
-A list containing:
-
-- 
-
-- 
--  
-- `sequences`
-- : DNAbin object with all combined sequences
-
-- 
--  
-- `summary`
-- : Data frame with summary statistics
-
-- 
--  
-- `output_path`
-- : Path to the saved combined FASTA file (if saved)
+A list containing: (i) `sequences`: DNAbin object with all combined
+sequences; (ii) `summary`: Data frame with summary statistics; and (iii)
+`output_path`: Path to the saved combined FASTA file (if saved).
 
 ### Examples
 
@@ -88,13 +52,13 @@ result <- combineFASTA(input.files = c("file1.fasta", "file2.fasta", "file3.fast
 
 # Combine files with custom output name
 result <- combineFASTA(
-  input.files = c("data/gene1.fasta", "data/gene2.fasta"),
-  output.file = "all_genes.fasta"
+  input.files = c("data/file1.fasta", "data/file2.fasta"),
+  output.file = "all_files_combined.fasta"
 )
 
 # Return results without saving to disk
 result <- combineFASTA(
-  input.files = c("temp1.fasta", "temp2.fasta"),
+  input.files = c("file1.fasta", "file2.fasta"),
   save = FALSE,
   verbose = TRUE
 )

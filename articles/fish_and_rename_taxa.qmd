@@ -186,7 +186,9 @@ If none of the sequence names in a file match `taxa`, that file is skipped and a
 
 ## Next step
 
-Once you have a folder of fished (and renamed) per-locus alignments, the usual next step is to load them into R and concatenate them:
+If a fished locus needs to be merged with sequences of that same gene mined from another source — for example accessions retrieved directly with `mineSeq()`/`mineTaxa()`, or extracted from whole plastomes with `minePlastome()` — combine them into a single `FASTA` file per locus with `combineFASTA()` before aligning; see [Combining the same locus mined from different sources](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources).
+
+Otherwise, once you have a folder of fished (and renamed) per-locus alignments, the usual next step is to load them into R and concatenate them:
 
 ```{r, eval=FALSE}
 genes <- list.files("RESULTS_fishSeqs/01Sep2026")

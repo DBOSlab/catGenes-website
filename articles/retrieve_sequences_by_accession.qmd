@@ -200,7 +200,8 @@ For the smoothest downstream workflow:
 ## Next step
 Once sequences have been retrieved with mineSeq(), the next step is usually to:
 
-- combine and align the sequences
+- if the same locus was also retrieved from another source (a separate `mineSeq()`/`mineTaxa()` run, or extracted from whole plastomes with `minePlastome()`), combine those same-locus files into one with `combineFASTA()` — see [Combining the same locus mined from different sources](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources)
+- align the sequences for each locus with `alignSeqs()`
 - convert the resulting alignments if needed
 - load them into R for concatenation with `catGenes`
 

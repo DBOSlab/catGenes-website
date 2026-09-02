@@ -305,6 +305,7 @@ For the smoothest use of `mineTaxa()`:
 ## Next step
 Once sequences have been retrieved with `mineTaxa()`, the next step is usually to:
 
+- if the same locus was also retrieved from another source (a separate `mineSeq()`/`mineTaxa()` run, or extracted from whole plastomes with `minePlastome()`), combine those same-locus files into one with `combineFASTA()` — see [Combining the same locus mined from different sources](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources)
 - align the sequences with `alignSeqs()`
 - convert the resulting alignments if needed
 - load them into R

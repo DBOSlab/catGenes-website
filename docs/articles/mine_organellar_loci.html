@@ -4878,6 +4878,7 @@ height: 400px;
 <h2 class="anchored" data-anchor-id="next-step">Next step</h2>
 <p>Once loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:</p>
 <ul>
+<li>if the same locus was also mined directly with <code>mineSeq()</code>/<code>mineTaxa()</code>, combine both same-locus files into one with <code>combineFASTA()</code> before alignment — see <a href="../articles/combine_and_align_sequences.html#combining-the-same-locus-mined-from-different-sources">Combining the same locus mined from different sources</a></li>
 <li>align the extracted sequences with <code>alignSeqs()</code></li>
 <li>convert alignment formats if necessary</li>
 <li>load the alignments into R</li>
@@ -5654,13 +5655,14 @@ height: 400px;
 <span id="cb17-285"><a href="#cb17-285" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next step</span></span>
 <span id="cb17-286"><a href="#cb17-286" aria-hidden="true" tabindex="-1"></a>Once loci have been mined from plastomes or mitochondrial genomes, the next step is usually to:</span>
 <span id="cb17-287"><a href="#cb17-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-288"><a href="#cb17-288" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>align the extracted sequences with <span class="in">`alignSeqs()`</span></span>
-<span id="cb17-289"><a href="#cb17-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>convert alignment formats if necessary</span>
-<span id="cb17-290"><a href="#cb17-290" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>load the alignments into R</span>
-<span id="cb17-291"><a href="#cb17-291" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>concatenate loci for downstream phylogenetic analysis</span>
-<span id="cb17-292"><a href="#cb17-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-293"><a href="#cb17-293" aria-hidden="true" tabindex="-1"></a>See the next tutorials for combining <span class="in">`FASTA`</span> files, aligning sequences, converting formats, and concatenating multilocus datasets with catGenes.</span>
-<span id="cb17-294"><a href="#cb17-294" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb17-288"><a href="#cb17-288" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>if the same locus was also mined directly with <span class="in">`mineSeq()`</span>/<span class="in">`mineTaxa()`</span>, combine both same-locus files into one with <span class="in">`combineFASTA()`</span> before alignment — see <span class="co">[</span><span class="ot">Combining the same locus mined from different sources</span><span class="co">](/articles/combine_and_align_sequences.qmd#combining-the-same-locus-mined-from-different-sources)</span></span>
+<span id="cb17-289"><a href="#cb17-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>align the extracted sequences with <span class="in">`alignSeqs()`</span></span>
+<span id="cb17-290"><a href="#cb17-290" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>convert alignment formats if necessary</span>
+<span id="cb17-291"><a href="#cb17-291" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>load the alignments into R</span>
+<span id="cb17-292"><a href="#cb17-292" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>concatenate loci for downstream phylogenetic analysis</span>
+<span id="cb17-293"><a href="#cb17-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-294"><a href="#cb17-294" aria-hidden="true" tabindex="-1"></a>See the next tutorials for combining <span class="in">`FASTA`</span> files, aligning sequences, converting formats, and concatenating multilocus datasets with catGenes.</span>
+<span id="cb17-295"><a href="#cb17-295" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

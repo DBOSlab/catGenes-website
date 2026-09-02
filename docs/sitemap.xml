@@ -6,55 +6,55 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/writeNexus.html</loc>
-    <lastmod>2026-09-01T16:01:15.933Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.322Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/abbrevGen.html</loc>
-    <lastmod>2026-09-01T16:01:15.908Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.287Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/fishSeqs.html</loc>
-    <lastmod>2026-09-01T16:01:15.919Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.304Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/nexusdframe.html</loc>
-    <lastmod>2026-09-01T16:01:15.927Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.314Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/mineSeq.html</loc>
-    <lastmod>2026-09-01T16:01:15.922Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.307Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/index.html</loc>
-    <lastmod>2026-09-01T16:01:15.936Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.328Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/catfullGenes.html</loc>
-    <lastmod>2026-09-01T16:01:15.913Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.296Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/writePhylip.html</loc>
-    <lastmod>2026-09-01T16:01:15.933Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.323Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/mineTaxa.html</loc>
-    <lastmod>2026-09-01T16:01:15.924Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.310Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/phylipdframe.html</loc>
-    <lastmod>2026-09-01T16:01:15.928Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.315Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/convertAlign.html</loc>
-    <lastmod>2026-09-01T16:01:15.916Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.299Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/mrbayesRun.html</loc>
-    <lastmod>2026-09-01T16:01:15.926Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.312Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/evomodelCmds.html</loc>
-    <lastmod>2026-09-01T16:01:15.917Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.300Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/about.html</loc>
@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/retrieve_sequences_by_taxon.html</loc>
-    <lastmod>2026-09-01T12:30:19.844Z</lastmod>
+    <lastmod>2026-09-02T22:05:28.823Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/why_catgenes_for_concatenation.html</loc>
@@ -74,11 +74,11 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/retrieve_sequences_by_accession.html</loc>
-    <lastmod>2026-03-10T21:01:53.428Z</lastmod>
+    <lastmod>2026-09-02T22:05:22.895Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/mine_organellar_loci.html</loc>
-    <lastmod>2026-09-01T12:22:33.182Z</lastmod>
+    <lastmod>2026-09-02T22:05:35.000Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/index.html</loc>
@@ -122,7 +122,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/combine_and_align_sequences.html</loc>
-    <lastmod>2026-09-01T12:10:14.032Z</lastmod>
+    <lastmod>2026-09-02T22:04:42.691Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/model_selection_and_mrbayes.html</loc>
@@ -142,7 +142,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/articles/fish_and_rename_taxa.html</loc>
-    <lastmod>2026-09-01T16:05:04.239Z</lastmod>
+    <lastmod>2026-09-02T22:05:01.185Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/index.html</loc>
@@ -154,19 +154,19 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/combineFASTA.html</loc>
-    <lastmod>2026-09-01T16:01:15.915Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.298Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/plotPhylo.html</loc>
-    <lastmod>2026-09-01T16:01:15.930Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.318Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/minePlastome.html</loc>
-    <lastmod>2026-09-01T16:01:15.921Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.306Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/splitTips.html</loc>
-    <lastmod>2026-09-01T16:01:15.932Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.321Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/run_catGenes.html</loc>
@@ -174,34 +174,34 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/dropSeq.html</loc>
-    <lastmod>2026-09-01T16:01:15.916Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.300Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/alignSeqs.html</loc>
-    <lastmod>2026-09-01T16:01:15.913Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.295Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/evomodelTest.html</loc>
-    <lastmod>2026-09-01T16:01:15.918Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.302Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/mineMitochondrion.html</loc>
-    <lastmod>2026-09-01T16:01:15.920Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.305Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/mrbayesStop.html</loc>
-    <lastmod>2026-09-01T16:01:15.926Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.313Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/renameTaxa.html</loc>
-    <lastmod>2026-09-01T16:01:15.931Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.319Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/fastadframe.html</loc>
-    <lastmod>2026-09-01T16:01:15.919Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.303Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/catGenes-website/reference/catmultGenes.html</loc>
-    <lastmod>2026-09-01T16:01:15.914Z</lastmod>
+    <lastmod>2026-09-02T22:12:55.297Z</lastmod>
   </url>
 </urlset>
