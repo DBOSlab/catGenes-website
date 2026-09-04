@@ -22,71 +22,18 @@ requiring large-scale sequence retrieval with consistent naming conventions.
 
 ### Details
 
-The function performs the following steps:
+The function performs the following steps: (1) Connects to GenBank using the
+specified search term; (2) Downloads sequences (up to `retmax` records);
+and (3) If `clean.taxa = TRUE`: (i) extracts and cleans organism names
+from each accession; (ii) optionally adds voucher information; (iii) standardizes
+naming format: Genus_species_voucher_accession; (iv) separates plastomes if
+`plastome.apart = TRUE`; (v) removes duplicates if `rm.duplicated = TRUE`;
+and (vi) saves results to specified directory with date-stamped subfolder.
 
-1. 
-
-2. 
-3.  Connects to GenBank using the specified search term
-
-4. 
-5.  Downloads sequences (up to 
-6. `retmax`
-7.  records)
-
-8. 
-9.  If 
-10. `clean.taxa = TRUE`
-11. :
-
-12. 
-- 
-
-- 
--  Extracts and cleans organism names from each accession
-
-- 
--  Optionally adds voucher information
-
-- 
--  Standardizes naming format: Genus_species_voucher_accession
-
-- 
--  Separates plastomes if 
-- `plastome.apart = TRUE`
-- 
-
-- 
--  Removes duplicates if 
-- `rm.duplicated = TRUE`
-- 
-
-13. 
-
-14. 
-15.  Saves results to specified directory with date-stamped subfolder
-
-Taxon name cleaning includes:
-
-- 
-
-- 
--  Removing periods and hyphens
-
-- 
--  Converting "var.", "subsp.", "f." to simple spaces
-
-- 
--  Converting spaces to underscores
-
-- 
--  Trimming "sp." designations
-
-- 
--  Removing trailing underscores
-
-- 
--  Handling hybrid cultivars
+Taxon name cleaning includes: (i) removing periods and hyphens; (ii) converting
+"var.", "subsp.", "f." to simple spaces; (iii) converting spaces to underscores;
+(iv) trimming "sp." designations; (v) removing trailing underscores; (vi) handling
+hybrid cultivars.
 
 ### Arguments
 
@@ -100,6 +47,7 @@ Taxon name cleaning includes:
 | original.query | Logical. If `TRUE`, a copy of the original unprocessed FASTA file is saved with "_original.query" suffix. If `FALSE` (default), only the cleaned file is kept. Ignored if `clean.taxa = FALSE`. |
 | plastome.apart | Logical. If `TRUE` (default), complete plastome sequences are separated into a separate file with "PLASTOMES_" prefix. Useful for distinguishing whole plastomes from individual gene sequences. |
 | rm.duplicated | Logical. If `TRUE` (default), removes duplicate sequences from the same species, keeping only the longest sequence. Applied separately to plastomes and other sequences. |
+| rm.sp | Logical. If `TRUE`, removes all sequences from accessions identified at genus level only, i.e. accessions with "sp". |
 | retmax | Numeric. Maximum number of sequences to retrieve from GenBank. Default is 4000. Increase for large queries, but note NCBI rate limits. |
 | verbose | Logical. If `TRUE` (default), progress messages are printed to the console. If `FALSE`, function runs silently. |
 | save | Logical. If `TRUE` (default), results are saved to disk in the specified directory. If `FALSE`, results are returned as R objects without saving. |
@@ -148,6 +96,16 @@ result4 <- mineTaxa(
   term = "Arabidopsis[Organism] AND chloroplast[Title]",
   verbose = FALSE,
   save = FALSE
+)
+
+# Example 5: Basic search for multiple genera and ITS sequences
+  term = "(Macrolobium[Organism] OR Heterostemon[Organism]) AND (ITS OR \"internal transcribed spacer\")",
+  filename = "Macro_Heter_ITS.fasta"
+)
+
+# Example 6: Basic search for specific GenBank numbers
+  term = "KJ136899 OR KJ136869",
+  filename = "out_seqs.fasta"
 )
 ```
 

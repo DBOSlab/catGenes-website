@@ -4424,59 +4424,8 @@ height: 400px;
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>The function performs the following steps:</p>
-<ol type="1">
-<li></li>
-<li></li>
-<li><p>Connects to GenBank using the specified search term</p></li>
-<li></li>
-<li><p>Downloads sequences (up to</p></li>
-<li><p><code>retmax</code></p></li>
-<li><p>records)</p></li>
-<li></li>
-<li><p>If</p></li>
-<li><p><code>clean.taxa = TRUE</code></p></li>
-<li><p>:</p></li>
-<li></li>
-</ol>
-<ul>
-<li></li>
-<li></li>
-<li><p>Extracts and cleans organism names from each accession</p></li>
-<li></li>
-<li><p>Optionally adds voucher information</p></li>
-<li></li>
-<li><p>Standardizes naming format: Genus_species_voucher_accession</p></li>
-<li></li>
-<li><p>Separates plastomes if</p></li>
-<li><p><code>plastome.apart = TRUE</code></p></li>
-<li></li>
-<li></li>
-<li><p>Removes duplicates if</p></li>
-<li><p><code>rm.duplicated = TRUE</code></p></li>
-<li></li>
-</ul>
-<ol start="13" type="1">
-<li></li>
-<li></li>
-<li>Saves results to specified directory with date-stamped subfolder</li>
-</ol>
-<p>Taxon name cleaning includes:</p>
-<ul>
-<li></li>
-<li></li>
-<li><p>Removing periods and hyphens</p></li>
-<li></li>
-<li><p>Converting “var.”, “subsp.”, “f.” to simple spaces</p></li>
-<li></li>
-<li><p>Converting spaces to underscores</p></li>
-<li></li>
-<li><p>Trimming “sp.” designations</p></li>
-<li></li>
-<li><p>Removing trailing underscores</p></li>
-<li></li>
-<li><p>Handling hybrid cultivars</p></li>
-</ul>
+<p>The function performs the following steps: (1) Connects to GenBank using the specified search term; (2) Downloads sequences (up to <code>retmax</code> records); and (3) If <code>clean.taxa = TRUE</code>: (i) extracts and cleans organism names from each accession; (ii) optionally adds voucher information; (iii) standardizes naming format: Genus_species_voucher_accession; (iv) separates plastomes if <code>plastome.apart = TRUE</code>; (v) removes duplicates if <code>rm.duplicated = TRUE</code>; and (vi) saves results to specified directory with date-stamped subfolder.</p>
+<p>Taxon name cleaning includes: (i) removing periods and hyphens; (ii) converting “var.”, “subsp.”, “f.” to simple spaces; (iii) converting spaces to underscores; (iv) trimming “sp.” designations; (v) removing trailing underscores; (vi) handling hybrid cultivars.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4521,18 +4470,22 @@ height: 400px;
 <td>Logical. If <code>TRUE</code> (default), removes duplicate sequences from the same species, keeping only the longest sequence. Applied separately to plastomes and other sequences.</td>
 </tr>
 <tr class="odd">
+<td>rm.sp</td>
+<td>Logical. If <code>TRUE</code>, removes all sequences from accessions identified at genus level only, i.e. accessions with “sp”.</td>
+</tr>
+<tr class="even">
 <td>retmax</td>
 <td>Numeric. Maximum number of sequences to retrieve from GenBank. Default is 4000. Increase for large queries, but note NCBI rate limits.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>verbose</td>
 <td>Logical. If <code>TRUE</code> (default), progress messages are printed to the console. If <code>FALSE</code>, function runs silently.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save</td>
 <td>Logical. If <code>TRUE</code> (default), results are saved to disk in the specified directory. If <code>FALSE</code>, results are returned as R objects without saving.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dir</td>
 <td>Character string specifying the directory path for saving results. Default is “RESULTS_mineTaxa”. A subdirectory with current date will be created within this directory.</td>
 </tr>
@@ -4577,7 +4530,17 @@ height: 400px;
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Arabidopsis[Organism] AND chloroplast[Title]&quot;</span>,</span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">save =</span> <span class="cn">FALSE</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 5: Basic search for multiple genera and ITS sequences</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  term <span class="ot">=</span> <span class="st">&quot;(Macrolobium[Organism] OR Heterostemon[Organism]) AND (ITS OR </span><span class="sc">\&quot;</span><span class="st">internal transcribed spacer</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">=</span> <span class="st">&quot;Macro_Heter_ITS.fasta&quot;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 6: Basic search for specific GenBank numbers</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  term <span class="ot">=</span> <span class="st">&quot;KJ136899 OR KJ136869&quot;</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">=</span> <span class="st">&quot;out_seqs.fasta&quot;</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5073,135 +5036,93 @@ height: 400px;
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>The function performs the following steps:</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Connects to GenBank using the specified search term</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Downloads sequences (up to </span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span><span class="in">`retmax`</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>records)</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="ss">9.  </span>If </span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span><span class="in">`clean.taxa = TRUE`</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="ss">11. </span>:</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="ss">12. </span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Extracts and cleans organism names from each accession</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Optionally adds voucher information</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Standardizes naming format: Genus_species_voucher_accession</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Separates plastomes if </span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`plastome.apart = TRUE`</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Removes duplicates if </span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`rm.duplicated = TRUE`</span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>The function performs the following steps: (1) Connects to GenBank using the</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>specified search term; (2) Downloads sequences (up to <span class="in">`retmax`</span> records);</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>and (3) If <span class="in">`clean.taxa = TRUE`</span>: (i) extracts and cleans organism names</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>from each accession; (ii) optionally adds voucher information; (iii) standardizes</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>naming format: Genus_species_voucher_accession; (iv) separates plastomes if</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="in">`plastome.apart = TRUE`</span>; (v) removes duplicates if <span class="in">`rm.duplicated = TRUE`</span>;</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>and (vi) saves results to specified directory with date-stamped subfolder.</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>Taxon name cleaning includes: (i) removing periods and hyphens; (ii) converting</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>&quot;var.&quot;, &quot;subsp.&quot;, &quot;f.&quot; to simple spaces; (iii) converting spaces to underscores;</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>(iv) trimming &quot;sp.&quot; designations; (v) removing trailing underscores; (vi) handling</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>hybrid cultivars.</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> term <span class="pp">|</span> Character string specifying the search query for GenBank. Should follow NCBI Entrez search syntax (e.g., &quot;Solanaceae<span class="sc">\[</span>Organism<span class="sc">\]</span> AND matk&quot;, &quot;Arabidopsis<span class="sc">\[</span>Organism<span class="sc">\]</span> AND rbcL<span class="sc">\[</span>Gene<span class="sc">\]</span>&quot;). See NCBI&#39;s <span class="co">[</span><span class="ot">Entrez Help</span><span class="co">](https://www.ncbi.nlm.nih.gov/books/NBK3837/)</span> for detailed syntax. <span class="pp">|</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> db <span class="pp">|</span> Character string specifying the NCBI database to search. Default is &quot;nucleotide&quot;. Other options include &quot;protein&quot;, &quot;popset&quot;, etc. See <span class="in">`entrez_search`</span> for details. <span class="pp">|</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character string for the output FASTA file name. Default is &quot;mined_seqs_by_taxon.fasta&quot;. <span class="pp">|</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> clean.taxa <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), taxon names are cleaned and standardized (removes authors, subsp./var. indicators, special characters). If <span class="in">`FALSE`</span>, original GenBank names are preserved. <span class="pp">|</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> add.voucher <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), voucher specimen information (when available) is extracted and appended to sequence names in the format: Genus_species_voucher_accession. If <span class="in">`FALSE`</span>, voucher information is omitted. <span class="pp">|</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> original.query <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, a copy of the original unprocessed FASTA file is saved with &quot;_original.query&quot; suffix. If <span class="in">`FALSE`</span> (default), only the cleaned file is kept. Ignored if <span class="in">`clean.taxa = FALSE`</span>. <span class="pp">|</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> plastome.apart <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), complete plastome sequences are separated into a separate file with &quot;PLASTOMES_&quot; prefix. Useful for distinguishing whole plastomes from individual gene sequences. <span class="pp">|</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm.duplicated <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), removes duplicate sequences from the same species, keeping only the longest sequence. Applied separately to plastomes and other sequences. <span class="pp">|</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm.sp <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, removes all sequences from accessions identified at genus level only, i.e. accessions with &quot;sp&quot;. <span class="pp">|</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> retmax <span class="pp">|</span> Numeric. Maximum number of sequences to retrieve from GenBank. Default is 4000. Increase for large queries, but note NCBI rate limits. <span class="pp">|</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), progress messages are printed to the console. If <span class="in">`FALSE`</span>, function runs silently. <span class="pp">|</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), results are saved to disk in the specified directory. If <span class="in">`FALSE`</span>, results are returned as R objects without saving. <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character string specifying the directory path for saving results. Default is &quot;RESULTS_mineTaxa&quot;. A subdirectory with current date will be created within this directory. <span class="pp">|</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>If <span class="in">`save = TRUE`</span>, returns an invisible list of DNA sequences in</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="in">`DNAbin`</span> format (if <span class="in">`clean.taxa = TRUE`</span>) or raw FASTA text (if</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="in">`clean.taxa = FALSE`</span>). If <span class="in">`save = FALSE`</span>, returns the processed</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>sequences as an R object. Files are written to disk in either case when</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="in">`save = TRUE`</span>.</span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="ss">13. </span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="ss">14. </span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="ss">15.  </span>Saves results to specified directory with date-stamped subfolder</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>Taxon name cleaning includes:</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1: Basic search for matK sequences in Solanaceae (excluding Solanum)</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>result1 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;(Solanaceae[Organism] AND matk NOT Solanum[Organism])&quot;</span>,</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;Solanaceae_outSolanum.fasta&quot;</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Removing periods and hyphens</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Converting &quot;var.&quot;, &quot;subsp.&quot;, &quot;f.&quot; to simple spaces</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Converting spaces to underscores</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Trimming &quot;sp.&quot; designations</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Removing trailing underscores</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>Handling hybrid cultivars</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> term <span class="pp">|</span> Character string specifying the search query for GenBank. Should follow NCBI Entrez search syntax (e.g., &quot;Solanaceae<span class="sc">\[</span>Organism<span class="sc">\]</span> AND matk&quot;, &quot;Arabidopsis<span class="sc">\[</span>Organism<span class="sc">\]</span> AND rbcL<span class="sc">\[</span>Gene<span class="sc">\]</span>&quot;). See NCBI&#39;s <span class="co">[</span><span class="ot">Entrez Help</span><span class="co">](https://www.ncbi.nlm.nih.gov/books/NBK3837/)</span> for detailed syntax. <span class="pp">|</span></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> db <span class="pp">|</span> Character string specifying the NCBI database to search. Default is &quot;nucleotide&quot;. Other options include &quot;protein&quot;, &quot;popset&quot;, etc. See <span class="in">`entrez_search`</span> for details. <span class="pp">|</span></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character string for the output FASTA file name. Default is &quot;mined_seqs_by_taxon.fasta&quot;. <span class="pp">|</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> clean.taxa <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), taxon names are cleaned and standardized (removes authors, subsp./var. indicators, special characters). If <span class="in">`FALSE`</span>, original GenBank names are preserved. <span class="pp">|</span></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> add.voucher <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), voucher specimen information (when available) is extracted and appended to sequence names in the format: Genus_species_voucher_accession. If <span class="in">`FALSE`</span>, voucher information is omitted. <span class="pp">|</span></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> original.query <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, a copy of the original unprocessed FASTA file is saved with &quot;_original.query&quot; suffix. If <span class="in">`FALSE`</span> (default), only the cleaned file is kept. Ignored if <span class="in">`clean.taxa = FALSE`</span>. <span class="pp">|</span></span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> plastome.apart <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), complete plastome sequences are separated into a separate file with &quot;PLASTOMES_&quot; prefix. Useful for distinguishing whole plastomes from individual gene sequences. <span class="pp">|</span></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm.duplicated <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), removes duplicate sequences from the same species, keeping only the longest sequence. Applied separately to plastomes and other sequences. <span class="pp">|</span></span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> retmax <span class="pp">|</span> Numeric. Maximum number of sequences to retrieve from GenBank. Default is 4000. Increase for large queries, but note NCBI rate limits. <span class="pp">|</span></span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), progress messages are printed to the console. If <span class="in">`FALSE`</span>, function runs silently. <span class="pp">|</span></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), results are saved to disk in the specified directory. If <span class="in">`FALSE`</span>, results are returned as R objects without saving. <span class="pp">|</span></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character string specifying the directory path for saving results. Default is &quot;RESULTS_mineTaxa&quot;. A subdirectory with current date will be created within this directory. <span class="pp">|</span></span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>If <span class="in">`save = TRUE`</span>, returns an invisible list of DNA sequences in</span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="in">`DNAbin`</span> format (if <span class="in">`clean.taxa = TRUE`</span>) or raw FASTA text (if</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="in">`clean.taxa = FALSE`</span>). If <span class="in">`save = FALSE`</span>, returns the processed</span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>sequences as an R object. Files are written to disk in either case when</span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="in">`save = TRUE`</span>.</span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1: Basic search for matK sequences in Solanaceae (excluding Solanum)</span></span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>result1 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;(Solanaceae[Organism] AND matk NOT Solanum[Organism])&quot;</span>,</span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;Solanaceae_outSolanum.fasta&quot;</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: Search for rbcL sequences in Fabaceae with custom settings</span></span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Fabaceae[Organism] AND rbcL[Gene]&quot;</span>,</span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;Fabaceae_rbcL.fasta&quot;</span>,</span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>  <span class="at">clean.taxa =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.voucher =</span> <span class="cn">FALSE</span>,          <span class="co"># Don&#39;t add voucher info</span></span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  <span class="at">original.query =</span> <span class="cn">TRUE</span>,        <span class="co"># Keep original unprocessed file</span></span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>  <span class="at">plastome.apart =</span> <span class="cn">FALSE</span>,       <span class="co"># Don&#39;t separate plastomes</span></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  <span class="at">rm.duplicated =</span> <span class="cn">FALSE</span>,        <span class="co"># Keep all sequences</span></span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>  <span class="at">retmax =</span> <span class="dv">1000</span>,</span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 3: Protein database search</span></span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>result3 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Rubisco[Protein] AND plants[Organism]&quot;</span>,</span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>  <span class="at">db =</span> <span class="st">&quot;protein&quot;</span>,</span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;plant_Rubisco.fasta&quot;</span>,</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>  <span class="at">clean.taxa =</span> <span class="cn">FALSE</span>           <span class="co"># Don&#39;t clean names for proteins</span></span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 4: Return results without saving to disk</span></span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>result4 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Arabidopsis[Organism] AND chloroplast[Title]&quot;</span>,</span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">save =</span> <span class="cn">FALSE</span></span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: Search for rbcL sequences in Fabaceae with custom settings</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Fabaceae[Organism] AND rbcL[Gene]&quot;</span>,</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;Fabaceae_rbcL.fasta&quot;</span>,</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">clean.taxa =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.voucher =</span> <span class="cn">FALSE</span>,          <span class="co"># Don&#39;t add voucher info</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  <span class="at">original.query =</span> <span class="cn">TRUE</span>,        <span class="co"># Keep original unprocessed file</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  <span class="at">plastome.apart =</span> <span class="cn">FALSE</span>,       <span class="co"># Don&#39;t separate plastomes</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">rm.duplicated =</span> <span class="cn">FALSE</span>,        <span class="co"># Keep all sequences</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">retmax =</span> <span class="dv">1000</span>,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 3: Protein database search</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>result3 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Rubisco[Protein] AND plants[Organism]&quot;</span>,</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  <span class="at">db =</span> <span class="st">&quot;protein&quot;</span>,</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;plant_Rubisco.fasta&quot;</span>,</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">clean.taxa =</span> <span class="cn">FALSE</span>           <span class="co"># Don&#39;t clean names for proteins</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 4: Return results without saving to disk</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>result4 <span class="ot">&lt;-</span> <span class="fu">mineTaxa</span>(</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="st">&quot;Arabidopsis[Organism] AND chloroplast[Title]&quot;</span>,</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>  <span class="at">save =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 5: Basic search for multiple genera and ITS sequences</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>  term <span class="ot">=</span> <span class="st">&quot;(Macrolobium[Organism] OR Heterostemon[Organism]) AND (ITS OR </span><span class="sc">\&quot;</span><span class="st">internal transcribed spacer</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>,</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">=</span> <span class="st">&quot;Macro_Heter_ITS.fasta&quot;</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 6: Basic search for specific GenBank numbers</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>  term <span class="ot">=</span> <span class="st">&quot;KJ136899 OR KJ136869&quot;</span>,</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">=</span> <span class="st">&quot;out_seqs.fasta&quot;</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
