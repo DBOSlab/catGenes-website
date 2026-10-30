@@ -1,0 +1,83 @@
+---
+title: 'buildMetachronogram'
+description: 'Build a metachronogram by grafting dated subtrees onto a backbone chronogram'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::buildMetachronogram()
+```
+
+### Description
+
+Builds a large, composite time-calibrated phylogeny (a
+"metachronogram", sensu Ringelberg et al.) by grafting one or more densely
+sampled, ultrametric subtrees onto specified clades of a backbone
+chronogram, replacing each targeted clade with the corresponding subtree
+rescaled to exactly the age of the clade it replaces. This lets you
+combine phylogenetic datasets generated at different taxonomic scales or
+from different sequencing efforts (e.g. grafting densely sampled,
+Sanger-sequenced genus-level trees onto a sparser, genome-scale backbone)
+into a single time-scaled tree, while keeping every untouched part of the
+backbone exactly as it was.
+
+### Details
+
+For each graft, the clade defined by `mrca` is located in the
+backbone and its age (time before the present, assuming the backbone tips
+are all at time 0) is taken as the target age. The replacement subtree is
+rescaled proportionally so that its own root height exactly equals that
+target age, and is then grafted in at precisely the point the original
+clade occupied, preserving the stem branch leading to it. The rest of the
+backbone — including branch lengths and node ages outside the replaced
+clade — is left unchanged.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| backbone | An ultrametric `phylo` tree, or a `multiPhylo` object (e.g. a posterior sample of backbone trees), onto which the subtrees in `grafts` will be grafted. |
+| grafts | A list of grafts to apply, in order. Each element is itself a list with two components: `mrca`, a vector of two or more tip labels whose most recent common ancestor in the (current state of the) backbone defines the clade to be replaced; and `subtree`, the ultrametric replacement `phylo` tree (or a `multiPhylo` of the same length as `backbone`, for grafting a matching posterior subtree sample onto each backbone tree). Grafts are applied in the order given, so for hierarchical grafting (grafting a subtree inside a clade that was itself just grafted in), list the least nested graft first. |
+| verbose | Logical, if `FALSE`, a message showing each graft as it is applied will not be printed in the console. |
+| save | Logical, if `FALSE` the resulting metachronogram(s) are returned as an R object but not saved to disk. |
+| dir | The path to the directory where the metachronogram should be saved. The default is to create a directory named **RESULTS_buildMetachronogram** and save the tree within a subfolder named after the current date. |
+| filename | Name (without extension) of the saved Newick tree file. |
+
+### Value
+
+A `phylo` object (if `backbone` is a single tree) or a
+`multiPhylo` object (if `backbone` is a `multiPhylo`), with
+every requested graft applied.
+
+### Examples
+
+```r
+library(catGenes)
+
+# single backbone tree, single graft
+metatree <- buildMetachronogram(
+  backbone = my_backbone_tree,
+  grafts = list(
+    list(mrca = c("Genus_speciesA", "Genus_speciesB"),
+        subtree = my_genus_level_tree)
+  )
+)
+
+# posterior sample of backbone trees, two grafts applied to every tree,
+# each paired with its own posterior sample of the replacement subtree
+metatrees <- buildMetachronogram(
+  backbone = my_backbone_posterior,
+  grafts = list(
+    list(mrca = c("Genus1_speciesA", "Genus1_speciesB"),
+        subtree = genus1_posterior),
+    list(mrca = c("Genus2_speciesA", "Genus2_speciesB"),
+        subtree = genus2_posterior)
+  ),
+  dir = "RESULTS_buildMetachronogram"
+)
+```
+
+

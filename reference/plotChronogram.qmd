@@ -1,0 +1,75 @@
+---
+title: 'plotChronogram'
+description: 'Plot a time-calibrated phylogeny (chronogram or metachronogram)'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+catGenes::plotChronogram()
+```
+
+### Description
+
+Function to plot a [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html)-based
+time-calibrated phylogeny, such as a chronogram or a metachronogram built
+with `buildMetachronogram`, using real branch lengths on a
+calendar-time axis (present = 0, root = oldest). The x-axis can show plain
+numeric time (in millions of years, unless the input tree is scaled
+otherwise), a geological timescale (epochs, periods, eras and/or eons, via
+the [deeptime](https://cran.r-project.org/package=deeptime) package),
+or both. Named clades can be labelled around the tree, each defined by the
+most recent common ancestor (MRCA) of two or more of its tip labels.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| tree | An ultrametric `phylo` object with branch lengths in units of time (e.g. millions of years), such as the output of `buildMetachronogram`. |
+| layout | Either `"rectangular"` or `"circular"`. |
+| time.axis | One of `"numeric"` (a plain numeric time axis, millions of years before present), `"geological"` (a geological timescale only, via `deeptime::coord_geo()`), or `"both"` (numeric axis plus the geological timescale). `"geological"` and `"both"` require the deeptime package and only apply when `layout = "rectangular"`; a `"circular"` layout always uses a plain numeric axis, regardless of `time.axis`. |
+| geo.ranks | A character vector naming which geological ranks to show as stacked bands when `time.axis` is `"geological"` or `"both"`. Any combination of `"eons"`, `"eras"`, `"periods"`, `"epochs"` and `"stages"` (see `deeptime::coord_geo()`). Defaults to `c("epochs", "periods")`. |
+| clades | A named list defining clades to label around the tree. Each name is the label to print, and each element is a vector of two or more tip labels whose MRCA in `tree` defines that clade -- the same convention used by the `mrca` element of `buildMetachronogram`'s `grafts`. Defaults to `NULL`, i.e. no clade labels are drawn. |
+| clade.label.offset | Horizontal offset of the clade label bracket from the tips it labels. Defaults to `NULL`, which sets it automatically to 15% of the tree's root age. |
+| clade.label.offset.text | Horizontal offset of the clade label text from its bracket. Defaults to `NULL`, which sets it automatically to 2% of the tree's root age. |
+| clade.label.fontsize | Font size of the clade labels. Defaults to 3.5. |
+| clade.label.barsize | Line width of the clade label brackets. Defaults to 1.2. |
+| highlight.taxa | Define a vector with specific tip labels or the name of a particular genus/species to be highlighted with a color in the tree. |
+| highlight.color | Color vector to highlight specific tip labels in the tree, as defined with `highlight.taxa`. A single color is recycled across all elements of `highlight.taxa`. |
+| show.tip.label | Logical, if `FALSE` the tip labels will not be plotted. |
+| size.tip.label | A numeric value for the size of tip labels. Defaults to 3. |
+| fontface.tip.label | The font face for tip labels: 1 (plain, default), 2 (bold), 3 (italic), 4 (bold italic). Defaults to `"italic"`. |
+| branch.width | A numeric vector giving the width of the branches of the plotted phylogeny. Defaults to 0.5. |
+| save | Logical, if `TRUE` the plotted chronogram will be saved on disk. |
+| dpi | A number specifying the plot resolution when `format` is a raster format (`"png"`, `"tiff"` or `"jpg"`). Defaults to 600. |
+| dir | The path to the directory where the plot should be saved. The default is to create a directory named **RESULTS_plotChronogram** and save the tree within a subfolder named after the current date. |
+| filename | Name (without extension) of the saved plot. Defaults to `"chronogram_<layout>"`. |
+| format | Format of the saved plot: `"pdf"` (default), `"png"`, `"tiff"` or `"jpg"`. |
+| ... | Other arguments passed on to `ggtree::geom_tiplab()`. |
+
+### Value
+
+A ggtree/ggplot object with the plotted chronogram, invisibly
+saved to disk if `save = TRUE`.
+
+### Examples
+
+```r
+library(catGenes)
+
+plotChronogram(tree = my_metachronogram,
+              layout = "rectangular",
+              time.axis = "both",
+              clades = list("Clade A" = c("Genus_speciesA", "Genus_speciesB"),
+                            "Clade B" = c("Genus_speciesC", "Genus_speciesD")),
+              highlight.taxa = "Genus_speciesA",
+              highlight.color = "red",
+              save = TRUE,
+              dir = "results_chronogram",
+              filename = "my_chronogram",
+              format = "pdf")
+```
+
+

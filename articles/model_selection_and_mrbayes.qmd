@@ -295,7 +295,7 @@ Inspecting these outputs is useful before proceeding to Bayesian inference.
 
 ## Common issues
 ### Input file is not in NEXUS format
-`evomodelTest()` expects `NEXUS` alignment files. If your data are in another format, convert them first using `convertAlign()` or export them with w`riteNexus()`.
+`evomodelTest()` expects `NEXUS` alignment files. If your data are in another format, convert them first using `convertAlign()` or export them with `writeNexus()`.
 
 ### Model comparison takes too long
 Large alignments or many candidate models can increase runtime. To reduce computation time, you can:

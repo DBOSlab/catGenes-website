@@ -12,7 +12,7 @@ Once a concatenated `NEXUS` dataset has been prepared and a valid `MrBayes` bloc
 
 This function helps connect data preparation and phylogenetic inference in a single workflow. Rather than switching manually to a terminal session, you can start `MrBayes` from within R, direct the run to a dedicated analysis folder, and capture the program output.
 
-This article explains how to prepare the required input, how to locate the `MrBayes` executable, how to run an analysis in foreground or background mode, and how `mrbayesRun()` fits into the broader `catGenes` workflow.
+This article explains how to prepare the required input, how to locate the `MrBayes` executable, how to run an analysis in foreground or background mode, how to follow and stop a run, and how `mrbayesRun()` fits into the broader `catGenes` workflow.
 
 ## When to use `mrbayesRun()`
 
@@ -30,8 +30,8 @@ If your `NEXUS` file does not yet contain a `MrBayes` block, first prepare it wi
 
 The function requires two essential inputs:
 
-- `nexus_file`: a `NEXUS` file that already contains a valid `MrBayes` block
-- `mrbayes_dir`: the path to the directory containing the `MrBayes` executable
+- `nexus.file`: a `NEXUS` file that already contains a valid `MrBayes` block
+- `mrbayes.dir`: the path to the directory containing the `MrBayes` executable
 
 A minimal call looks like this:
 
@@ -44,14 +44,19 @@ res <- mrbayesRun(
 )
 ```
 
-
 ## Preparing the NEXUS file
 `mrbayesRun()` does not generate the `MrBayes` block itself. The input file must already contain a valid block such as:
 ```{r, eval=FALSE}
 begin mrbayes;
+  set autoclose=yes;
   ...
+  mcmc ngen=10000000 samplefreq=1000 nruns=2 nchains=4 filename=Vataireoids;
+  sump;
+  sumt;
 end;
 ```
+
+Because `mrbayesRun()` starts `MrBayes` non-interactively, the program does not stop to ask questions and exits on its own after running the block, so a final `quit;` is not required.
 
 A common workflow is:
 
@@ -80,26 +85,51 @@ evomodelTest(
 
 After that, the prepared file can be passed to `mrbayesRun()`.
 
+### Non-ASCII characters
+`MrBayes` cannot read non-ASCII characters, such as accented letters in collector names written inside `[...]` comments (e.g., *González* in `[GonzálezHFC87681_LS975736]`). Such characters make `MrBayes` fail with errors like *"Reached end of file while in comment"*.
+
+`mrbayesRun()` checks the file before starting and stops with a message listing the offending lines:
+
+```
+Error: nexus.file contains non-ASCII characters (e.g., accented letters), which MrBayes cannot read.
+Lines: 77, 163
+Replace them with plain ASCII (e.g., á -> a) and run again.
+```
+
+Replace those characters with their plain equivalents (e.g., *González* → *Gonzalez*) and run the analysis again.
+
 ## Finding the MrBayes executable
-The argument `mrbayes.dir` should point to the folder containing the `MrBayes` executable.
+The argument `mrbayes.dir` should point to the folder containing the `MrBayes` executable (`mb` on macOS/Linux, `mb.exe` on Windows).
 Typical examples include:
 
-- macOS (Intel, Homebrew)
-- mrbayes_dir = "/usr/local/bin"
-- macOS (Apple Silicon, Homebrew)
-- mrbayes_dir = "/opt/homebrew/bin"
-
-Linux
+macOS (Intel, Homebrew)
 ```{r, eval=FALSE}
-mrbayes_dir = path.expand("~/.local/bin")
+mrbayes.dir = "/usr/local/bin"
+```
+
+macOS (Apple Silicon, Homebrew)
+```{r, eval=FALSE}
+mrbayes.dir = "/opt/homebrew/bin"
+```
+
+macOS/Linux (compiled from source)
+```{r, eval=FALSE}
+mrbayes.dir = path.expand("~/MrBayes/src")
+```
+
+Linux (local install)
+```{r, eval=FALSE}
+mrbayes.dir = path.expand("~/.local/bin")
 ```
 
 Windows
 ```{r, eval=FALSE}
-mrbayes_dir = "C:/Program Files/MrBayes"
+mrbayes.dir = "C:/Program Files/MrBayes"
 ```
 
-If the executable is not found directly in mrbayes_dir, mrbayesRun() also checks a bin subdirectory.
+If the executable is not found directly in `mrbayes.dir`, `mrbayesRun()` also checks a `bin` subdirectory.
+
+If you have more than one `MrBayes` installation, check which one you are pointing to. For example, some Homebrew builds are compiled for parallel (MPI) runs and use a single processor when started without `mpirun`.
 
 ## Basic usage
 A standard foreground analysis looks like this:
@@ -115,13 +145,15 @@ This:
 - copies or moves the `NEXUS` file into a run directory
 - launches `MrBayes`
 - writes output files into the run directory
-- captures standard output and standard error
+- records standard output and standard error in log files
 - returns a summary object in R
+
+In foreground mode, R waits until `MrBayes` finishes. Press Esc in RStudio to interrupt the run.
 
 ## Understanding `run.dir`
 The argument `run.dir` controls where the analysis is executed.
 
-If left as `NULL`, `mrbayesRun()` creates a new folder in the current working directory with a timestamped name.
+If left as `NULL`, `mrbayesRun()` creates a new folder in the current working directory with a timestamped name (e.g., `mrbayes_run_20261030_133739`).
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
@@ -140,8 +172,10 @@ res <- mrbayesRun(
 ```
 Using an explicit run directory can be helpful when organizing multiple analyses.
 
-## Understanding copy_mode
-The argument `copy_mode` determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.
+For long analyses, avoid run directories inside folders synchronized by cloud services (e.g., iCloud Drive, Dropbox). These services may lock or offload files while `MrBayes` is writing them. Run the analysis in a local folder and copy the results afterwards.
+
+## Understanding `copy.mode`
+The argument `copy.mode` determines whether the input NEXUS file is copied or moved into the run directory before the analysis starts.
 
 Copy the file
 ```{r, eval=FALSE}
@@ -183,8 +217,8 @@ res <- mrbayesRun(
 ```
 This is useful when running analyses in scripts or batch workflows.
 
-## Understanding live
-The argument `live` controls whether the MrBayes output is streamed to the R console while the analysis runs.
+## Understanding `live`
+The argument `live` controls whether the MrBayes output is printed to the R console.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
@@ -193,9 +227,9 @@ res <- mrbayesRun(
 )
 ```
 
-This is often useful for monitoring progress interactively.
+In foreground mode, the output is streamed while the analysis runs, which is useful for monitoring progress interactively. In background mode, output is printed only when you call `res$poll()`.
 
-To disable live console output:
+To disable console output:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
@@ -203,9 +237,10 @@ res <- mrbayesRun(
   live = FALSE
 )
 ```
+The full output is still recorded in `mrbayes_stdout.txt` in the run directory.
 
-## Understanding `use_processx`
-When available, `mrbayesRun()` can use the processx package to improve output handling and support background execution.
+## Understanding `use.processx`
+When available, `mrbayesRun()` uses the `processx` package to handle the `MrBayes` process. This enables background execution and programmatic stopping.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
@@ -216,7 +251,7 @@ res <- mrbayesRun(
 
 This is the default and generally the most robust option.
 
-If processx is not installed or you do not want to use it:
+If `processx` is not installed or you do not want to use it:
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
@@ -224,58 +259,79 @@ res <- mrbayesRun(
   use.processx = FALSE
 )
 ```
+In this case the run can only be stopped interactively, and background mode is not available.
 
 ## Running in background mode
-A particularly useful feature is background execution. When `background = TRUE`, `MrBayes` starts and returns control to R immediately.
+A particularly useful feature is background execution. When `background = TRUE`, `MrBayes` starts and returns control to R immediately, so you can keep working while the analysis runs.
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
   mrbayes.dir = "/opt/homebrew/bin",
+  run.dir = "~/mrbayes_runs/Vataireoids",
   background = TRUE
 )
 ```
 
-In this mode, the returned object can include helper functions such as:
+In this mode, the returned object includes:
 
-- poll() to check new output
-- stop() to terminate the run
+- `res$poll()` to print new output
+- `res$stop()` to terminate the run
+- `res$proc`, the underlying `processx` process
 
-This is useful for long analyses.
+This is the recommended mode for long analyses. `MrBayes` writes its output directly to `mrbayes_stdout.txt` and `mrbayes_stderr.txt`, so the run never waits for R, and the logs grow whether or not you call `poll()`.
+
+Background mode requires the `processx` package.
 
 ## Monitoring a background run
-If the analysis was launched with `background = TRUE`, you can inspect progress later.
-For example:
+If the analysis was launched with `background = TRUE`, you can inspect progress at any time:
 ```{r, eval=FALSE}
-res$poll()
+res$poll()                  # print output written since the last poll
+res$proc$is_alive()         # TRUE while MrBayes is running
+res$proc$get_exit_status()  # 0 once MrBayes has finished successfully
 ```
-This reads new output from the running process.
 
-# Stopping a background run
-If the returned object includes a stop handle, you can terminate the run programmatically.
+You can also open `mrbayes_stdout.txt` in the run directory, which is updated as the analysis runs.
+
+Keep the R session open while a background run is in progress. `MrBayes` is stopped when the R session ends or restarts.
+
+## Stopping a background run
+Use `mrbayesStop()` (or `res$stop()`) to end a run started with `background = TRUE`:
 ```{r, eval=FALSE}
-res$stop()
+mrbayesStop(res)                # graceful stop
+mrbayesStop(res, force = TRUE)  # kill immediately
 ```
-This is only relevant when using background execution with `processx`.
+
+A graceful stop interrupts `MrBayes` and confirms the stop, as if you had pressed Ctrl-C and answered `y` in a terminal. `MrBayes` ends the chain cleanly and keeps the samples written so far in the `.p`, `.t` and `.ckp` files. If `MrBayes` has not exited after 10 seconds, it is killed.
+
+`force = TRUE` kills the process immediately.
 
 ## Understanding the output files
-Because the analysis runs in the designated run directory, all standard `MrBayes` output files are written there. These may include files such as:
+Because the analysis runs in the designated run directory, all output files are written there:
 
-- parameter files
-- tree files
-- consensus tree files
-- standard output logs
-- error logs
+- `mrbayes_stdout.txt`: the `MrBayes` screen output
+- `mrbayes_stderr.txt`: errors and warnings
+- a copy of the input `NEXUS` file
+- the `MrBayes` files: parameter samples (`.p`), tree samples (`.t`), checkpoint (`.ckp`), convergence diagnostics (`.mcmc`) and, after `sumt`, the consensus tree (`.con.tre`) and summaries (`.parts`, `.tstat`, `.vstat`, `.trprobs`)
 
-For example, the directory may contain files like:
+The `MrBayes` files are named after the `filename` option of the `mcmc` command. For example, with `mcmc ... filename=Vataireoids;` and `nruns=2`, the run directory contains:
 
-- analysis.nex
-- analysis.nex.p
-- analysis.nex.t
-- analysis.nex.con.tre
-- stdout.log
-- stderr.log
+- Vataireoids.nex
+- mrbayes_stdout.txt
+- mrbayes_stderr.txt
+- Vataireoids.run1.p, Vataireoids.run2.p
+- Vataireoids.run1.t, Vataireoids.run2.t
+- Vataireoids.ckp
+- Vataireoids.mcmc
+- Vataireoids.con.tre
 
-The exact file names depend on the original input file and the `MrBayes` settings in the block.
+Without a `filename` option, the files are named after the input file (e.g., `Vataireoids.nex.run1.p`).
+
+The returned object also stores the paths you may need later:
+```{r, eval=FALSE}
+res$run_dir   # run directory
+res$stdout    # path to mrbayes_stdout.txt
+res$stderr    # path to mrbayes_stderr.txt
+```
 
 ## A complete example workflow
 A full workflow from concatenation to Bayesian analysis might look like this:
@@ -301,15 +357,21 @@ evomodelTest(
 )
 ```
 
-Step 3. Run `MrBayes`
+Step 3. Run `MrBayes` in the background
 ```{r, eval=FALSE}
 res <- mrbayesRun(
   nexus.file = "Vataireoids.nex",
   mrbayes.dir = "/opt/homebrew/bin",
+  run.dir = "~/mrbayes_runs/Vataireoids",
   copy.mode = "copy",
-  live = TRUE,
-  background = FALSE
+  background = TRUE
 )
+```
+
+Step 4. Follow the run until it finishes
+```{r, eval=FALSE}
+res$poll()
+res$proc$is_alive()
 ```
 This creates a fully scriptable Bayesian workflow inside R.
 
@@ -325,31 +387,34 @@ This makes `mrbayesRun()` a natural transition from data preparation to phylogen
 
 ## Common issues
 ### MrBayes executable is not found
-If the run fails immediately, the path given in `mrbayes_dir` may be incorrect. Make sure the folder really contains the `MrBayes` executable.
+If the run fails immediately, the path given in `mrbayes.dir` may be incorrect. Make sure the folder really contains the `MrBayes` executable.
+
+### The NEXUS file contains non-ASCII characters
+If `mrbayesRun()` stops with *"nexus.file contains non-ASCII characters"*, replace the accented or special characters on the reported lines with plain ASCII. See [Non-ASCII characters](#non-ascii-characters).
 
 ### The NEXUS file does not contain a valid MrBayes block
-`mrbayesRun()` expects a ready-to-run NEXUS file. If the block is absent or invalid, `MrBayes` will fail. Prepare the file first with `writeNexus()` and `evomodelTest()` as needed.
+`mrbayesRun()` expects a ready-to-run NEXUS file. If the block is absent or invalid, `MrBayes` will fail. Check `mrbayes_stdout.txt` for the `MrBayes` error message, and prepare the file with `writeNexus()` and `evomodelTest()` as needed.
 
 ### The analysis appears to hang
-Long Bayesian analyses can run for substantial time, especially with large datasets. If using background mode, check progress with `poll()`.
+Long Bayesian analyses can run for substantial time, especially with large datasets. Check progress with `res$poll()`, or look at whether `mrbayes_stdout.txt` and the `.p` files are still growing.
 
 ### No output is printed to the console
-If `live = FALSE`, output is not streamed interactively. Check the log files or inspect the returned object to locate stdout and stderr.
+If `live = FALSE`, output is not printed. In background mode, output is printed only when you call `res$poll()`. In both cases the full output is in `mrbayes_stdout.txt` (`res$stdout`).
 
 ### The run directory is not where expected
-If run_dir is left as `NULL`, a timestamped directory is created automatically in the working directory. If you want tighter control, specify run_dir explicitly.
+If `run.dir` is left as `NULL`, a timestamped directory is created automatically in the working directory. If you want tighter control, specify `run.dir` explicitly.
 
 ### The run cannot be stopped programmatically
-Programmatic stopping is mainly available when processx is installed and `background = TRUE`. In foreground mode or without processx, stopping is typically interactive.
+Programmatic stopping requires `processx` and `background = TRUE`. In foreground mode or without `processx`, press Esc in RStudio.
 
 ## Recommended practice
 For the smoothest use of `mrbayesRun()`:
 
 - always prepare and inspect the `NEXUS` file first
 - preserve the original file by using `copy.mode = "copy"`
-- use an explicit run_dir for organized projects
-- use background = TRUE for long analyses
-- inspect returned paths and logs after the run
+- use an explicit `run.dir` outside cloud-synchronized folders
+- use `background = TRUE` for long analyses
+- inspect the returned paths and logs after the run
 - keep the full workflow scripted for reproducibility
 
 ## Next step

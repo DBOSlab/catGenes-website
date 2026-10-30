@@ -18,6 +18,11 @@ For programmatic stopping, the run must have been started with processx
 (i.e., `use.processx = TRUE`) and, for practical "stop anytime" control,
 `background = TRUE`.
 
+A graceful stop (`force = FALSE`) interrupts MrBayes and answers "yes" to
+its *"Do you really want to stop the run (y/n)?"* prompt, so the run ends
+cleanly and the samples written so far are kept. If MrBayes has not exited
+after 10 seconds, it is killed.
+
 ### Arguments
 
 | Argument | Description |

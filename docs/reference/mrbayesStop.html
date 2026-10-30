@@ -4419,6 +4419,7 @@ height: 400px;
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
 <p>Convenience wrapper to stop a MrBayes run returned by <code>mrbayesRun</code>. For programmatic stopping, the run must have been started with processx (i.e., <code>use.processx = TRUE</code>) and, for practical “stop anytime” control, <code>background = TRUE</code>.</p>
+<p>A graceful stop (<code>force = FALSE</code>) interrupts MrBayes and answers “yes” to its <em>“Do you really want to stop the run (y/n)?”</em> prompt, so the run ends cleanly and the samples written so far are kept. If MrBayes has not exited after 10 seconds, it is killed.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4939,17 +4940,22 @@ height: 400px;
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>(i.e., <span class="in">`use.processx = TRUE`</span>) and, for practical &quot;stop anytime&quot; control,</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="in">`background = TRUE`</span>.</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> res <span class="pp">|</span> A result object returned by <span class="in">`mrbayesRun`</span>. <span class="pp">|</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> force <span class="pp">|</span> Logical. If <span class="in">`FALSE`</span> (default), requests a graceful stop. If <span class="in">`TRUE`</span>, force-kills the process. <span class="pp">|</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>A graceful stop (<span class="in">`force = FALSE`</span>) interrupts MrBayes and answers &quot;yes&quot; to</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>its *&quot;Do you really want to stop the run (y/n)?&quot;* prompt, so the run ends</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>cleanly and the samples written so far are kept. If MrBayes has not exited</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>after 10 seconds, it is killed.</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>Invisibly returns <span class="in">`TRUE`</span> if a stop signal was sent, otherwise <span class="in">`FALSE`</span>.</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> res <span class="pp">|</span> A result object returned by <span class="in">`mrbayesRun`</span>. <span class="pp">|</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> force <span class="pp">|</span> Logical. If <span class="in">`FALSE`</span> (default), requests a graceful stop. If <span class="in">`TRUE`</span>, force-kills the process. <span class="pp">|</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>Invisibly returns <span class="in">`TRUE`</span> if a stop signal was sent, otherwise <span class="in">`FALSE`</span>.</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
